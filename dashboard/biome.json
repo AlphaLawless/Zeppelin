@@ -1,0 +1,12 @@
+{
+  "extends": ["../biome.json"],
+  "formatter": { "useEditorconfig": true, "ignore": ["./dist"] },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false,
+      "correctness": { "noSelfAssign": "off", "noUnusedVariables": "off" },
+      "suspicious": { "noEmptyBlockStatements": "off" }
+    }
+  }
+}
