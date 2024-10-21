@@ -1,74 +1,74 @@
-import { GuildMember } from "discord.js";
-import { guildPluginEventListener } from "knub";
-import { SECONDS } from "../../../utils.js";
-import { parseCustomId } from "../../../utils/parseCustomId.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
-import { getAllRolesInButtons } from "../functions/getAllRolesInButtons.js";
-import { RoleButtonsPluginType, TRoleButtonOption } from "../types.js";
+import { GuildMember } from 'discord.js'
+import { guildPluginEventListener } from 'knub'
+import { SECONDS } from '../../../utils.js'
+import { parseCustomId } from '../../../utils/parseCustomId.js'
+import { RoleManagerPlugin } from '../../RoleManager/RoleManagerPlugin.js'
+import { getAllRolesInButtons } from '../functions/getAllRolesInButtons.js'
+import { RoleButtonsPluginType, TRoleButtonOption } from '../types.js'
 
-const ROLE_BUTTON_CD = 5 * SECONDS;
+const ROLE_BUTTON_CD = 5 * SECONDS
 
 export const onButtonInteraction = guildPluginEventListener<RoleButtonsPluginType>()({
-  event: "interactionCreate",
+  event: 'interactionCreate',
   async listener({ pluginData, args }) {
     if (!args.interaction.isButton()) {
-      return;
+      return
     }
 
-    const { namespace, data } = parseCustomId(args.interaction.customId);
-    if (namespace !== "roleButtons") {
-      return;
+    const { namespace, data } = parseCustomId(args.interaction.customId)
+    if (namespace !== 'roleButtons') {
+      return
     }
 
-    const config = pluginData.config.get();
-    const { name, index: optionIndex } = data;
+    const config = pluginData.config.get()
+    const { name, index: optionIndex } = data
     // For some reason TS's type inference fails here so using a type annotation
-    const buttons = config.buttons[name];
-    const option: TRoleButtonOption | undefined = buttons?.options[optionIndex];
+    const buttons = config.buttons[name]
+    const option: TRoleButtonOption | undefined = buttons?.options[optionIndex]
     if (!buttons || !option) {
       args.interaction
         .reply({
           ephemeral: true,
-          content: "Invalid option selected",
+          content: 'Invalid option selected',
         })
         // tslint:disable-next-line no-console
-        .catch((err) => console.trace(err.message));
-      return;
+        .catch((err) => console.trace(err.message))
+      return
     }
 
-    const cdIdentifier = `${args.interaction.user.id}-${optionIndex}`;
+    const cdIdentifier = `${args.interaction.user.id}-${optionIndex}`
     if (pluginData.cooldowns.isOnCooldown(cdIdentifier)) {
       args.interaction.reply({
         ephemeral: true,
-        content: "Please wait before clicking the button again",
-      });
-      return;
+        content: 'Please wait before clicking the button again',
+      })
+      return
     }
-    pluginData.cooldowns.setCooldown(cdIdentifier, ROLE_BUTTON_CD);
+    pluginData.cooldowns.setCooldown(cdIdentifier, ROLE_BUTTON_CD)
 
-    const member = args.interaction.member as GuildMember;
-    const role = pluginData.guild.roles.cache.get(option.role_id);
-    const roleName = role?.name || option.role_id;
+    const member = args.interaction.member as GuildMember
+    const role = pluginData.guild.roles.cache.get(option.role_id)
+    const roleName = role?.name || option.role_id
 
-    const rolesToRemove: string[] = [];
-    const rolesToAdd: string[] = [];
+    const rolesToRemove: string[] = []
+    const rolesToAdd: string[] = []
 
     if (member.roles.cache.has(option.role_id)) {
-      rolesToRemove.push(option.role_id);
+      rolesToRemove.push(option.role_id)
       args.interaction
         .reply({
           ephemeral: true,
           content: `The role **${roleName}** will be removed shortly!`,
         })
         // tslint:disable-next-line no-console
-        .catch((err) => console.trace(err.message));
+        .catch((err) => console.trace(err.message))
     } else {
-      rolesToAdd.push(option.role_id);
+      rolesToAdd.push(option.role_id)
 
       if (buttons.exclusive) {
         for (const roleId of getAllRolesInButtons(buttons)) {
           if (member.roles.cache.has(roleId)) {
-            rolesToRemove.push(roleId);
+            rolesToRemove.push(roleId)
           }
         }
       }
@@ -79,14 +79,14 @@ export const onButtonInteraction = guildPluginEventListener<RoleButtonsPluginTyp
           content: `You will receive the **${roleName}** role shortly!`,
         })
         // tslint:disable-next-line no-console
-        .catch((err) => console.trace(err.message));
+        .catch((err) => console.trace(err.message))
     }
 
     for (const roleId of rolesToAdd) {
-      pluginData.getPlugin(RoleManagerPlugin).addRole(member.user.id, roleId);
+      pluginData.getPlugin(RoleManagerPlugin).addRole(member.user.id, roleId)
     }
     for (const roleId of rolesToRemove) {
-      pluginData.getPlugin(RoleManagerPlugin).removeRole(member.user.id, roleId);
+      pluginData.getPlugin(RoleManagerPlugin).removeRole(member.user.id, roleId)
     }
   },
-});
+})

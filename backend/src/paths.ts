@@ -1,9 +1,9 @@
-import path from "path";
-import pkgUp from "pkg-up";
+import path from 'path'
+import { packageUpSync } from 'package-up'
 
-const backendPackageJson = pkgUp.sync({
+const backendPackageJson = packageUpSync({
   cwd: import.meta.dirname,
-}) as string;
+}) as string
 
-export const backendDir = path.dirname(backendPackageJson);
-export const rootDir = path.resolve(backendDir, "..");
+export const backendDir = path.dirname(backendPackageJson)
+export const rootDir = path.resolve(backendDir, '..')

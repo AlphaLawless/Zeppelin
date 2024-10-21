@@ -1,63 +1,63 @@
-import { escapeCodeBlock } from "discord.js";
-import humanizeDuration from "humanize-duration";
-import moment from "moment-timezone";
-import { createChunkedMessage, DBDateFormat, deactivateMentions, sorter, trimLines } from "../../../utils.js";
-import { TimeAndDatePlugin } from "../../TimeAndDate/TimeAndDatePlugin.js";
-import { postCmd } from "../types.js";
+import { escapeCodeBlock } from 'discord.js'
+import humanizeDuration from 'humanize-duration'
+import moment from 'moment-timezone'
+import { DBDateFormat, createChunkedMessage, deactivateMentions, sorter, trimLines } from '../../../utils.js'
+import { TimeAndDatePlugin } from '../../TimeAndDate/TimeAndDatePlugin.js'
+import { postCmd } from '../types.js'
 
-const SCHEDULED_POST_PREVIEW_TEXT_LENGTH = 50;
+const SCHEDULED_POST_PREVIEW_TEXT_LENGTH = 50
 
 export const ScheduledPostsListCmd = postCmd({
-  trigger: ["scheduled_posts", "scheduled_posts list"],
-  permission: "can_post",
+  trigger: ['scheduled_posts', 'scheduled_posts list'],
+  permission: 'can_post',
 
   async run({ message: msg, pluginData }) {
-    const scheduledPosts = await pluginData.state.scheduledPosts.all();
+    const scheduledPosts = await pluginData.state.scheduledPosts.all()
     if (scheduledPosts.length === 0) {
-      msg.channel.send("No scheduled posts");
-      return;
+      msg.channel.send('No scheduled posts')
+      return
     }
 
-    scheduledPosts.sort(sorter("post_at"));
+    scheduledPosts.sort(sorter('post_at'))
 
-    let i = 1;
+    let i = 1
     const postLines = scheduledPosts.map((p) => {
-      let previewText = p.content.content || p.content.embeds?.[0]?.description || p.content.embeds?.[0]?.title || "";
+      let previewText = p.content.content || p.content.embeds?.[0]?.description || p.content.embeds?.[0]?.title || ''
 
-      const isTruncated = previewText.length > SCHEDULED_POST_PREVIEW_TEXT_LENGTH;
+      const isTruncated = previewText.length > SCHEDULED_POST_PREVIEW_TEXT_LENGTH
 
       previewText = escapeCodeBlock(deactivateMentions(previewText))
-        .replace(/\s+/g, " ")
-        .slice(0, SCHEDULED_POST_PREVIEW_TEXT_LENGTH);
+        .replace(/\s+/g, ' ')
+        .slice(0, SCHEDULED_POST_PREVIEW_TEXT_LENGTH)
 
-      const timeAndDate = pluginData.getPlugin(TimeAndDatePlugin);
+      const timeAndDate = pluginData.getPlugin(TimeAndDatePlugin)
       const prettyPostAt = timeAndDate
         .inGuildTz(moment.utc(p.post_at!, DBDateFormat))
-        .format(timeAndDate.getDateFormat("pretty_datetime"));
-      const parts = [`\`#${i++}\` \`[${prettyPostAt}]\` ${previewText}${isTruncated ? "..." : ""}`];
-      if (p.attachments.length) parts.push("*(with attachment)*");
-      if (p.content.embeds?.length) parts.push("*(embed)*");
+        .format(timeAndDate.getDateFormat('pretty_datetime'))
+      const parts = [`\`#${i++}\` \`[${prettyPostAt}]\` ${previewText}${isTruncated ? '...' : ''}`]
+      if (p.attachments.length) parts.push('*(with attachment)*')
+      if (p.content.embeds?.length) parts.push('*(embed)*')
       if (p.repeat_until) {
-        parts.push(`*(repeated every ${humanizeDuration(p.repeat_interval)} until ${p.repeat_until})*`);
+        parts.push(`*(repeated every ${humanizeDuration(p.repeat_interval)} until ${p.repeat_until})*`)
       }
       if (p.repeat_times) {
         parts.push(
           `*(repeated every ${humanizeDuration(p.repeat_interval)}, ${p.repeat_times} more ${
-            p.repeat_times === 1 ? "time" : "times"
+            p.repeat_times === 1 ? 'time' : 'times'
           })*`,
-        );
+        )
       }
-      parts.push(`*(${p.author_name})*`);
+      parts.push(`*(${p.author_name})*`)
 
-      return parts.join(" ");
-    });
+      return parts.join(' ')
+    })
 
     const finalMessage = trimLines(`
-      ${postLines.join("\n")}
+      ${postLines.join('\n')}
 
       Use \`scheduled_posts <num>\` to view a scheduled post in full
       Use \`scheduled_posts delete <num>\` to delete a scheduled post
-    `);
-    createChunkedMessage(msg.channel, finalMessage);
+    `)
+    createChunkedMessage(msg.channel, finalMessage)
   },
-});
+})

@@ -1,7 +1,7 @@
-import { GuildPluginData } from "knub";
-import { startProfiling } from "../../../utils/easyProfiler.js";
-import { RecentActionType } from "../constants.js";
-import { AutomodPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { startProfiling } from '../../../utils/easyProfiler.js'
+import { RecentActionType } from '../constants.js'
+import { AutomodPluginType } from '../types.js'
 
 export function getMatchingRecentActions(
   pluginData: GuildPluginData<AutomodPluginType>,
@@ -10,8 +10,8 @@ export function getMatchingRecentActions(
   since: number,
   to?: number,
 ) {
-  const stopProfiling = startProfiling(pluginData.getKnubInstance().profiler, "automod:fns:getMatchingRecentActions");
-  to = to || Date.now();
+  const stopProfiling = startProfiling(pluginData.getKnubInstance().profiler, 'automod:fns:getMatchingRecentActions')
+  to = to || Date.now()
 
   const result = pluginData.state.recentActions.filter((action) => {
     return (
@@ -20,8 +20,8 @@ export function getMatchingRecentActions(
       action.context.timestamp >= since &&
       action.context.timestamp <= to! &&
       !action.context.actioned
-    );
-  });
-  stopProfiling();
-  return result;
+    )
+  })
+  stopProfiling()
+  return result
 }

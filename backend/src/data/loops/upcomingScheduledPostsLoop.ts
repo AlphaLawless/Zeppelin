@@ -1,73 +1,73 @@
 // tslint:disable:no-console
 
-import moment from "moment-timezone";
-import { lazyMemoize, MINUTES } from "../../utils.js";
-import { ScheduledPost } from "../entities/ScheduledPost.js";
-import { emitGuildEvent, hasGuildEventListener } from "../GuildEvents.js";
-import { ScheduledPosts } from "../ScheduledPosts.js";
-import Timeout = NodeJS.Timeout;
+import moment from 'moment-timezone'
+import { MINUTES, lazyMemoize } from '../../utils.js'
+import { emitGuildEvent, hasGuildEventListener } from '../GuildEvents.js'
+import { ScheduledPosts } from '../ScheduledPosts.js'
+import { ScheduledPost } from '../entities/ScheduledPost.js'
+import Timeout = NodeJS.Timeout
 
-const LOOP_INTERVAL = 15 * MINUTES;
-const MAX_TRIES_PER_SERVER = 3;
-const getScheduledPostsRepository = lazyMemoize(() => new ScheduledPosts());
-const timeouts = new Map<number, Timeout>();
+const LOOP_INTERVAL = 15 * MINUTES
+const MAX_TRIES_PER_SERVER = 3
+const getScheduledPostsRepository = lazyMemoize(() => new ScheduledPosts())
+const timeouts = new Map<number, Timeout>()
 
 function broadcastScheduledPost(post: ScheduledPost, tries = 0) {
-  if (!hasGuildEventListener(post.guild_id, "scheduledPost")) {
+  if (!hasGuildEventListener(post.guild_id, 'scheduledPost')) {
     // If there are no listeners registered for the server yet, try again in a bit
     if (tries < MAX_TRIES_PER_SERVER) {
       timeouts.set(
         post.id,
         setTimeout(() => broadcastScheduledPost(post, tries + 1), 1 * MINUTES),
-      );
+      )
     }
-    return;
+    return
   }
-  emitGuildEvent(post.guild_id, "scheduledPost", [post]);
+  emitGuildEvent(post.guild_id, 'scheduledPost', [post])
 }
 
 export async function runUpcomingScheduledPostsLoop() {
-  console.log("[SCHEDULED POSTS LOOP] Clearing old timeouts");
+  console.log('[SCHEDULED POSTS LOOP] Clearing old timeouts')
   for (const timeout of timeouts.values()) {
-    clearTimeout(timeout);
+    clearTimeout(timeout)
   }
 
-  console.log("[SCHEDULED POSTS LOOP] Setting timeouts for upcoming scheduled posts");
-  const postsDueSoon = await getScheduledPostsRepository().getScheduledPostsDueSoon(LOOP_INTERVAL);
+  console.log('[SCHEDULED POSTS LOOP] Setting timeouts for upcoming scheduled posts')
+  const postsDueSoon = await getScheduledPostsRepository().getScheduledPostsDueSoon(LOOP_INTERVAL)
   for (const post of postsDueSoon) {
-    const remaining = Math.max(0, moment.utc(post.post_at!).diff(moment.utc()));
+    const remaining = Math.max(0, moment.utc(post.post_at!).diff(moment.utc()))
     timeouts.set(
       post.id,
       setTimeout(() => broadcastScheduledPost(post), remaining),
-    );
+    )
   }
 
-  console.log("[SCHEDULED POSTS LOOP] Scheduling next loop");
-  setTimeout(() => runUpcomingScheduledPostsLoop(), LOOP_INTERVAL);
+  console.log('[SCHEDULED POSTS LOOP] Scheduling next loop')
+  setTimeout(() => runUpcomingScheduledPostsLoop(), LOOP_INTERVAL)
 }
 
 export function registerUpcomingScheduledPost(post: ScheduledPost) {
-  clearUpcomingScheduledPost(post);
+  clearUpcomingScheduledPost(post)
 
   if (post.post_at === null) {
-    return;
+    return
   }
 
-  console.log("[SCHEDULED POSTS LOOP] Registering new upcoming scheduled post");
-  const remaining = Math.max(0, moment.utc(post.post_at).diff(moment.utc()));
+  console.log('[SCHEDULED POSTS LOOP] Registering new upcoming scheduled post')
+  const remaining = Math.max(0, moment.utc(post.post_at).diff(moment.utc()))
   if (remaining > LOOP_INTERVAL) {
-    return;
+    return
   }
 
   timeouts.set(
     post.id,
     setTimeout(() => broadcastScheduledPost(post), remaining),
-  );
+  )
 }
 
 export function clearUpcomingScheduledPost(post: ScheduledPost) {
-  console.log("[SCHEDULED POSTS LOOP] Clearing upcoming scheduled post");
+  console.log('[SCHEDULED POSTS LOOP] Clearing upcoming scheduled post')
   if (timeouts.has(post.id)) {
-    clearTimeout(timeouts.get(post.id)!);
+    clearTimeout(timeouts.get(post.id)!)
   }
 }

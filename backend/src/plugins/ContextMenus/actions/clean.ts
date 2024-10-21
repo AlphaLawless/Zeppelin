@@ -6,12 +6,12 @@ import {
   ModalSubmitInteraction,
   TextInputBuilder,
   TextInputStyle,
-} from "discord.js";
-import { GuildPluginData } from "knub";
-import { logger } from "../../../logger.js";
-import { UtilityPlugin } from "../../../plugins/Utility/UtilityPlugin.js";
-import { MODAL_TIMEOUT } from "../commands/ModMenuUserCtxCmd.js";
-import { ContextMenuPluginType, ModMenuActionType } from "../types.js";
+} from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { logger } from '../../../logger.js'
+import { UtilityPlugin } from '../../../plugins/Utility/UtilityPlugin.js'
+import { MODAL_TIMEOUT } from '../commands/ModMenuUserCtxCmd.js'
+import { ContextMenuPluginType, ModMenuActionType } from '../types.js'
 
 export async function cleanAction(
   pluginData: GuildPluginData<ContextMenuPluginType>,
@@ -21,18 +21,18 @@ export async function cleanAction(
   targetChannel: string,
   interaction: ModalSubmitInteraction,
 ) {
-  const executingMember = await pluginData.guild.members.fetch(interaction.user.id);
+  const executingMember = await pluginData.guild.members.fetch(interaction.user.id)
   const userCfg = await pluginData.config.getMatchingConfig({
     channelId: interaction.channelId,
     member: executingMember,
-  });
-  const utility = pluginData.getPlugin(UtilityPlugin);
+  })
+  const utility = pluginData.getPlugin(UtilityPlugin)
 
-  if (!userCfg.can_use || !(await utility.hasPermission(executingMember, targetChannel, "can_clean"))) {
+  if (!userCfg.can_use || !(await utility.hasPermission(executingMember, targetChannel, 'can_clean'))) {
     await interaction
-      .editReply({ content: "Cannot clean: insufficient permissions", embeds: [], components: [] })
-      .catch((err) => logger.error(`Clean interaction reply failed: ${err}`));
-    return;
+      .editReply({ content: 'Cannot clean: insufficient permissions', embeds: [], components: [] })
+      .catch((err) => logger.error(`Clean interaction reply failed: ${err}`))
+    return
   }
 
   await interaction
@@ -41,9 +41,9 @@ export async function cleanAction(
       embeds: [],
       components: [],
     })
-    .catch((err) => logger.error(`Clean interaction reply failed: ${err}`));
+    .catch((err) => logger.error(`Clean interaction reply failed: ${err}`))
 
-  await utility.clean({ count: amount, channel: targetChannel, "response-interaction": interaction }, targetMessage);
+  await utility.clean({ count: amount, channel: targetChannel, 'response-interaction': interaction }, targetMessage)
 }
 
 export async function launchCleanActionModal(
@@ -51,31 +51,24 @@ export async function launchCleanActionModal(
   interaction: MessageContextMenuCommandInteraction,
   target: string,
 ) {
-  const modalId = `${ModMenuActionType.CLEAN}:${interaction.id}`;
-  const modal = new ModalBuilder().setCustomId(modalId).setTitle("Clean");
-  const amountIn = new TextInputBuilder().setCustomId("amount").setLabel("Amount").setStyle(TextInputStyle.Short);
-  const amountRow = new ActionRowBuilder<TextInputBuilder>().addComponents(amountIn);
-  modal.addComponents(amountRow);
+  const modalId = `${ModMenuActionType.CLEAN}:${interaction.id}`
+  const modal = new ModalBuilder().setCustomId(modalId).setTitle('Clean')
+  const amountIn = new TextInputBuilder().setCustomId('amount').setLabel('Amount').setStyle(TextInputStyle.Short)
+  const amountRow = new ActionRowBuilder<TextInputBuilder>().addComponents(amountIn)
+  modal.addComponents(amountRow)
 
-  await interaction.showModal(modal);
+  await interaction.showModal(modal)
   await interaction
     .awaitModalSubmit({ time: MODAL_TIMEOUT, filter: (i) => i.customId == modalId })
     .then(async (submitted) => {
-      await submitted.deferReply({ ephemeral: true });
+      await submitted.deferReply({ ephemeral: true })
 
-      const amount = submitted.fields.getTextInputValue("amount");
+      const amount = submitted.fields.getTextInputValue('amount')
       if (isNaN(Number(amount))) {
-        interaction.editReply({ content: `Error: Amount '${amount}' is invalid`, embeds: [], components: [] });
-        return;
+        interaction.editReply({ content: `Error: Amount '${amount}' is invalid`, embeds: [], components: [] })
+        return
       }
 
-      await cleanAction(
-        pluginData,
-        Number(amount),
-        target,
-        interaction.targetMessage,
-        interaction.channelId,
-        submitted,
-      );
-    });
+      await cleanAction(pluginData, Number(amount), target, interaction.targetMessage, interaction.channelId, submitted)
+    })
 }

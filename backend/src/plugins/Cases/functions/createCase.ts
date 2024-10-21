@@ -1,31 +1,31 @@
-import type { Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import { logger } from "../../../logger.js";
-import { renderUsername, resolveUser } from "../../../utils.js";
-import { CaseArgs, CasesPluginType } from "../types.js";
-import { createCaseNote } from "./createCaseNote.js";
-import { postCaseToCaseLogChannel } from "./postToCaseLogChannel.js";
+import type { Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { logger } from '../../../logger.js'
+import { renderUsername, resolveUser } from '../../../utils.js'
+import { CaseArgs, CasesPluginType } from '../types.js'
+import { createCaseNote } from './createCaseNote.js'
+import { postCaseToCaseLogChannel } from './postToCaseLogChannel.js'
 
 export async function createCase(pluginData: GuildPluginData<CasesPluginType>, args: CaseArgs) {
-  const user = await resolveUser(pluginData.client, args.userId);
-  const name = renderUsername(user);
+  const user = await resolveUser(pluginData.client, args.userId)
+  const name = renderUsername(user)
 
-  const mod = await resolveUser(pluginData.client, args.modId);
-  const modName = renderUsername(mod);
+  const mod = await resolveUser(pluginData.client, args.modId)
+  const modName = renderUsername(mod)
 
-  let ppName: string | null = null;
-  let ppId: Snowflake | null = null;
+  let ppName: string | null = null
+  let ppId: Snowflake | null = null
   if (args.ppId) {
-    const pp = await resolveUser(pluginData.client, args.ppId);
-    ppName = renderUsername(pp);
-    ppId = pp.id;
+    const pp = await resolveUser(pluginData.client, args.ppId)
+    ppName = renderUsername(pp)
+    ppId = pp.id
   }
 
   if (args.auditLogId) {
-    const existingAuditLogCase = await pluginData.state.cases.findByAuditLogId(args.auditLogId);
+    const existingAuditLogCase = await pluginData.state.cases.findByAuditLogId(args.auditLogId)
     if (existingAuditLogCase) {
-      delete args.auditLogId;
-      logger.warn(`Duplicate audit log ID for mod case: ${args.auditLogId}`);
+      delete args.auditLogId
+      logger.warn(`Duplicate audit log ID for mod case: ${args.auditLogId}`)
     }
   }
 
@@ -39,17 +39,17 @@ export async function createCase(pluginData: GuildPluginData<CasesPluginType>, a
     pp_id: ppId,
     pp_name: ppName,
     is_hidden: Boolean(args.hide),
-  });
+  })
 
   if (args.reason || args.noteDetails?.length) {
     await createCaseNote(pluginData, {
       caseId: createdCase.id,
       modId: mod.id,
-      body: args.reason || "",
+      body: args.reason || '',
       automatic: args.automatic,
       postInCaseLogOverride: false,
       noteDetails: args.noteDetails,
-    });
+    })
   }
 
   if (args.extraNotes) {
@@ -60,19 +60,19 @@ export async function createCase(pluginData: GuildPluginData<CasesPluginType>, a
         body: extraNote,
         automatic: args.automatic,
         postInCaseLogOverride: false,
-      });
+      })
     }
   }
 
-  const config = pluginData.config.get();
+  const config = pluginData.config.get()
 
   const shouldPostToCaseLogChannel =
     args.postInCaseLogOverride === true ||
-    ((!args.automatic || config.log_automatic_actions) && args.postInCaseLogOverride !== false);
+    ((!args.automatic || config.log_automatic_actions) && args.postInCaseLogOverride !== false)
 
   if (config.case_log_channel && shouldPostToCaseLogChannel) {
-    await postCaseToCaseLogChannel(pluginData, createdCase);
+    await postCaseToCaseLogChannel(pluginData, createdCase)
   }
 
-  return createdCase;
+  return createdCase
 }

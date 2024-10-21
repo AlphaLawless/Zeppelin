@@ -11,7 +11,13 @@
     "lineWidth": 120,
     "attributePosition": "auto",
     "bracketSpacing": true,
-    "ignore": ["**/.github", "**/.idea", "**/node_modules", "./assets", "./debug"]
+    "ignore": [
+      "**/.github",
+      "**/.idea",
+      "**/node_modules",
+      "./assets",
+      "./debug"
+    ]
   },
   "organizeImports": { "enabled": true },
   "linter": {
@@ -124,6 +130,15 @@
   },
   "overrides": [
     { "ignore": ["node_modules", "dist"] },
+    {
+      "include": ["dashboard/**/*"],
+      "linter": {
+        "rules": {
+          "correctness": { "noSelfAssign": "off", "noUnusedVariables": "off" },
+          "suspicious": { "noEmptyBlockStatements": "off" }
+        }
+      }
+    },
     {
       "include": ["*.ts", "*.tsx", "*.mts", "*.cts"],
       "linter": {

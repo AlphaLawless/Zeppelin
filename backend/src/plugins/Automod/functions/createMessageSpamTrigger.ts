@@ -1,23 +1,23 @@
-import z from "zod";
-import { SavedMessage } from "../../../data/entities/SavedMessage.js";
-import { humanizeDurationShort } from "../../../humanizeDurationShort.js";
-import { getBaseUrl } from "../../../pluginUtils.js";
-import { convertDelayStringToMS, sorter, zDelayString } from "../../../utils.js";
-import { RecentActionType } from "../constants.js";
-import { automodTrigger } from "../helpers.js";
-import { findRecentSpam } from "./findRecentSpam.js";
-import { getMatchingMessageRecentActions } from "./getMatchingMessageRecentActions.js";
-import { getMessageSpamIdentifier } from "./getSpamIdentifier.js";
+import z from 'zod'
+import { SavedMessage } from '../../../data/entities/SavedMessage.js'
+import { humanizeDurationShort } from '../../../humanizeDurationShort.js'
+import { getBaseUrl } from '../../../pluginUtils.js'
+import { convertDelayStringToMS, sorter, zDelayString } from '../../../utils.js'
+import { RecentActionType } from '../constants.js'
+import { automodTrigger } from '../helpers.js'
+import { findRecentSpam } from './findRecentSpam.js'
+import { getMatchingMessageRecentActions } from './getMatchingMessageRecentActions.js'
+import { getMessageSpamIdentifier } from './getSpamIdentifier.js'
 
 export interface TMessageSpamMatchResultType {
-  archiveId: string;
+  archiveId: string
 }
 
 const configSchema = z.strictObject({
   amount: z.number().int(),
   within: zDelayString,
   per_channel: z.boolean().nullable().default(false),
-});
+})
 
 export function createMessageSpamTrigger(spamType: RecentActionType, prettyName: string) {
   return automodTrigger<TMessageSpamMatchResultType>()({
@@ -25,28 +25,28 @@ export function createMessageSpamTrigger(spamType: RecentActionType, prettyName:
 
     async match({ pluginData, context, triggerConfig }) {
       if (!context.message) {
-        return;
+        return
       }
 
-      const spamIdentifier = getMessageSpamIdentifier(context.message, Boolean(triggerConfig.per_channel));
+      const spamIdentifier = getMessageSpamIdentifier(context.message, Boolean(triggerConfig.per_channel))
 
-      const recentSpam = findRecentSpam(pluginData, spamType, spamIdentifier);
+      const recentSpam = findRecentSpam(pluginData, spamType, spamIdentifier)
       if (recentSpam) {
         if (recentSpam.archiveId) {
           await pluginData.state.archives.addSavedMessagesToArchive(
             recentSpam.archiveId,
             [context.message],
             pluginData.guild,
-          );
+          )
         }
 
         return {
           silentClean: true,
-          extra: { archiveId: "" }, // FIXME: Fix up automod trigger match() typings so extra is not required when doing a silentClean
-        };
+          extra: { archiveId: '' }, // FIXME: Fix up automod trigger match() typings so extra is not required when doing a silentClean
+        }
       }
 
-      const within = convertDelayStringToMS(triggerConfig.within) ?? 0;
+      const within = convertDelayStringToMS(triggerConfig.within) ?? 0
       const matchedSpam = getMatchingMessageRecentActions(
         pluginData,
         context.message,
@@ -54,22 +54,22 @@ export function createMessageSpamTrigger(spamType: RecentActionType, prettyName:
         spamIdentifier,
         triggerConfig.amount,
         within,
-      );
+      )
 
       if (matchedSpam) {
         const messages = matchedSpam.recentActions
           .map((action) => action.context.message)
           .filter(Boolean)
-          .sort(sorter("posted_at")) as SavedMessage[];
+          .sort(sorter('posted_at')) as SavedMessage[]
 
-        const archiveId = await pluginData.state.archives.createFromSavedMessages(messages, pluginData.guild);
+        const archiveId = await pluginData.state.archives.createFromSavedMessages(messages, pluginData.guild)
 
         pluginData.state.recentSpam.push({
           type: spamType,
           identifiers: [spamIdentifier],
           archiveId,
           timestamp: Date.now(),
-        });
+        })
 
         return {
           extraContexts: matchedSpam.recentActions
@@ -79,17 +79,17 @@ export function createMessageSpamTrigger(spamType: RecentActionType, prettyName:
           extra: {
             archiveId,
           },
-        };
+        }
       }
     },
 
     renderMatchInformation({ pluginData, matchResult, triggerConfig }) {
-      const baseUrl = getBaseUrl(pluginData);
-      const archiveUrl = pluginData.state.archives.getUrl(baseUrl, matchResult.extra.archiveId);
-      const withinMs = convertDelayStringToMS(triggerConfig.within);
-      const withinStr = humanizeDurationShort(withinMs);
+      const baseUrl = getBaseUrl(pluginData)
+      const archiveUrl = pluginData.state.archives.getUrl(baseUrl, matchResult.extra.archiveId)
+      const withinMs = convertDelayStringToMS(triggerConfig.within)
+      const withinStr = humanizeDurationShort(withinMs)
 
-      return `Matched ${prettyName} spam (${triggerConfig.amount} in ${withinStr}): ${archiveUrl}`;
+      return `Matched ${prettyName} spam (${triggerConfig.amount} in ${withinStr}): ${archiveUrl}`
     },
-  });
+  })
 }

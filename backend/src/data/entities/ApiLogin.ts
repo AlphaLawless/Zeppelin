@@ -1,25 +1,28 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Relation } from "typeorm";
-import { ApiUserInfo } from "./ApiUserInfo.js";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Relation } from 'typeorm'
+import { ApiUserInfo } from './ApiUserInfo.js'
 
-@Entity("api_logins")
+@Entity('api_logins')
 export class ApiLogin {
   @Column()
   @PrimaryColumn()
-  id: string;
+  id: string
 
   @Column()
-  token: string;
+  token: string
 
   @Column()
-  user_id: string;
+  user_id: string
 
   @Column()
-  logged_in_at: string;
+  logged_in_at: string
 
   @Column()
-  expires_at: string;
+  expires_at: string
 
-  @ManyToOne(() => ApiUserInfo, (userInfo) => userInfo.logins)
-  @JoinColumn({ name: "user_id" })
-  userInfo: Relation<ApiUserInfo>;
+  @ManyToOne(
+    () => ApiUserInfo,
+    (userInfo) => userInfo.logins,
+  )
+  @JoinColumn({ name: 'user_id' })
+  userInfo: Relation<ApiUserInfo>
 }

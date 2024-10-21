@@ -81,9 +81,9 @@
 </template>
 
 <script>
-  import CodeBlock from "./CodeBlock";
+import CodeBlock from './CodeBlock'
 
-  export default {
-    components: { CodeBlock },
-  };
+export default {
+  components: { CodeBlock },
+}
 </script>

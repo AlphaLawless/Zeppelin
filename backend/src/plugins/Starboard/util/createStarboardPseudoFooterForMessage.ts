@@ -1,6 +1,6 @@
-import { EmbedField, Message } from "discord.js";
-import { EMPTY_CHAR, messageLink } from "../../../utils.js";
-import { TStarboardOpts } from "../types.js";
+import { EmbedField, Message } from 'discord.js'
+import { EMPTY_CHAR, messageLink } from '../../../utils.js'
+import { TStarboardOpts } from '../types.js'
 
 export function createStarboardPseudoFooterForMessage(
   starboard: TStarboardOpts,
@@ -8,21 +8,21 @@ export function createStarboardPseudoFooterForMessage(
   starEmoji: string,
   starCount: number,
 ): EmbedField {
-  const jumpLink = `[Jump to message](${messageLink(msg)})`;
+  const jumpLink = `[Jump to message](${messageLink(msg)})`
 
-  let content;
+  let content
   if (starboard.show_star_count) {
     content =
       starCount > 1
         ? `${starEmoji} **${starCount}** \u200B \u200B \u200B ${jumpLink}`
-        : `${starEmoji} \u200B ${jumpLink}`;
+        : `${starEmoji} \u200B ${jumpLink}`
   } else {
-    content = jumpLink;
+    content = jumpLink
   }
 
   return {
     name: EMPTY_CHAR,
     value: content,
     inline: false,
-  };
+  }
 }

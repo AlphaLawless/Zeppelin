@@ -1,16 +1,16 @@
-import { logMemberJoin } from "../logFunctions/logMemberJoin.js";
-import { logsEvt } from "../types.js";
+import { logMemberJoin } from '../logFunctions/logMemberJoin.js'
+import { logsEvt } from '../types.js'
 
 export const LogsGuildMemberAddEvt = logsEvt({
-  event: "guildMemberAdd",
+  event: 'guildMemberAdd',
 
   async listener(meta) {
-    const pluginData = meta.pluginData;
-    const member = meta.args.member;
+    const pluginData = meta.pluginData
+    const member = meta.args.member
 
     logMemberJoin(pluginData, {
       member,
-    });
+    })
 
     // TODO: Uncomment below once circular dependencies in Knub have been fixed
 
@@ -41,4 +41,4 @@ export const LogsGuildMemberAddEvt = logsEvt({
     //   });
     // }
   },
-});
+})

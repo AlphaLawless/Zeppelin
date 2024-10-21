@@ -1,48 +1,48 @@
-import { Snowflake } from "discord.js";
-import { PluginOptions, guildPlugin } from "knub";
-import { GuildArchives } from "../../data/GuildArchives.js";
-import { GuildCases } from "../../data/GuildCases.js";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
-import { Supporters } from "../../data/Supporters.js";
-import { makePublicFn } from "../../pluginUtils.js";
-import { discardRegExpRunner, getRegExpRunner } from "../../regExpRunners.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
-import { LogsPlugin } from "../Logs/LogsPlugin.js";
-import { ModActionsPlugin } from "../ModActions/ModActionsPlugin.js";
-import { TimeAndDatePlugin } from "../TimeAndDate/TimeAndDatePlugin.js";
-import { AboutCmd } from "./commands/AboutCmd.js";
-import { AvatarCmd } from "./commands/AvatarCmd.js";
-import { BanSearchCmd } from "./commands/BanSearchCmd.js";
-import { ChannelInfoCmd } from "./commands/ChannelInfoCmd.js";
-import { CleanCmd, cleanCmd } from "./commands/CleanCmd.js";
-import { ContextCmd } from "./commands/ContextCmd.js";
-import { EmojiInfoCmd } from "./commands/EmojiInfoCmd.js";
-import { HelpCmd } from "./commands/HelpCmd.js";
-import { InfoCmd } from "./commands/InfoCmd.js";
-import { InviteInfoCmd } from "./commands/InviteInfoCmd.js";
-import { JumboCmd } from "./commands/JumboCmd.js";
-import { LevelCmd } from "./commands/LevelCmd.js";
-import { MessageInfoCmd } from "./commands/MessageInfoCmd.js";
-import { NicknameCmd } from "./commands/NicknameCmd.js";
-import { NicknameResetCmd } from "./commands/NicknameResetCmd.js";
-import { PingCmd } from "./commands/PingCmd.js";
-import { ReloadGuildCmd } from "./commands/ReloadGuildCmd.js";
-import { RoleInfoCmd } from "./commands/RoleInfoCmd.js";
-import { RolesCmd } from "./commands/RolesCmd.js";
-import { SearchCmd } from "./commands/SearchCmd.js";
-import { ServerInfoCmd } from "./commands/ServerInfoCmd.js";
-import { SnowflakeInfoCmd } from "./commands/SnowflakeInfoCmd.js";
-import { SourceCmd } from "./commands/SourceCmd.js";
-import { UserInfoCmd } from "./commands/UserInfoCmd.js";
-import { VcdisconnectCmd } from "./commands/VcdisconnectCmd.js";
-import { VcmoveAllCmd, VcmoveCmd } from "./commands/VcmoveCmd.js";
-import { AutoJoinThreadEvt, AutoJoinThreadSyncEvt } from "./events/AutoJoinThreadEvt.js";
-import { getUserInfoEmbed } from "./functions/getUserInfoEmbed.js";
-import { hasPermission } from "./functions/hasPermission.js";
-import { activeReloads } from "./guildReloads.js";
-import { refreshMembersIfNeeded } from "./refreshMembers.js";
-import { UtilityPluginType, zUtilityConfig } from "./types.js";
+import { Snowflake } from 'discord.js'
+import { PluginOptions, guildPlugin } from 'knub'
+import { GuildArchives } from '../../data/GuildArchives.js'
+import { GuildCases } from '../../data/GuildCases.js'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { GuildSavedMessages } from '../../data/GuildSavedMessages.js'
+import { Supporters } from '../../data/Supporters.js'
+import { makePublicFn } from '../../pluginUtils.js'
+import { discardRegExpRunner, getRegExpRunner } from '../../regExpRunners.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
+import { LogsPlugin } from '../Logs/LogsPlugin.js'
+import { ModActionsPlugin } from '../ModActions/ModActionsPlugin.js'
+import { TimeAndDatePlugin } from '../TimeAndDate/TimeAndDatePlugin.js'
+import { AboutCmd } from './commands/AboutCmd.js'
+import { AvatarCmd } from './commands/AvatarCmd.js'
+import { BanSearchCmd } from './commands/BanSearchCmd.js'
+import { ChannelInfoCmd } from './commands/ChannelInfoCmd.js'
+import { CleanCmd, cleanCmd } from './commands/CleanCmd.js'
+import { ContextCmd } from './commands/ContextCmd.js'
+import { EmojiInfoCmd } from './commands/EmojiInfoCmd.js'
+import { HelpCmd } from './commands/HelpCmd.js'
+import { InfoCmd } from './commands/InfoCmd.js'
+import { InviteInfoCmd } from './commands/InviteInfoCmd.js'
+import { JumboCmd } from './commands/JumboCmd.js'
+import { LevelCmd } from './commands/LevelCmd.js'
+import { MessageInfoCmd } from './commands/MessageInfoCmd.js'
+import { NicknameCmd } from './commands/NicknameCmd.js'
+import { NicknameResetCmd } from './commands/NicknameResetCmd.js'
+import { PingCmd } from './commands/PingCmd.js'
+import { ReloadGuildCmd } from './commands/ReloadGuildCmd.js'
+import { RoleInfoCmd } from './commands/RoleInfoCmd.js'
+import { RolesCmd } from './commands/RolesCmd.js'
+import { SearchCmd } from './commands/SearchCmd.js'
+import { ServerInfoCmd } from './commands/ServerInfoCmd.js'
+import { SnowflakeInfoCmd } from './commands/SnowflakeInfoCmd.js'
+import { SourceCmd } from './commands/SourceCmd.js'
+import { UserInfoCmd } from './commands/UserInfoCmd.js'
+import { VcdisconnectCmd } from './commands/VcdisconnectCmd.js'
+import { VcmoveAllCmd, VcmoveCmd } from './commands/VcmoveCmd.js'
+import { AutoJoinThreadEvt, AutoJoinThreadSyncEvt } from './events/AutoJoinThreadEvt.js'
+import { getUserInfoEmbed } from './functions/getUserInfoEmbed.js'
+import { hasPermission } from './functions/hasPermission.js'
+import { activeReloads } from './guildReloads.js'
+import { refreshMembersIfNeeded } from './refreshMembers.js'
+import { UtilityPluginType, zUtilityConfig } from './types.js'
 
 const defaultOptions: PluginOptions<UtilityPluginType> = {
   config: {
@@ -76,7 +76,7 @@ const defaultOptions: PluginOptions<UtilityPluginType> = {
   },
   overrides: [
     {
-      level: ">=50",
+      level: '>=50',
       config: {
         can_roles: true,
         can_level: true,
@@ -102,7 +102,7 @@ const defaultOptions: PluginOptions<UtilityPluginType> = {
       },
     },
     {
-      level: ">=100",
+      level: '>=100',
       config: {
         can_reload_guild: true,
         can_ping: true,
@@ -110,10 +110,10 @@ const defaultOptions: PluginOptions<UtilityPluginType> = {
       },
     },
   ],
-};
+}
 
 export const UtilityPlugin = guildPlugin<UtilityPluginType>()({
-  name: "utility",
+  name: 'utility',
 
   dependencies: () => [TimeAndDatePlugin, ModActionsPlugin, LogsPlugin],
   configParser: (input) => zUtilityConfig.parse(input),
@@ -151,62 +151,59 @@ export const UtilityPlugin = guildPlugin<UtilityPluginType>()({
   ],
 
   // prettier-ignore
-  events: [
-    AutoJoinThreadEvt,
-    AutoJoinThreadSyncEvt,
-  ],
+  events: [AutoJoinThreadEvt, AutoJoinThreadSyncEvt],
 
   public(pluginData) {
     return {
       clean: makePublicFn(pluginData, cleanCmd),
       userInfo: (userId: Snowflake) => getUserInfoEmbed(pluginData, userId, false),
       hasPermission: makePublicFn(pluginData, hasPermission),
-    };
+    }
   },
 
   beforeLoad(pluginData) {
-    const { state, guild } = pluginData;
+    const { state, guild } = pluginData
 
-    state.logs = new GuildLogs(guild.id);
-    state.cases = GuildCases.getGuildInstance(guild.id);
-    state.savedMessages = GuildSavedMessages.getGuildInstance(guild.id);
-    state.archives = GuildArchives.getGuildInstance(guild.id);
-    state.supporters = new Supporters();
+    state.logs = new GuildLogs(guild.id)
+    state.cases = GuildCases.getGuildInstance(guild.id)
+    state.savedMessages = GuildSavedMessages.getGuildInstance(guild.id)
+    state.archives = GuildArchives.getGuildInstance(guild.id)
+    state.supporters = new Supporters()
 
-    state.regexRunner = getRegExpRunner(`guild-${pluginData.guild.id}`);
+    state.regexRunner = getRegExpRunner(`guild-${pluginData.guild.id}`)
 
-    state.lastReload = Date.now();
+    state.lastReload = Date.now()
 
     // FIXME: Temp fix for role change detection for specific servers, load all guild members in the background on bot start
     const roleChangeDetectionFixServers = [
-      "786212572285763605",
-      "653681924384096287",
-      "493351982887862283",
-      "513338222810497041",
-      "523043978178723840",
-      "718076393295970376",
-      "803251072877199400",
-      "750492934343753798",
-    ];
+      '786212572285763605',
+      '653681924384096287',
+      '493351982887862283',
+      '513338222810497041',
+      '523043978178723840',
+      '718076393295970376',
+      '803251072877199400',
+      '750492934343753798',
+    ]
     if (roleChangeDetectionFixServers.includes(pluginData.guild.id)) {
-      refreshMembersIfNeeded(pluginData.guild);
+      refreshMembersIfNeeded(pluginData.guild)
     }
   },
 
   beforeStart(pluginData) {
-    pluginData.state.common = pluginData.getPlugin(CommonPlugin);
+    pluginData.state.common = pluginData.getPlugin(CommonPlugin)
   },
 
   afterLoad(pluginData) {
-    const { guild } = pluginData;
+    const { guild } = pluginData
 
     if (activeReloads.has(guild.id)) {
-      pluginData.state.common.sendSuccessMessage(activeReloads.get(guild.id)!, "Reloaded!");
-      activeReloads.delete(guild.id);
+      pluginData.state.common.sendSuccessMessage(activeReloads.get(guild.id)!, 'Reloaded!')
+      activeReloads.delete(guild.id)
     }
   },
 
   beforeUnload(pluginData) {
-    discardRegExpRunner(`guild-${pluginData.guild.id}`);
+    discardRegExpRunner(`guild-${pluginData.guild.id}`)
   },
-});
+})

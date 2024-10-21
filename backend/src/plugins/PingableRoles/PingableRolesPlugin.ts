@@ -1,9 +1,9 @@
-import { PluginOptions, guildPlugin } from "knub";
-import { GuildPingableRoles } from "../../data/GuildPingableRoles.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
-import { PingableRoleDisableCmd } from "./commands/PingableRoleDisableCmd.js";
-import { PingableRoleEnableCmd } from "./commands/PingableRoleEnableCmd.js";
-import { PingableRolesPluginType, zPingableRolesConfig } from "./types.js";
+import { PluginOptions, guildPlugin } from 'knub'
+import { GuildPingableRoles } from '../../data/GuildPingableRoles.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
+import { PingableRoleDisableCmd } from './commands/PingableRoleDisableCmd.js'
+import { PingableRoleEnableCmd } from './commands/PingableRoleEnableCmd.js'
+import { PingableRolesPluginType, zPingableRolesConfig } from './types.js'
 
 const defaultOptions: PluginOptions<PingableRolesPluginType> = {
   config: {
@@ -11,25 +11,22 @@ const defaultOptions: PluginOptions<PingableRolesPluginType> = {
   },
   overrides: [
     {
-      level: ">=100",
+      level: '>=100',
       config: {
         can_manage: true,
       },
     },
   ],
-};
+}
 
 export const PingableRolesPlugin = guildPlugin<PingableRolesPluginType>()({
-  name: "pingable_roles",
+  name: 'pingable_roles',
 
   configParser: (input) => zPingableRolesConfig.parse(input),
   defaultOptions,
 
   // prettier-ignore
-  messageCommands: [
-    PingableRoleEnableCmd,
-    PingableRoleDisableCmd,
-  ],
+  messageCommands: [PingableRoleEnableCmd, PingableRoleDisableCmd],
 
   // prettier-ignore
   events: [
@@ -39,14 +36,14 @@ export const PingableRolesPlugin = guildPlugin<PingableRolesPluginType>()({
   ],
 
   beforeLoad(pluginData) {
-    const { state, guild } = pluginData;
+    const { state, guild } = pluginData
 
-    state.pingableRoles = GuildPingableRoles.getGuildInstance(guild.id);
-    state.cache = new Map();
-    state.timeouts = new Map();
+    state.pingableRoles = GuildPingableRoles.getGuildInstance(guild.id)
+    state.cache = new Map()
+    state.timeouts = new Map()
   },
 
   beforeStart(pluginData) {
-    pluginData.state.common = pluginData.getPlugin(CommonPlugin);
+    pluginData.state.common = pluginData.getPlugin(CommonPlugin)
   },
-});
+})

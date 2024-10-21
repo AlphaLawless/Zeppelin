@@ -82,56 +82,56 @@
 </style>
 
 <script type="ts">
-  import ChevronDown from 'vue-material-design-icons/ChevronDown.vue';
+import ChevronDown from 'vue-material-design-icons/ChevronDown.vue'
 
-  const ANIMATION_TIME = 400;
+const ANIMATION_TIME = 400
 
-  export default {
-    components: { ChevronDown },
-    mounted() {
-      this.$refs.root.style.setProperty('--animation-time', `${ANIMATION_TIME}ms`);
+export default {
+  components: { ChevronDown },
+  mounted() {
+    this.$refs.root.style.setProperty('--animation-time', `${ANIMATION_TIME}ms`)
+  },
+  data() {
+    return {
+      isOpen: false,
+      animating: false,
+    }
+  },
+  methods: {
+    toggle() {
+      if (this.isOpen) this.close()
+      else this.open()
     },
-    data() {
-      return {
-        isOpen: false,
-        animating: false,
-      };
+    open() {
+      if (this.animating) return
+      this.animating = true
+      this.isOpen = true
+
+      this.$refs.content.style.display = 'block'
+      const targetHeight = this.$refs.content.clientHeight
+      this.$refs.content.style.setProperty('--target-height', `${targetHeight}px`)
+      this.$refs.content.classList.add('opening')
+
+      setTimeout(() => {
+        this.$refs.content.classList.remove('opening')
+        this.animating = false
+      }, ANIMATION_TIME)
     },
-    methods: {
-      toggle() {
-        if (this.isOpen) this.close();
-        else this.open();
-      },
-      open() {
-        if (this.animating) return;
-        this.animating = true;
-        this.isOpen = true;
+    close() {
+      if (this.animating) return
+      this.animating = true
+      this.isOpen = false
 
-        this.$refs.content.style.display = 'block';
-        const targetHeight = this.$refs.content.clientHeight;
-        this.$refs.content.style.setProperty('--target-height', `${targetHeight}px`);
-        this.$refs.content.classList.add('opening');
+      const targetHeight = this.$refs.content.clientHeight
+      this.$refs.content.style.setProperty('--target-height', `${targetHeight}px`)
+      this.$refs.content.classList.add('closing')
 
-        setTimeout(() => {
-          this.$refs.content.classList.remove('opening');
-          this.animating = false;
-        }, ANIMATION_TIME);
-      },
-      close() {
-        if (this.animating) return;
-        this.animating = true;
-        this.isOpen = false;
-
-        const targetHeight = this.$refs.content.clientHeight;
-        this.$refs.content.style.setProperty('--target-height', `${targetHeight}px`);
-        this.$refs.content.classList.add('closing');
-
-        setTimeout(() => {
-          this.$refs.content.classList.remove('closing');
-          this.$refs.content.style.display = 'none';
-          this.animating = false;
-        }, ANIMATION_TIME);
-      },
+      setTimeout(() => {
+        this.$refs.content.classList.remove('closing')
+        this.$refs.content.style.display = 'none'
+        this.animating = false
+      }, ANIMATION_TIME)
     },
-  };
+  },
+}
 </script>

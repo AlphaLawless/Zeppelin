@@ -1,4 +1,4 @@
-import { PermissionsBitField } from "discord.js";
+import { PermissionsBitField } from 'discord.js'
 
 /**
  * @param resolvedPermissions A Permission object from e.g. GuildChannel#permissionsOf() or Member#permission
@@ -9,13 +9,13 @@ export function hasDiscordPermissions(
   requiredPermissions: number | bigint,
 ) {
   if (resolvedPermissions == null) {
-    return false;
+    return false
   }
 
   if (resolvedPermissions.has(PermissionsBitField.Flags.Administrator)) {
-    return true;
+    return true
   }
 
-  const nRequiredPermissions = BigInt(requiredPermissions);
-  return Boolean((resolvedPermissions.bitfield! & nRequiredPermissions) === nRequiredPermissions);
+  const nRequiredPermissions = BigInt(requiredPermissions)
+  return Boolean((resolvedPermissions.bitfield! & nRequiredPermissions) === nRequiredPermissions)
 }

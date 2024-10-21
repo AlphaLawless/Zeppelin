@@ -1,12 +1,12 @@
-import { Attachment, ChatInputCommandInteraction, Message, User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { CaseTypes } from "../../../../data/CaseTypes.js";
-import { UnknownUser, renderUsername } from "../../../../utils.js";
-import { CasesPlugin } from "../../../Cases/CasesPlugin.js";
-import { LogsPlugin } from "../../../Logs/LogsPlugin.js";
-import { handleAttachmentLinkDetectionAndGetRestriction } from "../../functions/attachmentLinkReaction.js";
-import { formatReasonWithMessageLinkForAttachments } from "../../functions/formatReasonForAttachments.js";
-import { ModActionsPluginType } from "../../types.js";
+import { Attachment, ChatInputCommandInteraction, Message, User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { CaseTypes } from '../../../../data/CaseTypes.js'
+import { UnknownUser, renderUsername } from '../../../../utils.js'
+import { CasesPlugin } from '../../../Cases/CasesPlugin.js'
+import { LogsPlugin } from '../../../Logs/LogsPlugin.js'
+import { handleAttachmentLinkDetectionAndGetRestriction } from '../../functions/attachmentLinkReaction.js'
+import { formatReasonWithMessageLinkForAttachments } from '../../functions/formatReasonForAttachments.js'
+import { ModActionsPluginType } from '../../types.js'
 
 export async function actualNoteCmd(
   pluginData: GuildPluginData<ModActionsPluginType>,
@@ -17,26 +17,26 @@ export async function actualNoteCmd(
   note: string,
 ) {
   if (await handleAttachmentLinkDetectionAndGetRestriction(pluginData, context, note)) {
-    return;
+    return
   }
 
-  const userName = renderUsername(user);
-  const reason = await formatReasonWithMessageLinkForAttachments(pluginData, note, context, attachments);
+  const userName = renderUsername(user)
+  const reason = await formatReasonWithMessageLinkForAttachments(pluginData, note, context, attachments)
 
-  const casesPlugin = pluginData.getPlugin(CasesPlugin);
+  const casesPlugin = pluginData.getPlugin(CasesPlugin)
   const createdCase = await casesPlugin.createCase({
     userId: user.id,
     modId: author.id,
     type: CaseTypes.Note,
     reason,
-  });
+  })
 
   pluginData.getPlugin(LogsPlugin).logMemberNote({
     mod: author,
     user,
     caseNumber: createdCase.case_number,
     reason,
-  });
+  })
 
   pluginData.state.common.sendSuccessMessage(
     context,
@@ -44,7 +44,7 @@ export async function actualNoteCmd(
     undefined,
     undefined,
     true,
-  );
+  )
 
-  pluginData.state.events.emit("note", user.id, reason);
+  pluginData.state.events.emit('note', user.id, reason)
 }

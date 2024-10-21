@@ -1,19 +1,19 @@
-import { GuildMember, GuildTextBasedChannel } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
-import { channelToTemplateSafeChannel, memberToTemplateSafeMember } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildMember, GuildTextBasedChannel } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
+import { channelToTemplateSafeChannel, memberToTemplateSafeMember } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMessageSpamDetectedData {
-  member: GuildMember;
-  channel: GuildTextBasedChannel;
-  description: string;
-  limit: number;
-  interval: number;
-  archiveUrl: string;
+  member: GuildMember
+  channel: GuildTextBasedChannel
+  description: string
+  limit: number
+  interval: number
+  archiveUrl: string
 }
 
 export function logMessageSpamDetected(pluginData: GuildPluginData<LogsPluginType>, data: LogMessageSpamDetectedData) {
@@ -34,5 +34,5 @@ export function logMessageSpamDetected(pluginData: GuildPluginData<LogsPluginTyp
       bot: data.member.user.bot,
       ...resolveChannelIds(data.channel),
     },
-  );
+  )
 }

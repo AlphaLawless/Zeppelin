@@ -1,11 +1,11 @@
-import { Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import { ReactionRole } from "../../../data/entities/ReactionRole.js";
-import { isDiscordAPIError, sleep } from "../../../utils.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { ReactionRolesPluginType } from "../types.js";
+import { Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { ReactionRole } from '../../../data/entities/ReactionRole.js'
+import { isDiscordAPIError, sleep } from '../../../utils.js'
+import { LogsPlugin } from '../../Logs/LogsPlugin.js'
+import { ReactionRolesPluginType } from '../types.js'
 
-const CLEAR_ROLES_EMOJI = "❌";
+const CLEAR_ROLES_EMOJI = '❌'
 
 /**
  * @return Errors encountered while applying reaction roles, if any
@@ -16,88 +16,88 @@ export async function applyReactionRoleReactionsToMessage(
   messageId: string,
   reactionRoles: ReactionRole[],
 ): Promise<string[] | undefined> {
-  const channel = pluginData.guild.channels.cache.get(channelId as Snowflake);
-  if (!channel?.isTextBased()) return;
+  const channel = pluginData.guild.channels.cache.get(channelId as Snowflake)
+  if (!channel?.isTextBased()) return
 
-  const errors: string[] = [];
-  const logs = pluginData.getPlugin(LogsPlugin);
+  const errors: string[] = []
+  const logs = pluginData.getPlugin(LogsPlugin)
 
-  let targetMessage;
+  let targetMessage
   try {
-    targetMessage = await channel.messages.fetch({ message: messageId, force: true });
+    targetMessage = await channel.messages.fetch({ message: messageId, force: true })
   } catch (e) {
     if (isDiscordAPIError(e)) {
       if (e.code === 10008) {
         // Unknown message, remove reaction roles from the message
         logs.logBotAlert({
           body: `Removed reaction roles from unknown message ${channelId}/${messageId} (${pluginData.guild.id})`,
-        });
-        await pluginData.state.reactionRoles.removeFromMessage(messageId);
+        })
+        await pluginData.state.reactionRoles.removeFromMessage(messageId)
       } else {
         logs.logBotAlert({
           body: `Error ${e.code} when applying reaction roles to message ${channelId}/${messageId}: ${e.message}`,
-        });
+        })
       }
 
-      errors.push(`Error ${e.code} while fetching reaction role message: ${e.message}`);
-      return errors;
+      errors.push(`Error ${e.code} while fetching reaction role message: ${e.message}`)
+      return errors
     } else {
-      throw e;
+      throw e
     }
   }
 
   // Remove old reactions, if any
   try {
-    await targetMessage.reactions.removeAll();
+    await targetMessage.reactions.removeAll()
   } catch (e) {
     if (isDiscordAPIError(e)) {
-      errors.push(`Error ${e.code} while removing old reactions: ${e.message}`);
+      errors.push(`Error ${e.code} while removing old reactions: ${e.message}`)
       logs.logBotAlert({
         body: `Error ${e.code} while removing old reaction role reactions from message ${channelId}/${messageId}: ${e.message}`,
-      });
-      return errors;
+      })
+      return errors
     }
 
-    throw e;
+    throw e
   }
 
-  await sleep(1500);
+  await sleep(1500)
 
   // Add reaction role reactions
-  const emojisToAdd = reactionRoles.map((rr) => rr.emoji);
-  emojisToAdd.push(CLEAR_ROLES_EMOJI);
+  const emojisToAdd = reactionRoles.map((rr) => rr.emoji)
+  emojisToAdd.push(CLEAR_ROLES_EMOJI)
 
   for (const rawEmoji of emojisToAdd) {
     try {
-      await targetMessage.react(rawEmoji);
-      await sleep(750); // Make sure we don't hit rate limits
+      await targetMessage.react(rawEmoji)
+      await sleep(750) // Make sure we don't hit rate limits
     } catch (e) {
       if (isDiscordAPIError(e)) {
         if (e.code === 10014) {
-          pluginData.state.reactionRoles.removeFromMessage(messageId, rawEmoji);
-          errors.push(`Unknown emoji: ${rawEmoji}`);
+          pluginData.state.reactionRoles.removeFromMessage(messageId, rawEmoji)
+          errors.push(`Unknown emoji: ${rawEmoji}`)
           logs.logBotAlert({
             body: `Could not add unknown reaction role emoji ${rawEmoji} to message ${channelId}/${messageId}`,
-          });
-          continue;
+          })
+          continue
         } else if (e.code === 50013) {
-          errors.push(`Missing permissions to apply reactions`);
+          errors.push(`Missing permissions to apply reactions`)
           logs.logBotAlert({
             body: `Error ${e.code} while applying reaction role reactions to ${channelId}/${messageId}: ${e.message}`,
-          });
-          break;
+          })
+          break
         } else if (e.code === 30010) {
-          errors.push(`Maximum number of reactions reached (20)`);
+          errors.push(`Maximum number of reactions reached (20)`)
           logs.logBotAlert({
             body: `Error ${e.code} while applying reaction role reactions to ${channelId}/${messageId}: ${e.message}`,
-          });
-          break;
+          })
+          break
         }
       }
 
-      throw e;
+      throw e
     }
   }
 
-  return errors;
+  return errors
 }

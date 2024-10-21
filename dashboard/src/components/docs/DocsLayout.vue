@@ -50,126 +50,130 @@
 </template>
 
 <script lang="ts">
-  import {mapState} from "vuex";
-  import Menu from 'vue-material-design-icons/Menu.vue';
-  import Title from "../Title.vue";
-  import logoUrl from "../../img/logo.png";
+import Menu from 'vue-material-design-icons/Menu.vue'
+import { mapState } from 'vuex'
+import logoUrl from '../../img/logo.png'
+import Title from '../Title.vue'
 
-  type TMenuItem = {
-    to: string;
-    label: string;
-  };
-  type TMenuGroup = {
-    label: string;
-    items: TMenuItem[];
-  };
-  type TMenu = TMenuGroup[];
+type TMenuItem = {
+  to: string
+  label: string
+}
+type TMenuGroup = {
+  label: string
+  items: TMenuItem[]
+}
+type TMenu = TMenuGroup[]
 
-  const menu: TMenu = [
-    {
-      label: 'General',
-      items: [
-        {
-          to: '/docs/introduction',
-          label: 'Introduction',
-        },
-      ],
-    },
-
-    {
-      label: 'Configuration',
-      items: [
-        {
-          to: '/docs/configuration/configuration-format',
-          label: 'Configuration format',
-        },
-        {
-          to: '/docs/configuration/plugin-configuration',
-          label: 'Plugin configuration',
-        },
-        {
-          to: '/docs/configuration/permissions',
-          label: 'Permissions',
-        },
-      ],
-    },
-
-    {
-      label: 'Reference',
-      items: [
-        {
-          to: '/docs/reference/argument-types',
-          label: 'Argument types',
-        },
-      ],
-    },
-
-    {
-      label: 'Setup guides',
-      items: [
-        {
-          to: '/docs/setup-guides/logs',
-          label: 'Logs',
-        },
-        {
-          to: '/docs/setup-guides/moderation',
-          label: 'Moderation',
-        },
-        {
-          to: '/docs/setup-guides/counters',
-          label: 'Counters',
-        },
-      ],
-    },
-  ];
-
-  export default {
-    components: { Menu, Title },
-    async mounted() {
-      await this.$store.dispatch("docs/loadAllPlugins");
-    },
-
-    data() {
-      return {
-        mobileMenuOpen: false,
-        logoUrl,
-      };
-    },
-
-    methods: {
-      toggleMobileMenu() {
-        this.mobileMenuOpen = !this.mobileMenuOpen;
+const menu: TMenu = [
+  {
+    label: 'General',
+    items: [
+      {
+        to: '/docs/introduction',
+        label: 'Introduction',
       },
+    ],
+  },
 
-      onChooseMenuItem() {
-        this.mobileMenuOpen = false;
-        this.$refs['main-anchor'].focus();
+  {
+    label: 'Configuration',
+    items: [
+      {
+        to: '/docs/configuration/configuration-format',
+        label: 'Configuration format',
       },
+      {
+        to: '/docs/configuration/plugin-configuration',
+        label: 'Plugin configuration',
+      },
+      {
+        to: '/docs/configuration/permissions',
+        label: 'Permissions',
+      },
+    ],
+  },
+
+  {
+    label: 'Reference',
+    items: [
+      {
+        to: '/docs/reference/argument-types',
+        label: 'Argument types',
+      },
+    ],
+  },
+
+  {
+    label: 'Setup guides',
+    items: [
+      {
+        to: '/docs/setup-guides/logs',
+        label: 'Logs',
+      },
+      {
+        to: '/docs/setup-guides/moderation',
+        label: 'Moderation',
+      },
+      {
+        to: '/docs/setup-guides/counters',
+        label: 'Counters',
+      },
+    ],
+  },
+]
+
+export default {
+  components: { Menu, Title },
+  async mounted() {
+    await this.$store.dispatch('docs/loadAllPlugins')
+  },
+
+  data() {
+    return {
+      mobileMenuOpen: false,
+      logoUrl,
+    }
+  },
+
+  methods: {
+    toggleMobileMenu() {
+      this.mobileMenuOpen = !this.mobileMenuOpen
     },
 
-    computed: {
-      ...mapState('docs', {
-        plugins: 'allPlugins',
-      }),
-      menu() {
-        return [
-          ...menu,
-          {
-            label: 'Plugins',
-            items: this.plugins.filter(plugin => plugin.info.type === "stable").map(plugin => ({
+    onChooseMenuItem() {
+      this.mobileMenuOpen = false
+      this.$refs['main-anchor'].focus()
+    },
+  },
+
+  computed: {
+    ...mapState('docs', {
+      plugins: 'allPlugins',
+    }),
+    menu() {
+      return [
+        ...menu,
+        {
+          label: 'Plugins',
+          items: this.plugins
+            .filter((plugin) => plugin.info.type === 'stable')
+            .map((plugin) => ({
               label: plugin.info.prettyName || plugin.name,
               to: `/docs/plugins/${plugin.name}`,
             })),
-          },
-          {
-            label: "Legacy Plugins",
-            items: this.plugins.filter(plugin => plugin.info.type === "legacy").map(plugin => ({
+        },
+        {
+          label: 'Legacy Plugins',
+          items: this.plugins
+            .filter((plugin) => plugin.info.type === 'legacy')
+            .map((plugin) => ({
               label: plugin.info.prettyName || plugin.name,
               to: `/docs/plugins/${plugin.name}`,
             })),
-          }
-        ];
-      },
+        },
+      ]
     },
-  };
+  },
+}
 </script>

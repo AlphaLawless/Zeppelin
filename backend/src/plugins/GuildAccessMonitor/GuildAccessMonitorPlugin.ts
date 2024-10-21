@@ -1,20 +1,20 @@
-import { Guild } from "discord.js";
-import { BasePluginType, GlobalPluginData, globalPlugin, globalPluginEventListener } from "knub";
-import { AllowedGuilds } from "../../data/AllowedGuilds.js";
-import { Configs } from "../../data/Configs.js";
-import { env } from "../../env.js";
-import { zGuildAccessMonitorConfig } from "./types.js";
+import { Guild } from 'discord.js'
+import { BasePluginType, GlobalPluginData, globalPlugin, globalPluginEventListener } from 'knub'
+import { AllowedGuilds } from '../../data/AllowedGuilds.js'
+import { Configs } from '../../data/Configs.js'
+import { env } from '../../env.js'
+import { zGuildAccessMonitorConfig } from './types.js'
 
 interface GuildAccessMonitorPluginType extends BasePluginType {
   state: {
-    allowedGuilds: AllowedGuilds;
-  };
+    allowedGuilds: AllowedGuilds
+  }
 }
 
 async function checkGuild(pluginData: GlobalPluginData<GuildAccessMonitorPluginType>, guild: Guild) {
   if (!(await pluginData.state.allowedGuilds.isAllowed(guild.id))) {
     // tslint:disable-next-line:no-console
-    console.log(`Non-allowed server ${guild.name} (${guild.id}), leaving`);
+    console.log(`Non-allowed server ${guild.name} (${guild.id}), leaving`)
     // guild.leave();
   }
 }
@@ -23,38 +23,38 @@ async function checkGuild(pluginData: GlobalPluginData<GuildAccessMonitorPluginT
  * Global plugin to monitor if Zeppelin is invited to a non-whitelisted server, and leave it
  */
 export const GuildAccessMonitorPlugin = globalPlugin<GuildAccessMonitorPluginType>()({
-  name: "guild_access_monitor",
+  name: 'guild_access_monitor',
   configParser: (input) => zGuildAccessMonitorConfig.parse(input),
 
   events: [
     globalPluginEventListener<GuildAccessMonitorPluginType>()({
-      event: "guildCreate",
+      event: 'guildCreate',
       listener({ pluginData, args: { guild } }) {
-        checkGuild(pluginData, guild);
+        checkGuild(pluginData, guild)
       },
     }),
   ],
 
   async beforeLoad(pluginData) {
-    const { state } = pluginData;
+    const { state } = pluginData
 
-    state.allowedGuilds = new AllowedGuilds();
+    state.allowedGuilds = new AllowedGuilds()
 
-    const defaultAllowedServers = env.DEFAULT_ALLOWED_SERVERS || [];
-    const configs = new Configs();
+    const defaultAllowedServers = env.DEFAULT_ALLOWED_SERVERS || []
+    const configs = new Configs()
     for (const serverId of defaultAllowedServers) {
       if (!(await state.allowedGuilds.isAllowed(serverId))) {
         // tslint:disable-next-line:no-console
-        console.log(`Adding allowed-by-default server ${serverId} to the allowed servers`);
-        await state.allowedGuilds.add(serverId);
-        await configs.saveNewRevision(`guild-${serverId}`, "plugins: {}", 0);
+        console.log(`Adding allowed-by-default server ${serverId} to the allowed servers`)
+        await state.allowedGuilds.add(serverId)
+        await configs.saveNewRevision(`guild-${serverId}`, 'plugins: {}', 0)
       }
     }
   },
 
   afterLoad(pluginData) {
     for (const guild of pluginData.client.guilds.cache.values()) {
-      checkGuild(pluginData, guild);
+      checkGuild(pluginData, guild)
     }
   },
-});
+})

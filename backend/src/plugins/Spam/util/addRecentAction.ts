@@ -1,5 +1,5 @@
-import { GuildPluginData } from "knub";
-import { RecentActionType, SpamPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { RecentActionType, SpamPluginType } from '../types.js'
 
 export function addRecentAction(
   pluginData: GuildPluginData<SpamPluginType>,
@@ -10,5 +10,5 @@ export function addRecentAction(
   timestamp: number,
   count = 1,
 ) {
-  pluginData.state.recentActions.push({ type, userId, actionGroupId, extraData, timestamp, count });
+  pluginData.state.recentActions.push({ type, userId, actionGroupId, extraData, timestamp, count })
 }

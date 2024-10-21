@@ -1,27 +1,27 @@
-import { EventEmitter } from "events";
-import { PluginOptions, guildPlugin } from "knub";
-import { GuildCounters } from "../../data/GuildCounters.js";
-import { CounterTrigger, parseCounterConditionString } from "../../data/entities/CounterTrigger.js";
-import { makePublicFn } from "../../pluginUtils.js";
-import { MINUTES, convertDelayStringToMS, values } from "../../utils.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
-import { AddCounterCmd } from "./commands/AddCounterCmd.js";
-import { CountersListCmd } from "./commands/CountersListCmd.js";
-import { ResetAllCounterValuesCmd } from "./commands/ResetAllCounterValuesCmd.js";
-import { ResetCounterCmd } from "./commands/ResetCounterCmd.js";
-import { SetCounterCmd } from "./commands/SetCounterCmd.js";
-import { ViewCounterCmd } from "./commands/ViewCounterCmd.js";
-import { changeCounterValue } from "./functions/changeCounterValue.js";
-import { counterExists } from "./functions/counterExists.js";
-import { decayCounter } from "./functions/decayCounter.js";
-import { getPrettyNameForCounter } from "./functions/getPrettyNameForCounter.js";
-import { getPrettyNameForCounterTrigger } from "./functions/getPrettyNameForCounterTrigger.js";
-import { offCounterEvent } from "./functions/offCounterEvent.js";
-import { onCounterEvent } from "./functions/onCounterEvent.js";
-import { setCounterValue } from "./functions/setCounterValue.js";
-import { CountersPluginType, zCountersConfig } from "./types.js";
+import { EventEmitter } from 'events'
+import { PluginOptions, guildPlugin } from 'knub'
+import { GuildCounters } from '../../data/GuildCounters.js'
+import { CounterTrigger, parseCounterConditionString } from '../../data/entities/CounterTrigger.js'
+import { makePublicFn } from '../../pluginUtils.js'
+import { MINUTES, convertDelayStringToMS, values } from '../../utils.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
+import { AddCounterCmd } from './commands/AddCounterCmd.js'
+import { CountersListCmd } from './commands/CountersListCmd.js'
+import { ResetAllCounterValuesCmd } from './commands/ResetAllCounterValuesCmd.js'
+import { ResetCounterCmd } from './commands/ResetCounterCmd.js'
+import { SetCounterCmd } from './commands/SetCounterCmd.js'
+import { ViewCounterCmd } from './commands/ViewCounterCmd.js'
+import { changeCounterValue } from './functions/changeCounterValue.js'
+import { counterExists } from './functions/counterExists.js'
+import { decayCounter } from './functions/decayCounter.js'
+import { getPrettyNameForCounter } from './functions/getPrettyNameForCounter.js'
+import { getPrettyNameForCounterTrigger } from './functions/getPrettyNameForCounterTrigger.js'
+import { offCounterEvent } from './functions/offCounterEvent.js'
+import { onCounterEvent } from './functions/onCounterEvent.js'
+import { setCounterValue } from './functions/setCounterValue.js'
+import { CountersPluginType, zCountersConfig } from './types.js'
 
-const DECAY_APPLY_INTERVAL = 5 * MINUTES;
+const DECAY_APPLY_INTERVAL = 5 * MINUTES
 
 const defaultOptions: PluginOptions<CountersPluginType> = {
   config: {
@@ -32,19 +32,19 @@ const defaultOptions: PluginOptions<CountersPluginType> = {
   },
   overrides: [
     {
-      level: ">=50",
+      level: '>=50',
       config: {
         can_view: true,
       },
     },
     {
-      level: ">=100",
+      level: '>=100',
       config: {
         can_edit: true,
       },
     },
   ],
-};
+}
 
 /**
  * The Counters plugin keeps track of simple integer values that are tied to a user, channel, both, or neither — "counters".
@@ -57,7 +57,7 @@ const defaultOptions: PluginOptions<CountersPluginType> = {
  * After being triggered, a trigger is "reset" if the counter value no longer matches the trigger (e.g. drops to 100 or below in the above example). After this, that trigger can be triggered again.
  */
 export const CountersPlugin = guildPlugin<CountersPluginType>()({
-  name: "counters",
+  name: 'counters',
 
   defaultOptions,
   // TODO: Separate input and output types
@@ -72,7 +72,7 @@ export const CountersPlugin = guildPlugin<CountersPluginType>()({
       getPrettyNameForCounterTrigger: makePublicFn(pluginData, getPrettyNameForCounterTrigger),
       onCounterEvent: makePublicFn(pluginData, onCounterEvent),
       offCounterEvent: makePublicFn(pluginData, offCounterEvent),
-    };
+    }
   },
 
   // prettier-ignore
@@ -86,28 +86,28 @@ export const CountersPlugin = guildPlugin<CountersPluginType>()({
   ],
 
   async beforeLoad(pluginData) {
-    const { state, guild } = pluginData;
+    const { state, guild } = pluginData
 
-    state.counters = new GuildCounters(guild.id);
-    state.events = new EventEmitter();
-    state.counterTriggersByCounterId = new Map();
+    state.counters = new GuildCounters(guild.id)
+    state.events = new EventEmitter()
+    state.counterTriggersByCounterId = new Map()
 
-    const activeTriggerIds: number[] = [];
+    const activeTriggerIds: number[] = []
 
     // Initialize and store the IDs of each of the counters internally
-    state.counterIds = {};
-    const config = pluginData.config.get();
+    state.counterIds = {}
+    const config = pluginData.config.get()
     for (const counter of Object.values(config.counters)) {
-      const dbCounter = await state.counters.findOrCreateCounter(counter.name, counter.per_channel, counter.per_user);
-      state.counterIds[counter.name] = dbCounter.id;
+      const dbCounter = await state.counters.findOrCreateCounter(counter.name, counter.per_channel, counter.per_user)
+      state.counterIds[counter.name] = dbCounter.id
 
-      const thisCounterTriggers: CounterTrigger[] = [];
-      state.counterTriggersByCounterId.set(dbCounter.id, thisCounterTriggers);
+      const thisCounterTriggers: CounterTrigger[] = []
+      state.counterTriggersByCounterId.set(dbCounter.id, thisCounterTriggers)
 
       // Initialize triggers
       for (const trigger of values(counter.triggers)) {
-        const parsedCondition = parseCounterConditionString(trigger.condition)!;
-        const parsedReverseCondition = parseCounterConditionString(trigger.reverse_condition)!;
+        const parsedCondition = parseCounterConditionString(trigger.condition)!
+        const parsedReverseCondition = parseCounterConditionString(trigger.reverse_condition)!
         const counterTrigger = await state.counters.initCounterTrigger(
           dbCounter.id,
           trigger.name,
@@ -115,58 +115,58 @@ export const CountersPlugin = guildPlugin<CountersPluginType>()({
           parsedCondition[1],
           parsedReverseCondition[0],
           parsedReverseCondition[1],
-        );
-        activeTriggerIds.push(counterTrigger.id);
-        thisCounterTriggers.push(counterTrigger);
+        )
+        activeTriggerIds.push(counterTrigger.id)
+        thisCounterTriggers.push(counterTrigger)
       }
     }
 
     // Mark old/unused counters to be deleted later
-    await state.counters.markUnusedCountersToBeDeleted([...Object.values(state.counterIds)]);
+    await state.counters.markUnusedCountersToBeDeleted([...Object.values(state.counterIds)])
 
     // Mark old/unused triggers to be deleted later
-    await state.counters.markUnusedTriggersToBeDeleted(activeTriggerIds);
+    await state.counters.markUnusedTriggersToBeDeleted(activeTriggerIds)
   },
 
   beforeStart(pluginData) {
-    pluginData.state.common = pluginData.getPlugin(CommonPlugin);
+    pluginData.state.common = pluginData.getPlugin(CommonPlugin)
   },
 
   async afterLoad(pluginData) {
-    const { state } = pluginData;
+    const { state } = pluginData
 
-    const config = pluginData.config.get();
+    const config = pluginData.config.get()
 
     // Start decay timers
-    state.decayTimers = [];
+    state.decayTimers = []
     for (const [counterName, counter] of Object.entries(config.counters)) {
       if (!counter.decay) {
-        continue;
+        continue
       }
 
-      const decay = counter.decay;
-      const decayPeriodMs = convertDelayStringToMS(decay.every)!;
+      const decay = counter.decay
+      const decayPeriodMs = convertDelayStringToMS(decay.every)!
       if (decayPeriodMs === 0) {
-        continue;
+        continue
       }
 
       state.decayTimers.push(
         setInterval(() => {
-          decayCounter(pluginData, counterName, decayPeriodMs, decay.amount);
+          decayCounter(pluginData, counterName, decayPeriodMs, decay.amount)
         }, DECAY_APPLY_INTERVAL),
-      );
+      )
     }
   },
 
   beforeUnload(pluginData) {
-    const { state } = pluginData;
+    const { state } = pluginData
 
     if (state.decayTimers) {
       for (const interval of state.decayTimers) {
-        clearInterval(interval);
+        clearInterval(interval)
       }
     }
 
-    state.events.removeAllListeners();
+    state.events.removeAllListeners()
   },
-});
+})

@@ -1,23 +1,23 @@
-import { GuildTextBasedChannel, User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { SavedMessage } from "../../../data/entities/SavedMessage.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { UnknownUser } from "../../../utils.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
+import { GuildTextBasedChannel, User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { SavedMessage } from '../../../data/entities/SavedMessage.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { UnknownUser } from '../../../utils.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
 import {
   channelToTemplateSafeChannel,
   savedMessageToTemplateSafeSavedMessage,
   userToTemplateSafeUser,
-} from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+} from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMessageEditData {
-  user: User | UnknownUser;
-  channel: GuildTextBasedChannel;
-  before: SavedMessage;
-  after: SavedMessage;
+  user: User | UnknownUser
+  channel: GuildTextBasedChannel
+  before: SavedMessage
+  after: SavedMessage
 }
 
 export function logMessageEdit(pluginData: GuildPluginData<LogsPluginType>, data: LogMessageEditData) {
@@ -36,5 +36,5 @@ export function logMessageEdit(pluginData: GuildPluginData<LogsPluginType>, data
       bot: data.user instanceof User ? data.user.bot : false,
       ...resolveChannelIds(data.channel),
     },
-  );
+  )
 }

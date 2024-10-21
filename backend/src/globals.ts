@@ -1,9 +1,9 @@
-let isAPIValue = false;
+let isAPIValue = false
 
 export function isAPI() {
-  return isAPIValue;
+  return isAPIValue
 }
 
 export function setIsAPI(value: boolean) {
-  isAPIValue = value;
+  isAPIValue = value
 }

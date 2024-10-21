@@ -1,15 +1,15 @@
-import { GuildMember } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { memberToTemplateSafeMember } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildMember } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { memberToTemplateSafeMember } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberNickChangeData {
-  member: GuildMember;
-  oldNick: string;
-  newNick: string;
+  member: GuildMember
+  oldNick: string
+  newNick: string
 }
 
 export function logMemberNickChange(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberNickChangeData) {
@@ -26,5 +26,5 @@ export function logMemberNickChange(pluginData: GuildPluginData<LogsPluginType>,
       roles: Array.from(data.member.roles.cache.keys()),
       bot: data.member.user.bot,
     },
-  );
+  )
 }

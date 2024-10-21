@@ -1,9 +1,9 @@
-import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { isStaffPreFilter } from "../../../pluginUtils.js";
-import { botControlCmd } from "../types.js";
+import { commandTypeHelpers as ct } from '../../../commandTypes.js'
+import { isStaffPreFilter } from '../../../pluginUtils.js'
+import { botControlCmd } from '../types.js'
 
 export const ChannelToServerCmd = botControlCmd({
-  trigger: ["channel_to_server", "channel2server"],
+  trigger: ['channel_to_server', 'channel2server'],
   permission: null,
   config: {
     preFilters: [isStaffPreFilter],
@@ -14,17 +14,17 @@ export const ChannelToServerCmd = botControlCmd({
   },
 
   async run({ pluginData, message: msg, args }) {
-    const channel = pluginData.client.channels.cache.get(args.channelId);
+    const channel = pluginData.client.channels.cache.get(args.channelId)
     if (!channel) {
-      void msg.channel.send("Channel not found in cache!");
-      return;
+      void msg.channel.send('Channel not found in cache!')
+      return
     }
 
-    const channelName = channel.isVoiceBased() ? channel.name : `#${"name" in channel ? channel.name : channel.id}`;
+    const channelName = channel.isVoiceBased() ? channel.name : `#${'name' in channel ? channel.name : channel.id}`
 
-    const guild = "guild" in channel ? channel.guild : null;
-    const guildInfo = guild ? `${guild.name} (\`${guild.id}\`)` : "Not a server";
+    const guild = 'guild' in channel ? channel.guild : null
+    const guildInfo = guild ? `${guild.name} (\`${guild.id}\`)` : 'Not a server'
 
-    msg.channel.send(`**Channel:** ${channelName} (\`${channel.type}\`) (<#${channel.id}>)\n**Server:** ${guildInfo}`);
+    msg.channel.send(`**Channel:** ${channelName} (\`${channel.type}\`) (<#${channel.id}>)\n**Server:** ${guildInfo}`)
   },
-});
+})

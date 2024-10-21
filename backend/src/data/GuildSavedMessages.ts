@@ -1,27 +1,27 @@
-import { GuildChannel, Message } from "discord.js";
-import moment from "moment-timezone";
-import { Repository } from "typeorm";
-import { QueuedEventEmitter } from "../QueuedEventEmitter.js";
-import { noop } from "../utils.js";
-import { asyncMap } from "../utils/async.js";
-import { decryptJson, encryptJson } from "../utils/cryptHelpers.js";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { buildEntity } from "./buildEntity.js";
-import { dataSource } from "./dataSource.js";
-import { ISavedMessageData, SavedMessage } from "./entities/SavedMessage.js";
+import { GuildChannel, Message } from 'discord.js'
+import moment from 'moment-timezone'
+import { Repository } from 'typeorm'
+import { QueuedEventEmitter } from '../QueuedEventEmitter.js'
+import { noop } from '../utils.js'
+import { asyncMap } from '../utils/async.js'
+import { decryptJson, encryptJson } from '../utils/cryptHelpers.js'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { buildEntity } from './buildEntity.js'
+import { dataSource } from './dataSource.js'
+import { ISavedMessageData, SavedMessage } from './entities/SavedMessage.js'
 
 export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
-  private messages: Repository<SavedMessage>;
-  protected toBePermanent: Set<string>;
+  private messages: Repository<SavedMessage>
+  protected toBePermanent: Set<string>
 
-  public events: QueuedEventEmitter;
+  public events: QueuedEventEmitter
 
   constructor(guildId) {
-    super(guildId);
-    this.messages = dataSource.getRepository(SavedMessage);
-    this.events = new QueuedEventEmitter();
+    super(guildId)
+    this.messages = dataSource.getRepository(SavedMessage)
+    this.events = new QueuedEventEmitter()
 
-    this.toBePermanent = new Set();
+    this.toBePermanent = new Set()
   }
 
   protected msgToSavedMessageData(msg: Message): ISavedMessageData {
@@ -32,7 +32,7 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
       },
       content: msg.content,
       timestamp: msg.createdTimestamp,
-    };
+    }
 
     if (msg.attachments.size) {
       data.attachments = Array.from(msg.attachments.values()).map((att) => ({
@@ -44,7 +44,7 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
         spoiler: att.spoiler,
         url: att.url,
         width: att.width,
-      }));
+      }))
     }
 
     if (msg.embeds.length) {
@@ -104,7 +104,7 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
               proxyIconURL: embed.footer.proxyIconURL,
             }
           : undefined,
-      }));
+      }))
     }
 
     if (msg.stickers?.size) {
@@ -116,98 +116,98 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
         description: sticker.description,
         available: sticker.available,
         type: sticker.type,
-      }));
+      }))
     }
 
-    return data;
+    return data
   }
 
   protected async _processEntityFromDB(entity: SavedMessage | undefined) {
     if (entity == null) {
-      return entity;
+      return entity
     }
 
-    entity.data = (await decryptJson(entity.data as unknown as string)) as ISavedMessageData;
-    return entity;
+    entity.data = (await decryptJson(entity.data as unknown as string)) as ISavedMessageData
+    return entity
   }
 
   protected async _processEntityToDB(entity: Partial<SavedMessage>) {
     if (entity.data) {
-      entity.data = (await encryptJson(entity.data)) as any;
+      entity.data = (await encryptJson(entity.data)) as any
     }
-    return entity;
+    return entity
   }
 
   async find(id: string, includeDeleted = false): Promise<SavedMessage | null> {
     let query = this.messages
       .createQueryBuilder()
-      .where("guild_id = :guild_id", { guild_id: this.guildId })
-      .andWhere("id = :id", { id });
+      .where('guild_id = :guild_id', { guild_id: this.guildId })
+      .andWhere('id = :id', { id })
 
     if (!includeDeleted) {
-      query = query.andWhere("deleted_at IS NULL");
+      query = query.andWhere('deleted_at IS NULL')
     }
 
-    const result = await query.getOne();
+    const result = await query.getOne()
 
-    return this.processEntityFromDB(result);
+    return this.processEntityFromDB(result)
   }
 
   async getUserMessagesByChannelAfterId(userId, channelId, afterId, limit?: number): Promise<SavedMessage[]> {
     let query = this.messages
       .createQueryBuilder()
-      .where("guild_id = :guild_id", { guild_id: this.guildId })
-      .andWhere("channel_id = :channel_id", { channel_id: channelId })
-      .andWhere("user_id = :user_id", { user_id: userId })
-      .andWhere("id > :afterId", { afterId })
-      .andWhere("deleted_at IS NULL");
+      .where('guild_id = :guild_id', { guild_id: this.guildId })
+      .andWhere('channel_id = :channel_id', { channel_id: channelId })
+      .andWhere('user_id = :user_id', { user_id: userId })
+      .andWhere('id > :afterId', { afterId })
+      .andWhere('deleted_at IS NULL')
 
     if (limit != null) {
-      query = query.limit(limit);
+      query = query.limit(limit)
     }
 
-    const results = await query.getMany();
+    const results = await query.getMany()
 
-    return this.processMultipleEntitiesFromDB(results);
+    return this.processMultipleEntitiesFromDB(results)
   }
 
   async getMultiple(messageIds: string[]): Promise<SavedMessage[]> {
     const results = await this.messages
       .createQueryBuilder()
-      .where("guild_id = :guild_id", { guild_id: this.guildId })
-      .andWhere("id IN (:messageIds)", { messageIds })
-      .getMany();
+      .where('guild_id = :guild_id', { guild_id: this.guildId })
+      .andWhere('id IN (:messageIds)', { messageIds })
+      .getMany()
 
-    return this.processMultipleEntitiesFromDB(results);
+    return this.processMultipleEntitiesFromDB(results)
   }
 
   async createFromMsg(msg: Message, overrides = {}): Promise<void> {
     // FIXME: Hotfix
     if (!msg.channel) {
-      return;
+      return
     }
 
     // Don't actually save bot messages. Just pass them through as if they were saved.
     if (msg.author.bot) {
-      const fakeSavedMessage = buildEntity(SavedMessage, await this.msgToInsertReadyEntity(msg));
-      this.fireCreateEvents(fakeSavedMessage);
-      return;
+      const fakeSavedMessage = buildEntity(SavedMessage, await this.msgToInsertReadyEntity(msg))
+      this.fireCreateEvents(fakeSavedMessage)
+      return
     }
 
-    await this.createFromMessages([msg], overrides);
+    await this.createFromMessages([msg], overrides)
   }
 
   async createFromMessages(messages: Message[], overrides = {}): Promise<void> {
     const items = await asyncMap(messages, async (msg) => ({
       ...(await this.msgToInsertReadyEntity(msg)),
       ...overrides,
-    }));
-    await this.insertBulk(items);
+    }))
+    await this.insertBulk(items)
   }
 
   protected async msgToInsertReadyEntity(msg: Message): Promise<Partial<SavedMessage>> {
-    const savedMessageData = this.msgToSavedMessageData(msg);
-    const postedAt = moment.utc(msg.createdTimestamp, "x").format("YYYY-MM-DD HH:mm:ss");
+    const savedMessageData = this.msgToSavedMessageData(msg)
+    const postedAt = moment.utc(msg.createdTimestamp, 'x').format('YYYY-MM-DD HH:mm:ss')
 
     return {
       id: msg.id,
@@ -217,48 +217,48 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
       is_bot: msg.author.bot,
       data: savedMessageData,
       posted_at: postedAt,
-    };
+    }
   }
 
   protected async insertBulk(items: Array<Partial<SavedMessage>>): Promise<void> {
     for (const item of items) {
       if (this.toBePermanent.has(item.id!)) {
-        item.is_permanent = true;
-        this.toBePermanent.delete(item.id!);
+        item.is_permanent = true
+        this.toBePermanent.delete(item.id!)
       }
     }
 
-    const itemsToInsert = await asyncMap(items, (item) => this.processEntityToDB({ ...item }));
-    await this.messages.createQueryBuilder().insert().values(itemsToInsert).execute().catch(noop);
+    const itemsToInsert = await asyncMap(items, (item) => this.processEntityToDB({ ...item }))
+    await this.messages.createQueryBuilder().insert().values(itemsToInsert).execute().catch(noop)
 
     for (const item of items) {
       // perf: save a db lookup and message content decryption by building the entity manually
-      const inserted = buildEntity(SavedMessage, item);
-      this.fireCreateEvents(inserted);
+      const inserted = buildEntity(SavedMessage, item)
+      this.fireCreateEvents(inserted)
     }
   }
 
   protected async fireCreateEvents(message: SavedMessage) {
-    this.events.emit("create", [message]);
-    this.events.emit(`create:${message.id}`, [message]);
+    this.events.emit('create', [message])
+    this.events.emit(`create:${message.id}`, [message])
   }
 
   async markAsDeleted(id): Promise<void> {
     await this.messages
-      .createQueryBuilder("messages")
+      .createQueryBuilder('messages')
       .update()
       .set({
-        deleted_at: () => "NOW(3)",
+        deleted_at: () => 'NOW(3)',
       })
-      .where("guild_id = :guild_id", { guild_id: this.guildId })
-      .andWhere("id = :id", { id })
-      .execute();
+      .where('guild_id = :guild_id', { guild_id: this.guildId })
+      .andWhere('id = :id', { id })
+      .execute()
 
-    const deleted = await this.find(id, true);
+    const deleted = await this.find(id, true)
 
     if (deleted) {
-      this.events.emit("delete", [deleted]);
-      this.events.emit(`delete:${id}`, [deleted]);
+      this.events.emit('delete', [deleted])
+      this.events.emit(`delete:${id}`, [deleted])
     }
   }
 
@@ -267,61 +267,61 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
    * If any messages were marked as deleted, also emits the deleteBulk event.
    */
   async markBulkAsDeleted(ids) {
-    const deletedAt = moment.utc().format("YYYY-MM-DD HH:mm:ss");
+    const deletedAt = moment.utc().format('YYYY-MM-DD HH:mm:ss')
 
     await this.messages
       .createQueryBuilder()
       .update()
       .set({ deleted_at: deletedAt })
-      .where("guild_id = :guild_id", { guild_id: this.guildId })
-      .andWhere("id IN (:ids)", { ids })
-      .andWhere("deleted_at IS NULL")
-      .execute();
+      .where('guild_id = :guild_id', { guild_id: this.guildId })
+      .andWhere('id IN (:ids)', { ids })
+      .andWhere('deleted_at IS NULL')
+      .execute()
 
     let deleted = await this.messages
       .createQueryBuilder()
-      .where("id IN (:ids)", { ids })
-      .andWhere("deleted_at = :deletedAt", { deletedAt })
-      .getMany();
-    deleted = await this.processMultipleEntitiesFromDB(deleted);
+      .where('id IN (:ids)', { ids })
+      .andWhere('deleted_at = :deletedAt', { deletedAt })
+      .getMany()
+    deleted = await this.processMultipleEntitiesFromDB(deleted)
 
     if (deleted.length) {
-      this.events.emit("deleteBulk", [deleted]);
+      this.events.emit('deleteBulk', [deleted])
     }
   }
 
   async saveEdit(id, newData: ISavedMessageData): Promise<void> {
-    const oldMessage = await this.find(id);
-    if (!oldMessage) return;
+    const oldMessage = await this.find(id)
+    if (!oldMessage) return
 
-    const newMessage = { ...oldMessage, data: newData };
+    const newMessage = { ...oldMessage, data: newData }
 
     // @ts-ignore
     const updateData = await this.processEntityToDB({
       data: newData,
-    });
-    await this.messages.update({ id }, updateData);
+    })
+    await this.messages.update({ id }, updateData)
 
-    this.events.emit("update", [newMessage, oldMessage]);
-    this.events.emit(`update:${id}`, [newMessage, oldMessage]);
+    this.events.emit('update', [newMessage, oldMessage])
+    this.events.emit(`update:${id}`, [newMessage, oldMessage])
   }
 
   async saveEditFromMsg(msg: Message): Promise<void> {
-    const newData = this.msgToSavedMessageData(msg);
-    await this.saveEdit(msg.id, newData);
+    const newData = this.msgToSavedMessageData(msg)
+    await this.saveEdit(msg.id, newData)
   }
 
   async setPermanent(id: string): Promise<void> {
-    const savedMsg = await this.find(id);
+    const savedMsg = await this.find(id)
     if (savedMsg) {
       await this.messages.update(
         { id },
         {
           is_permanent: true,
         },
-      );
+      )
     } else {
-      this.toBePermanent.add(id);
+      this.toBePermanent.add(id)
     }
   }
 
@@ -330,29 +330,29 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
     handler: (msg?: SavedMessage) => any,
     timeout: number = 60 * 1000,
   ): Promise<void> {
-    let called = false;
-    let onceEventListener;
-    let timeoutFn;
+    let called = false
+    let onceEventListener
+    let timeoutFn
 
     const callHandler = async (msg?: SavedMessage) => {
-      this.events.off(`create:${id}`, onceEventListener);
-      clearTimeout(timeoutFn);
+      this.events.off(`create:${id}`, onceEventListener)
+      clearTimeout(timeoutFn)
 
-      if (called) return;
-      called = true;
+      if (called) return
+      called = true
 
-      await handler(msg);
-    };
+      await handler(msg)
+    }
 
-    onceEventListener = this.events.once(`create:${id}`, callHandler);
+    onceEventListener = this.events.once(`create:${id}`, callHandler)
     timeoutFn = setTimeout(() => {
-      called = true;
-      callHandler(undefined);
-    }, timeout);
+      called = true
+      callHandler(undefined)
+    }, timeout)
 
-    const messageInDB = await this.find(id);
+    const messageInDB = await this.find(id)
     if (messageInDB) {
-      callHandler(messageInDB);
+      callHandler(messageInDB)
     }
   }
 }

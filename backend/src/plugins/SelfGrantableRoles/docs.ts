@@ -1,10 +1,10 @@
-import { ZeppelinPluginDocs } from "../../types.js";
-import { trimPluginDescription } from "../../utils.js";
-import { zSelfGrantableRolesConfig } from "./types.js";
+import { ZeppelinPluginDocs } from '../../types.js'
+import { trimPluginDescription } from '../../utils.js'
+import { zSelfGrantableRolesConfig } from './types.js'
 
 export const selfGrantableRolesPluginDocs: ZeppelinPluginDocs = {
-  type: "stable",
-  prettyName: "Self-grantable roles",
+  type: 'stable',
+  prettyName: 'Self-grantable roles',
   description: trimPluginDescription(`
           Allows users to grant themselves roles via a command
       `),
@@ -52,4 +52,4 @@ export const selfGrantableRolesPluginDocs: ZeppelinPluginDocs = {
     ~~~
   `),
   configSchema: zSelfGrantableRolesConfig,
-};
+}

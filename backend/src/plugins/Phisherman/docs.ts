@@ -1,10 +1,10 @@
-import { ZeppelinPluginDocs } from "../../types.js";
-import { trimPluginDescription } from "../../utils.js";
-import { zPhishermanConfig } from "./types.js";
+import { ZeppelinPluginDocs } from '../../types.js'
+import { trimPluginDescription } from '../../utils.js'
+import { zPhishermanConfig } from './types.js'
 
 export const phishermanPluginDocs: ZeppelinPluginDocs = {
-  prettyName: "Phisherman",
-  type: "stable",
+  prettyName: 'Phisherman',
+  type: 'stable',
   description: trimPluginDescription(`
     Match scam/phishing links using the Phisherman API. See https://phisherman.gg/ for more details!
   `),
@@ -41,4 +41,4 @@ export const phishermanPluginDocs: ZeppelinPluginDocs = {
     ~~~
   `),
   configSchema: zPhishermanConfig,
-};
+}

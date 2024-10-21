@@ -1,9 +1,9 @@
-import { GuildPluginData } from "knub";
-import { CounterEventEmitter, CountersPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { CounterEventEmitter, CountersPluginType } from '../types.js'
 
 export function offCounterEvent(
   pluginData: GuildPluginData<CountersPluginType>,
-  ...rest: Parameters<CounterEventEmitter["off"]>
+  ...rest: Parameters<CounterEventEmitter['off']>
 ) {
-  return pluginData.state.events.off(...rest);
+  return pluginData.state.events.off(...rest)
 }

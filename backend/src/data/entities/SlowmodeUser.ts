@@ -1,18 +1,18 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("slowmode_users")
+@Entity('slowmode_users')
 export class SlowmodeUser {
   @Column()
   @PrimaryColumn()
-  guild_id: string;
+  guild_id: string
 
   @Column()
   @PrimaryColumn()
-  channel_id: string;
+  channel_id: string
 
   @Column()
   @PrimaryColumn()
-  user_id: string;
+  user_id: string
 
-  @Column() expires_at: string;
+  @Column() expires_at: string
 }

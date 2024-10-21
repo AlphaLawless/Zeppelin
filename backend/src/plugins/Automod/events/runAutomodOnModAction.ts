@@ -1,8 +1,8 @@
-import { GuildPluginData } from "knub";
-import { resolveMember, resolveUser, UnknownUser } from "../../../utils.js";
-import { ModActionType } from "../../ModActions/types.js";
-import { runAutomod } from "../functions/runAutomod.js";
-import { AutomodContext, AutomodPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { UnknownUser, resolveMember, resolveUser } from '../../../utils.js'
+import { ModActionType } from '../../ModActions/types.js'
+import { runAutomod } from '../functions/runAutomod.js'
+import { AutomodContext, AutomodPluginType } from '../types.js'
 
 export async function runAutomodOnModAction(
   pluginData: GuildPluginData<AutomodPluginType>,
@@ -14,7 +14,7 @@ export async function runAutomodOnModAction(
   const [user, member] = await Promise.all([
     resolveUser(pluginData.client, userId),
     resolveMember(pluginData.client, pluginData.guild, userId),
-  ]);
+  ])
 
   const context: AutomodContext = {
     timestamp: Date.now(),
@@ -25,9 +25,9 @@ export async function runAutomodOnModAction(
       reason,
       isAutomodAction,
     },
-  };
+  }
 
   pluginData.state.queue.add(async () => {
-    await runAutomod(pluginData, context);
-  });
+    await runAutomod(pluginData, context)
+  })
 }

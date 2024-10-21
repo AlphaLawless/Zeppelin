@@ -29,46 +29,46 @@
 </template>
 
 <script lang="ts">
-  import { mapState } from "vuex";
-  import { ApiPermissions, hasPermission } from "@zeppelinbot/shared/apiPermissions.js";
-  import { AuthState, GuildState } from "../../store/types";
+import { ApiPermissions, hasPermission } from '@zeppelinbot/shared/apiPermissions.js'
+import { mapState } from 'vuex'
+import { AuthState, GuildState } from '../../store/types'
 
-  export default {
-    async mounted() {
-      await this.$store.dispatch("guilds/loadAvailableGuilds");
-      await this.$store.dispatch("guilds/loadMyPermissionAssignments");
-      this.loading = false;
-    },
-    data() {
-      return { loading: true };
-    },
-    computed: {
-      ...mapState('guilds', {
-        guilds: (state: GuildState) => {
-          const guilds = Array.from(state.available.values());
-          guilds.sort((a, b) => {
-            if (a.name > b.name) return 1;
-            if (a.name < b.name) return -1;
-            if (a.id > b.id) return 1;
-            if (a.id < b.id) return -1;
-            return 0;
-          });
-          return guilds;
-        },
-
-        guildPermissionAssignments: (state: GuildState) => state.guildPermissionAssignments,
-      }),
-
-      ...mapState('auth', {
-        userId: (state: AuthState) => state.userId!,
-      }),
-    },
-    methods: {
-      canManageAccess(guildId: string) {
-        const guildPermissions = this.guildPermissionAssignments[guildId] || [];
-        const myPermissions = guildPermissions.find(p => p.type === "USER" && p.target_id === this.userId) || null;
-        return myPermissions && hasPermission(new Set(myPermissions.permissions), ApiPermissions.ManageAccess);
+export default {
+  async mounted() {
+    await this.$store.dispatch('guilds/loadAvailableGuilds')
+    await this.$store.dispatch('guilds/loadMyPermissionAssignments')
+    this.loading = false
+  },
+  data() {
+    return { loading: true }
+  },
+  computed: {
+    ...mapState('guilds', {
+      guilds: (state: GuildState) => {
+        const guilds = Array.from(state.available.values())
+        guilds.sort((a, b) => {
+          if (a.name > b.name) return 1
+          if (a.name < b.name) return -1
+          if (a.id > b.id) return 1
+          if (a.id < b.id) return -1
+          return 0
+        })
+        return guilds
       },
+
+      guildPermissionAssignments: (state: GuildState) => state.guildPermissionAssignments,
+    }),
+
+    ...mapState('auth', {
+      userId: (state: AuthState) => state.userId!,
+    }),
+  },
+  methods: {
+    canManageAccess(guildId: string) {
+      const guildPermissions = this.guildPermissionAssignments[guildId] || []
+      const myPermissions = guildPermissions.find((p) => p.type === 'USER' && p.target_id === this.userId) || null
+      return myPermissions && hasPermission(new Set(myPermissions.permissions), ApiPermissions.ManageAccess)
     },
-  };
+  },
+}
 </script>

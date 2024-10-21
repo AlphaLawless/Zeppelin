@@ -1,26 +1,26 @@
-import { PermissionsBitField, PermissionsString, Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import z from "zod";
-import { TemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { zSnowflake } from "../../../utils.js";
-import { ActionError } from "../ActionError.js";
-import { CustomEventsPluginType, TCustomEvent } from "../types.js";
+import { PermissionsBitField, PermissionsString, Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import z from 'zod'
+import { TemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { zSnowflake } from '../../../utils.js'
+import { ActionError } from '../ActionError.js'
+import { CustomEventsPluginType, TCustomEvent } from '../types.js'
 
 export const zSetChannelPermissionOverridesAction = z.strictObject({
-  type: z.literal("set_channel_permission_overrides"),
+  type: z.literal('set_channel_permission_overrides'),
   channel: zSnowflake,
   overrides: z
     .array(
       z.strictObject({
-        type: z.union([z.literal("member"), z.literal("role")]),
+        type: z.union([z.literal('member'), z.literal('role')]),
         id: zSnowflake,
         allow: z.number(),
         deny: z.number(),
       }),
     )
     .max(15),
-});
-export type TSetChannelPermissionOverridesAction = z.infer<typeof zSetChannelPermissionOverridesAction>;
+})
+export type TSetChannelPermissionOverridesAction = z.infer<typeof zSetChannelPermissionOverridesAction>
 
 export async function setChannelPermissionOverridesAction(
   pluginData: GuildPluginData<CustomEventsPluginType>,
@@ -29,23 +29,23 @@ export async function setChannelPermissionOverridesAction(
   event: TCustomEvent, // eslint-disable-line @typescript-eslint/no-unused-vars
   eventData: any, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
-  const channel = pluginData.guild.channels.cache.get(action.channel as Snowflake);
-  if (!channel || channel.isThread() || !("guild" in channel)) {
-    throw new ActionError(`Unknown channel: ${action.channel}`);
+  const channel = pluginData.guild.channels.cache.get(action.channel as Snowflake)
+  if (!channel || channel.isThread() || !('guild' in channel)) {
+    throw new ActionError(`Unknown channel: ${action.channel}`)
   }
 
   for (const override of action.overrides) {
-    const allow = new PermissionsBitField(BigInt(override.allow)).serialize();
-    const deny = new PermissionsBitField(BigInt(override.deny)).serialize();
-    const perms: Partial<Record<PermissionsString, boolean | null>> = {};
+    const allow = new PermissionsBitField(BigInt(override.allow)).serialize()
+    const deny = new PermissionsBitField(BigInt(override.deny)).serialize()
+    const perms: Partial<Record<PermissionsString, boolean | null>> = {}
     for (const key in allow) {
       if (allow[key]) {
-        perms[key] = true;
+        perms[key] = true
       } else if (deny[key]) {
-        perms[key] = false;
+        perms[key] = false
       }
     }
-    channel.permissionOverwrites.create(override.id as Snowflake, perms);
+    channel.permissionOverwrites.create(override.id as Snowflake, perms)
 
     /*
     await channel.permissionOverwrites overwritePermissions(

@@ -1,18 +1,18 @@
-import moment from "moment-timezone";
-import { Repository } from "typeorm";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { dataSource } from "./dataSource.js";
-import { SlowmodeChannel } from "./entities/SlowmodeChannel.js";
-import { SlowmodeUser } from "./entities/SlowmodeUser.js";
+import moment from 'moment-timezone'
+import { Repository } from 'typeorm'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { dataSource } from './dataSource.js'
+import { SlowmodeChannel } from './entities/SlowmodeChannel.js'
+import { SlowmodeUser } from './entities/SlowmodeUser.js'
 
 export class GuildSlowmodes extends BaseGuildRepository {
-  private slowmodeChannels: Repository<SlowmodeChannel>;
-  private slowmodeUsers: Repository<SlowmodeUser>;
+  private slowmodeChannels: Repository<SlowmodeChannel>
+  private slowmodeUsers: Repository<SlowmodeUser>
 
   constructor(guildId) {
-    super(guildId);
-    this.slowmodeChannels = dataSource.getRepository(SlowmodeChannel);
-    this.slowmodeUsers = dataSource.getRepository(SlowmodeUser);
+    super(guildId)
+    this.slowmodeChannels = dataSource.getRepository(SlowmodeChannel)
+    this.slowmodeUsers = dataSource.getRepository(SlowmodeUser)
   }
 
   async getChannelSlowmode(channelId): Promise<SlowmodeChannel | null> {
@@ -21,11 +21,11 @@ export class GuildSlowmodes extends BaseGuildRepository {
         guild_id: this.guildId,
         channel_id: channelId,
       },
-    });
+    })
   }
 
   async setChannelSlowmode(channelId, seconds): Promise<void> {
-    const existingSlowmode = await this.getChannelSlowmode(channelId);
+    const existingSlowmode = await this.getChannelSlowmode(channelId)
     if (existingSlowmode) {
       await this.slowmodeChannels.update(
         {
@@ -35,13 +35,13 @@ export class GuildSlowmodes extends BaseGuildRepository {
         {
           slowmode_seconds: seconds,
         },
-      );
+      )
     } else {
       await this.slowmodeChannels.insert({
         guild_id: this.guildId,
         channel_id: channelId,
         slowmode_seconds: seconds,
-      });
+      })
     }
   }
 
@@ -49,7 +49,7 @@ export class GuildSlowmodes extends BaseGuildRepository {
     await this.slowmodeChannels.delete({
       guild_id: this.guildId,
       channel_id: channelId,
-    });
+    })
   }
 
   async getChannelSlowmodeUser(channelId, userId): Promise<SlowmodeUser | null> {
@@ -59,18 +59,18 @@ export class GuildSlowmodes extends BaseGuildRepository {
         channel_id: channelId,
         user_id: userId,
       },
-    });
+    })
   }
 
   async userHasSlowmode(channelId, userId): Promise<boolean> {
-    return (await this.getChannelSlowmodeUser(channelId, userId)) != null;
+    return (await this.getChannelSlowmodeUser(channelId, userId)) != null
   }
 
   async addSlowmodeUser(channelId, userId): Promise<void> {
-    const slowmode = await this.getChannelSlowmode(channelId);
-    if (!slowmode) return;
+    const slowmode = await this.getChannelSlowmode(channelId)
+    if (!slowmode) return
 
-    const expiresAt = moment.utc().add(slowmode.slowmode_seconds, "seconds").format("YYYY-MM-DD HH:mm:ss");
+    const expiresAt = moment.utc().add(slowmode.slowmode_seconds, 'seconds').format('YYYY-MM-DD HH:mm:ss')
 
     if (await this.userHasSlowmode(channelId, userId)) {
       // Update existing
@@ -83,7 +83,7 @@ export class GuildSlowmodes extends BaseGuildRepository {
         {
           expires_at: expiresAt,
         },
-      );
+      )
     } else {
       // Add new
       await this.slowmodeUsers.insert({
@@ -91,7 +91,7 @@ export class GuildSlowmodes extends BaseGuildRepository {
         channel_id: channelId,
         user_id: userId,
         expires_at: expiresAt,
-      });
+      })
     }
   }
 
@@ -100,7 +100,7 @@ export class GuildSlowmodes extends BaseGuildRepository {
       guild_id: this.guildId,
       channel_id: channelId,
       user_id: userId,
-    });
+    })
   }
 
   async getChannelSlowmodeUsers(channelId): Promise<SlowmodeUser[]> {
@@ -109,14 +109,14 @@ export class GuildSlowmodes extends BaseGuildRepository {
         guild_id: this.guildId,
         channel_id: channelId,
       },
-    });
+    })
   }
 
   async getExpiredSlowmodeUsers(): Promise<SlowmodeUser[]> {
     return this.slowmodeUsers
       .createQueryBuilder()
-      .where("guild_id = :guildId", { guildId: this.guildId })
-      .andWhere("expires_at <= NOW()")
-      .getMany();
+      .where('guild_id = :guildId', { guildId: this.guildId })
+      .andWhere('expires_at <= NOW()')
+      .getMany()
   }
 }

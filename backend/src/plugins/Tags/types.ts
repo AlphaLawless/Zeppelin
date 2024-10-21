@@ -1,14 +1,14 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "knub";
-import z from "zod";
-import { GuildArchives } from "../../data/GuildArchives.js";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
-import { GuildTags } from "../../data/GuildTags.js";
-import { zBoundedCharacters, zStrictMessageContent } from "../../utils.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
+import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from 'knub'
+import z from 'zod'
+import { GuildArchives } from '../../data/GuildArchives.js'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { GuildSavedMessages } from '../../data/GuildSavedMessages.js'
+import { GuildTags } from '../../data/GuildTags.js'
+import { zBoundedCharacters, zStrictMessageContent } from '../../utils.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
 
-export const zTag = z.union([zBoundedCharacters(0, 4000), zStrictMessageContent]);
-export type TTag = z.infer<typeof zTag>;
+export const zTag = z.union([zBoundedCharacters(0, 4000), zStrictMessageContent])
+export type TTag = z.infer<typeof zTag>
 
 export const zTagCategory = z
   .strictObject({
@@ -27,9 +27,9 @@ export const zTagCategory = z
     can_use: z.boolean().nullable().default(null),
   })
   .refine((parsed) => !(parsed.auto_delete_command && parsed.delete_with_command), {
-    message: "Cannot have both (category specific) delete_with_command and auto_delete_command enabled",
-  });
-export type TTagCategory = z.infer<typeof zTagCategory>;
+    message: 'Cannot have both (category specific) delete_with_command and auto_delete_command enabled',
+  })
+export type TTagCategory = z.infer<typeof zTagCategory>
 
 export const zTagsConfig = z
   .strictObject({
@@ -50,32 +50,32 @@ export const zTagsConfig = z
     can_list: z.boolean(),
   })
   .refine((parsed) => !(parsed.auto_delete_command && parsed.delete_with_command), {
-    message: "Cannot have both (category specific) delete_with_command and auto_delete_command enabled",
-  });
+    message: 'Cannot have both (category specific) delete_with_command and auto_delete_command enabled',
+  })
 
 export interface TagsPluginType extends BasePluginType {
-  config: z.infer<typeof zTagsConfig>;
+  config: z.infer<typeof zTagsConfig>
   state: {
-    archives: GuildArchives;
-    tags: GuildTags;
-    savedMessages: GuildSavedMessages;
-    logs: GuildLogs;
-    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
+    archives: GuildArchives
+    tags: GuildTags
+    savedMessages: GuildSavedMessages
+    logs: GuildLogs
+    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>
 
-    onMessageCreateFn;
+    onMessageCreateFn
 
-    tagFunctions: any;
-  };
+    tagFunctions: any
+  }
 }
 
 export interface TemplateFunction {
-  name: string;
-  description: string;
-  arguments: string[];
-  returnValue: string;
-  signature?: string;
-  examples?: string[];
+  name: string
+  description: string
+  arguments: string[]
+  returnValue: string
+  signature?: string
+  examples?: string[]
 }
 
-export const tagsCmd = guildPluginMessageCommand<TagsPluginType>();
-export const tagsEvt = guildPluginEventListener<TagsPluginType>();
+export const tagsCmd = guildPluginMessageCommand<TagsPluginType>()
+export const tagsEvt = guildPluginEventListener<TagsPluginType>()

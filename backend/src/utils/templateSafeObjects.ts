@@ -11,223 +11,223 @@ import {
   Sticker,
   StickerFormatType,
   User,
-} from "discord.js";
-import { GuildPluginData } from "knub";
-import { Case } from "../data/entities/Case.js";
+} from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { Case } from '../data/entities/Case.js'
 import {
   ISavedMessageAttachmentData,
   ISavedMessageData,
   ISavedMessageEmbedData,
   ISavedMessageStickerData,
   SavedMessage,
-} from "../data/entities/SavedMessage.js";
+} from '../data/entities/SavedMessage.js'
 import {
   TemplateSafeValueContainer,
   TypedTemplateSafeValueContainer,
   ingestDataIntoTemplateSafeValueContainer,
-} from "../templateFormatter.js";
-import { UnknownUser, renderUsername } from "../utils.js";
+} from '../templateFormatter.js'
+import { UnknownUser, renderUsername } from '../utils.js'
 
 type InputProps<T> = Omit<
   {
-    [K in keyof T]: T[K];
+    [K in keyof T]: T[K]
   },
-  "_isTemplateSafeValueContainer"
->;
+  '_isTemplateSafeValueContainer'
+>
 
 export class TemplateSafeGuild extends TemplateSafeValueContainer {
-  id: Snowflake;
-  name: string;
+  id: Snowflake
+  name: string
 
   constructor(data: InputProps<TemplateSafeGuild>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeUser extends TemplateSafeValueContainer {
-  id: Snowflake | string;
-  username: string;
-  discriminator: string;
-  globalName?: string;
-  mention: string;
-  tag: string;
-  avatarURL: string;
-  bot?: boolean;
-  createdAt?: number;
-  renderedUsername: string;
+  id: Snowflake | string
+  username: string
+  discriminator: string
+  globalName?: string
+  mention: string
+  tag: string
+  avatarURL: string
+  bot?: boolean
+  createdAt?: number
+  renderedUsername: string
 
   constructor(data: InputProps<TemplateSafeUser>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeUnknownUser extends TemplateSafeValueContainer {
-  id: Snowflake;
-  username: string;
-  discriminator: string;
+  id: Snowflake
+  username: string
+  discriminator: string
 
   constructor(data: InputProps<TemplateSafeUnknownUser>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeRole extends TemplateSafeValueContainer {
-  id: Snowflake;
-  name: string;
-  createdAt: number;
-  hexColor: string;
-  hoist: boolean;
+  id: Snowflake
+  name: string
+  createdAt: number
+  hexColor: string
+  hoist: boolean
 
   constructor(data: InputProps<TemplateSafeRole>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeMember extends TemplateSafeUser {
-  user: TemplateSafeUser;
-  nick: string;
-  roles: TemplateSafeRole[];
-  joinedAt?: number;
-  guildAvatarURL: string;
-  guildName: string;
+  user: TemplateSafeUser
+  nick: string
+  roles: TemplateSafeRole[]
+  joinedAt?: number
+  guildAvatarURL: string
+  guildName: string
 
   constructor(data: InputProps<TemplateSafeMember>) {
-    super({});
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super({})
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeUnknownMember extends TemplateSafeUnknownUser {
-  user: TemplateSafeUnknownUser;
+  user: TemplateSafeUnknownUser
 
   constructor(data: InputProps<TemplateSafeUnknownMember>) {
-    super({});
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super({})
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeChannel extends TemplateSafeValueContainer {
-  id: Snowflake;
-  name: string;
-  mention: string;
-  parentId?: Snowflake;
+  id: Snowflake
+  name: string
+  mention: string
+  parentId?: Snowflake
 
   constructor(data: InputProps<TemplateSafeChannel>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeStage extends TemplateSafeValueContainer {
-  channelId: Snowflake;
-  channelMention: string;
-  createdAt: number;
-  discoverable: boolean;
-  topic: string;
+  channelId: Snowflake
+  channelMention: string
+  createdAt: number
+  discoverable: boolean
+  topic: string
 
   constructor(data: InputProps<TemplateSafeStage>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeEmoji extends TemplateSafeValueContainer {
-  id: Snowflake;
-  name: string;
-  createdAt?: number;
-  animated: boolean;
-  identifier: string;
-  mention: string;
+  id: Snowflake
+  name: string
+  createdAt?: number
+  animated: boolean
+  identifier: string
+  mention: string
 
   constructor(data: InputProps<TemplateSafeEmoji>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeSticker extends TemplateSafeValueContainer {
-  id: Snowflake;
-  guildId?: Snowflake;
-  packId?: Snowflake;
-  name: string;
-  description: string;
-  tags: string;
-  format: string;
-  animated: boolean;
-  url: string;
+  id: Snowflake
+  guildId?: Snowflake
+  packId?: Snowflake
+  name: string
+  description: string
+  tags: string
+  format: string
+  animated: boolean
+  url: string
 
   constructor(data: InputProps<TemplateSafeSticker>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeSavedMessage extends TemplateSafeValueContainer {
-  id: string;
-  guild_id: string;
-  channel_id: string;
-  user_id: string;
-  is_bot: boolean;
-  data: TemplateSafeSavedMessageData;
+  id: string
+  guild_id: string
+  channel_id: string
+  user_id: string
+  is_bot: boolean
+  data: TemplateSafeSavedMessageData
 
   constructor(data: InputProps<TemplateSafeSavedMessage>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeSavedMessageData extends TemplateSafeValueContainer {
-  attachments?: Array<TypedTemplateSafeValueContainer<ISavedMessageAttachmentData>>;
+  attachments?: Array<TypedTemplateSafeValueContainer<ISavedMessageAttachmentData>>
   author: TypedTemplateSafeValueContainer<{
-    username: string;
-    discriminator: string;
-  }>;
-  content: string;
-  embeds?: Array<TypedTemplateSafeValueContainer<ISavedMessageEmbedData>>;
-  stickers?: Array<TypedTemplateSafeValueContainer<ISavedMessageStickerData>>;
-  timestamp: number;
+    username: string
+    discriminator: string
+  }>
+  content: string
+  embeds?: Array<TypedTemplateSafeValueContainer<ISavedMessageEmbedData>>
+  stickers?: Array<TypedTemplateSafeValueContainer<ISavedMessageStickerData>>
+  timestamp: number
 
   constructor(data: InputProps<TemplateSafeSavedMessageData>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeCase extends TemplateSafeValueContainer {
-  id: number;
-  guild_id: string;
-  case_number: number;
-  user_id: string;
-  user_name: string;
-  mod_id: string | null;
-  mod_name: string | null;
-  type: number;
-  audit_log_id: string | null;
-  created_at: string;
-  is_hidden: boolean;
-  pp_id: string | null;
-  pp_name: string | null;
-  log_message_id: string | null;
+  id: number
+  guild_id: string
+  case_number: number
+  user_id: string
+  user_name: string
+  mod_id: string | null
+  mod_name: string | null
+  type: number
+  audit_log_id: string | null
+  created_at: string
+  is_hidden: boolean
+  pp_id: string | null
+  pp_name: string | null
+  log_message_id: string | null
 
   constructor(data: InputProps<TemplateSafeCase>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
 export class TemplateSafeMessage extends TemplateSafeValueContainer {
-  id: string;
-  content: string;
-  author: TemplateSafeUser;
-  channel: TemplateSafeChannel;
+  id: string
+  content: string
+  author: TemplateSafeUser
+  channel: TemplateSafeChannel
 
   constructor(data: InputProps<TemplateSafeMessage>) {
-    super();
-    ingestDataIntoTemplateSafeValueContainer(this, data);
+    super()
+    ingestDataIntoTemplateSafeValueContainer(this, data)
   }
 }
 
@@ -239,19 +239,19 @@ export function guildToTemplateSafeGuild(guild: Guild): TemplateSafeGuild {
   return new TemplateSafeGuild({
     id: guild.id,
     name: guild.name,
-  });
+  })
 }
 
 export function userToTemplateSafeUser(user: User | UnknownUser): TemplateSafeUser {
   if (user instanceof UnknownUser) {
     return new TemplateSafeUser({
       id: user.id,
-      username: "Unknown",
-      discriminator: "0000",
+      username: 'Unknown',
+      discriminator: '0000',
       mention: `<@${user.id}>`,
-      tag: "Unknown#0000",
+      tag: 'Unknown#0000',
       renderedUsername: renderUsername(user),
-    });
+    })
   }
 
   return new TemplateSafeUser({
@@ -265,7 +265,7 @@ export function userToTemplateSafeUser(user: User | UnknownUser): TemplateSafeUs
     bot: user.bot,
     createdAt: user.createdTimestamp,
     renderedUsername: renderUsername(user),
-  });
+  })
 }
 
 export function roleToTemplateSafeRole(role: Role): TemplateSafeRole {
@@ -275,21 +275,21 @@ export function roleToTemplateSafeRole(role: Role): TemplateSafeRole {
     createdAt: role.createdTimestamp,
     hexColor: role.hexColor,
     hoist: role.hoist,
-  });
+  })
 }
 
 export function memberToTemplateSafeMember(member: GuildMember | PartialGuildMember): TemplateSafeMember {
-  const templateSafeUser = userToTemplateSafeUser(member.user!);
+  const templateSafeUser = userToTemplateSafeUser(member.user!)
 
   return new TemplateSafeMember({
     ...templateSafeUser,
     user: templateSafeUser,
-    nick: member.nickname ?? "*None*",
+    nick: member.nickname ?? '*None*',
     roles: [...member.roles.cache.mapValues((r) => roleToTemplateSafeRole(r)).values()],
     joinedAt: member.joinedTimestamp ?? undefined,
     guildAvatarURL: member.displayAvatarURL(),
     guildName: member.guild.name,
-  });
+  })
 }
 
 export function channelToTemplateSafeChannel(channel: GuildBasedChannel): TemplateSafeChannel {
@@ -298,7 +298,7 @@ export function channelToTemplateSafeChannel(channel: GuildBasedChannel): Templa
     name: channel.name,
     mention: `<#${channel.id}>`,
     parentId: channel.parentId ?? undefined,
-  });
+  })
 }
 
 export function stageToTemplateSafeStage(stage: StageInstance): TemplateSafeStage {
@@ -308,7 +308,7 @@ export function stageToTemplateSafeStage(stage: StageInstance): TemplateSafeStag
     createdAt: stage.createdTimestamp,
     discoverable: !stage.discoverableDisabled,
     topic: stage.topic,
-  });
+  })
 }
 
 export function emojiToTemplateSafeEmoji(emoji: Emoji): TemplateSafeEmoji {
@@ -319,7 +319,7 @@ export function emojiToTemplateSafeEmoji(emoji: Emoji): TemplateSafeEmoji {
     animated: emoji.animated ?? false,
     identifier: emoji.identifier,
     mention: emoji.animated ? `<a:${emoji.name}:${emoji.id}>` : `<:${emoji.name}:${emoji.id}>`,
-  });
+  })
 }
 
 export function stickerToTemplateSafeSticker(sticker: Sticker): TemplateSafeSticker {
@@ -328,12 +328,12 @@ export function stickerToTemplateSafeSticker(sticker: Sticker): TemplateSafeStic
     guildId: sticker.guildId ?? undefined,
     packId: sticker.packId ?? undefined,
     name: sticker.name,
-    description: sticker.description ?? "",
-    tags: sticker.tags ?? "",
+    description: sticker.description ?? '',
+    tags: sticker.tags ?? '',
     format: sticker.format,
     animated: sticker.format === StickerFormatType.PNG ? false : true,
     url: sticker.url,
-  });
+  })
 }
 
 export function savedMessageToTemplateSafeSavedMessage(savedMessage: SavedMessage): TemplateSafeSavedMessage {
@@ -362,7 +362,7 @@ export function savedMessageToTemplateSafeSavedMessage(savedMessage: SavedMessag
       author: new TemplateSafeValueContainer({
         username: savedMessage.data.author.username,
         discriminator: savedMessage.data.author.discriminator,
-      }) as TypedTemplateSafeValueContainer<ISavedMessageData["author"]>,
+      }) as TypedTemplateSafeValueContainer<ISavedMessageData['author']>,
 
       content: savedMessage.data.content,
 
@@ -445,7 +445,7 @@ export function savedMessageToTemplateSafeSavedMessage(savedMessage: SavedMessag
 
       timestamp: savedMessage.data.timestamp,
     }),
-  });
+  })
 }
 
 export function caseToTemplateSafeCase(theCase: Case): TemplateSafeCase {
@@ -464,7 +464,7 @@ export function caseToTemplateSafeCase(theCase: Case): TemplateSafeCase {
     pp_id: theCase.pp_id,
     pp_name: theCase.pp_name,
     log_message_id: theCase.log_message_id,
-  });
+  })
 }
 
 export function messageToTemplateSafeMessage(message: Message): TemplateSafeMessage {
@@ -473,20 +473,20 @@ export function messageToTemplateSafeMessage(message: Message): TemplateSafeMess
     content: message.content,
     author: userToTemplateSafeUser(message.author),
     channel: channelToTemplateSafeChannel(message.channel as GuildBasedChannel),
-  });
+  })
 }
 
 export function getTemplateSafeMemberLevel(pluginData: GuildPluginData<any>, member: TemplateSafeMember): number {
   if (member.id === pluginData.guild.ownerId) {
-    return 99999;
+    return 99999
   }
 
-  const levels = pluginData.fullConfig.levels ?? {};
+  const levels = pluginData.fullConfig.levels ?? {}
   for (const [id, level] of Object.entries(levels)) {
     if (member.id === id || member.roles?.find((r) => r.id === id)) {
-      return level as number;
+      return level as number
     }
   }
 
-  return 0;
+  return 0
 }

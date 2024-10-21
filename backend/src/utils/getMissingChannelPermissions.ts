@@ -1,5 +1,5 @@
-import { GuildMember, GuildTextBasedChannel } from "discord.js";
-import { getMissingPermissions } from "./getMissingPermissions.js";
+import { GuildMember, GuildTextBasedChannel } from 'discord.js'
+import { getMissingPermissions } from './getMissingPermissions.js'
 
 /**
  * @param requiredPermissions Bitmask of required permissions
@@ -10,7 +10,7 @@ export function getMissingChannelPermissions(
   channel: GuildTextBasedChannel,
   requiredPermissions: number | bigint,
 ): bigint {
-  const memberChannelPermissions = channel.permissionsFor(member.id);
-  if (!memberChannelPermissions) return BigInt(requiredPermissions);
-  return getMissingPermissions(memberChannelPermissions, requiredPermissions);
+  const memberChannelPermissions = channel.permissionsFor(member.id)
+  if (!memberChannelPermissions) return BigInt(requiredPermissions)
+  return getMissingPermissions(memberChannelPermissions, requiredPermissions)
 }

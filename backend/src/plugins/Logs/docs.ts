@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
-import { zLogsConfig } from "./types.js";
+import { ZeppelinPluginDocs } from '../../types.js'
+import { zLogsConfig } from './types.js'
 
 export const logsPluginDocs: ZeppelinPluginDocs = {
-  prettyName: "Logs",
+  prettyName: 'Logs',
   configSchema: zLogsConfig,
-  type: "stable",
-};
+  type: 'stable',
+}

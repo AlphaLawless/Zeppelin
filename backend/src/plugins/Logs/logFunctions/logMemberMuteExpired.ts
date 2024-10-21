@@ -1,18 +1,18 @@
-import { GuildMember } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { UnknownUser } from "../../../utils.js";
+import { GuildMember } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { UnknownUser } from '../../../utils.js'
 import {
-  memberToTemplateSafeMember,
   TemplateSafeUnknownMember,
   TemplateSafeUnknownUser,
-} from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+  memberToTemplateSafeMember,
+} from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberMuteExpiredData {
-  member: GuildMember | UnknownUser;
+  member: GuildMember | UnknownUser
 }
 
 export function logMemberMuteExpired(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberMuteExpiredData) {
@@ -22,11 +22,11 @@ export function logMemberMuteExpired(pluginData: GuildPluginData<LogsPluginType>
       : new TemplateSafeUnknownMember({
           ...data.member,
           user: new TemplateSafeUnknownUser({ ...data.member }),
-        });
+        })
 
-  const roles = data.member instanceof GuildMember ? Array.from(data.member.roles.cache.keys()) : [];
+  const roles = data.member instanceof GuildMember ? Array.from(data.member.roles.cache.keys()) : []
 
-  const bot = data.member instanceof GuildMember ? data.member.user.bot : false;
+  const bot = data.member instanceof GuildMember ? data.member.user.bot : false
 
   return log(
     pluginData,
@@ -39,5 +39,5 @@ export function logMemberMuteExpired(pluginData: GuildPluginData<LogsPluginType>
       roles,
       bot,
     },
-  );
+  )
 }

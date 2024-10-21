@@ -1,14 +1,12 @@
-import { guildPluginEventListener } from "knub";
-import { RecentActionType } from "../constants.js";
-import { runAutomod } from "../functions/runAutomod.js";
-import { AutomodContext, AutomodPluginType } from "../types.js";
+import { guildPluginEventListener } from 'knub'
+import { RecentActionType } from '../constants.js'
+import { runAutomod } from '../functions/runAutomod.js'
+import { AutomodContext, AutomodPluginType } from '../types.js'
 
 export const RunAutomodOnThreadCreate = guildPluginEventListener<AutomodPluginType>()({
-  event: "threadCreate",
+  event: 'threadCreate',
   async listener({ pluginData, args: { thread } }) {
-    const user = thread.ownerId
-      ? await pluginData.client.users.fetch(thread.ownerId).catch(() => undefined)
-      : undefined;
+    const user = thread.ownerId ? await pluginData.client.users.fetch(thread.ownerId).catch(() => undefined) : undefined
 
     const context: AutomodContext = {
       timestamp: Date.now(),
@@ -17,7 +15,7 @@ export const RunAutomodOnThreadCreate = guildPluginEventListener<AutomodPluginTy
       },
       user,
       channel: thread,
-    };
+    }
 
     pluginData.state.queue.add(() => {
       pluginData.state.recentActions.push({
@@ -25,19 +23,17 @@ export const RunAutomodOnThreadCreate = guildPluginEventListener<AutomodPluginTy
         context,
         count: 1,
         identifier: null,
-      });
+      })
 
-      runAutomod(pluginData, context);
-    });
+      runAutomod(pluginData, context)
+    })
   },
-});
+})
 
 export const RunAutomodOnThreadDelete = guildPluginEventListener<AutomodPluginType>()({
-  event: "threadDelete",
+  event: 'threadDelete',
   async listener({ pluginData, args: { thread } }) {
-    const user = thread.ownerId
-      ? await pluginData.client.users.fetch(thread.ownerId).catch(() => undefined)
-      : undefined;
+    const user = thread.ownerId ? await pluginData.client.users.fetch(thread.ownerId).catch(() => undefined) : undefined
 
     const context: AutomodContext = {
       timestamp: Date.now(),
@@ -46,42 +42,40 @@ export const RunAutomodOnThreadDelete = guildPluginEventListener<AutomodPluginTy
       },
       user,
       channel: thread,
-    };
+    }
 
     pluginData.state.queue.add(() => {
-      runAutomod(pluginData, context);
-    });
+      runAutomod(pluginData, context)
+    })
   },
-});
+})
 
 export const RunAutomodOnThreadUpdate = guildPluginEventListener<AutomodPluginType>()({
-  event: "threadUpdate",
+  event: 'threadUpdate',
   async listener({ pluginData, args: { oldThread, newThread: thread } }) {
-    const user = thread.ownerId
-      ? await pluginData.client.users.fetch(thread.ownerId).catch(() => undefined)
-      : undefined;
+    const user = thread.ownerId ? await pluginData.client.users.fetch(thread.ownerId).catch(() => undefined) : undefined
 
-    const changes: AutomodContext["threadChange"] = {};
+    const changes: AutomodContext['threadChange'] = {}
     if (oldThread.archived !== thread.archived) {
-      changes.archived = thread.archived ? thread : undefined;
-      changes.unarchived = !thread.archived ? thread : undefined;
+      changes.archived = thread.archived ? thread : undefined
+      changes.unarchived = thread.archived ? undefined : thread
     }
     if (oldThread.locked !== thread.locked) {
-      changes.locked = thread.locked ? thread : undefined;
-      changes.unlocked = !thread.locked ? thread : undefined;
+      changes.locked = thread.locked ? thread : undefined
+      changes.unlocked = thread.locked ? undefined : thread
     }
 
-    if (Object.keys(changes).length === 0) return;
+    if (Object.keys(changes).length === 0) return
 
     const context: AutomodContext = {
       timestamp: Date.now(),
       threadChange: changes,
       user,
       channel: thread,
-    };
+    }
 
     pluginData.state.queue.add(() => {
-      runAutomod(pluginData, context);
-    });
+      runAutomod(pluginData, context)
+    })
   },
-});
+})

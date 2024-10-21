@@ -1,6 +1,6 @@
-import { GuildMember, GuildTextBasedChannel, Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LocateUserPluginType } from "../types.js";
+import { GuildMember, GuildTextBasedChannel, Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LocateUserPluginType } from '../types.js'
 
 export async function moveMember(
   pluginData: GuildPluginData<LocateUserPluginType>,
@@ -8,17 +8,17 @@ export async function moveMember(
   target: GuildMember,
   errorChannel: GuildTextBasedChannel,
 ) {
-  const modMember: GuildMember = await pluginData.guild.members.fetch(toMoveID as Snowflake);
+  const modMember: GuildMember = await pluginData.guild.members.fetch(toMoveID as Snowflake)
   if (modMember.voice.channelId != null) {
     try {
       await modMember.edit({
         channel: target.voice.channelId,
-      });
+      })
     } catch {
-      void pluginData.state.common.sendErrorMessage(errorChannel, "Failed to move you. Are you in a voice channel?");
-      return;
+      void pluginData.state.common.sendErrorMessage(errorChannel, 'Failed to move you. Are you in a voice channel?')
+      return
     }
   } else {
-    void pluginData.state.common.sendErrorMessage(errorChannel, "Failed to move you. Are you in a voice channel?");
+    void pluginData.state.common.sendErrorMessage(errorChannel, 'Failed to move you. Are you in a voice channel?')
   }
 }

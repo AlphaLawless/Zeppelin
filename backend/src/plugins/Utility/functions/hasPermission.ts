@@ -1,6 +1,6 @@
-import { GuildMember, Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import { UtilityPluginType } from "../types.js";
+import { GuildMember, Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { UtilityPluginType } from '../types.js'
 
 export async function hasPermission(
   pluginData: GuildPluginData<UtilityPluginType>,
@@ -8,5 +8,5 @@ export async function hasPermission(
   channelId: Snowflake,
   permission: string,
 ) {
-  return (await pluginData.config.getMatchingConfig({ member, channelId }))[permission];
+  return (await pluginData.config.getMatchingConfig({ member, channelId }))[permission]
 }

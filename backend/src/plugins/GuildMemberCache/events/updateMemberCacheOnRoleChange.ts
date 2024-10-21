@@ -1,15 +1,15 @@
-import { AuditLogEvent } from "discord.js";
-import { guildPluginEventListener } from "knub";
-import { updateMemberCacheForMember } from "../functions/updateMemberCacheForMember.js";
-import { GuildMemberCachePluginType } from "../types.js";
+import { AuditLogEvent } from 'discord.js'
+import { guildPluginEventListener } from 'knub'
+import { updateMemberCacheForMember } from '../functions/updateMemberCacheForMember.js'
+import { GuildMemberCachePluginType } from '../types.js'
 
 export const updateMemberCacheOnRoleChange = guildPluginEventListener<GuildMemberCachePluginType>()({
-  event: "guildAuditLogEntryCreate",
+  event: 'guildAuditLogEntryCreate',
   async listener({ pluginData, args: { auditLogEntry } }) {
     if (auditLogEntry.action !== AuditLogEvent.MemberRoleUpdate) {
-      return;
+      return
     }
 
-    updateMemberCacheForMember(pluginData, auditLogEntry.targetId!);
+    updateMemberCacheForMember(pluginData, auditLogEntry.targetId!)
   },
-});
+})

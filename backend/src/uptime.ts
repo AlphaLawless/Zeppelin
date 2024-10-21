@@ -1,9 +1,9 @@
-let start = 0;
+let start = 0
 
 export function startUptimeCounter() {
-  start = Date.now();
+  start = Date.now()
 }
 
 export function getCurrentUptime() {
-  return Date.now() - start;
+  return Date.now() - start
 }

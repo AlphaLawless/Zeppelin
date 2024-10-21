@@ -1,80 +1,80 @@
-import { GuildMember, PermissionFlagsBits } from "discord.js";
-import { GuildPluginData } from "knub";
-import { intersection } from "lodash";
-import { PersistedData } from "../../../data/entities/PersistedData.js";
-import { SECONDS } from "../../../utils.js";
-import { canAssignRole } from "../../../utils/canAssignRole.js";
-import { getMissingPermissions } from "../../../utils/getMissingPermissions.js";
-import { missingPermissionError } from "../../../utils/missingPermissionError.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
-import { PersistPluginType, persistEvt } from "../types.js";
+import { GuildMember, PermissionFlagsBits } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import  lodash  from 'lodash'
+import { PersistedData } from '../../../data/entities/PersistedData.js'
+import { SECONDS } from '../../../utils.js'
+import { canAssignRole } from '../../../utils/canAssignRole.js'
+import { getMissingPermissions } from '../../../utils/getMissingPermissions.js'
+import { missingPermissionError } from '../../../utils/missingPermissionError.js'
+import { LogsPlugin } from '../../Logs/LogsPlugin.js'
+import { RoleManagerPlugin } from '../../RoleManager/RoleManagerPlugin.js'
+import { PersistPluginType, persistEvt } from '../types.js'
 
-const p = PermissionFlagsBits;
+const p = PermissionFlagsBits
 
 async function applyPersistedData(
   pluginData: GuildPluginData<PersistPluginType>,
   persistedData: PersistedData,
   member: GuildMember,
 ): Promise<string[]> {
-  const config = await pluginData.config.getForMember(member);
-  const guildRoles = Array.from(pluginData.guild.roles.cache.keys());
-  const restoredData: string[] = [];
+  const config = await pluginData.config.getForMember(member)
+  const guildRoles = Array.from(pluginData.guild.roles.cache.keys())
+  const restoredData: string[] = []
 
-  const persistedRoles = config.persisted_roles;
+  const persistedRoles = config.persisted_roles
   if (persistedRoles.length) {
-    const roleManager = pluginData.getPlugin(RoleManagerPlugin);
-    const rolesToRestore = intersection(persistedRoles, persistedData.roles, guildRoles).filter(
+    const roleManager = pluginData.getPlugin(RoleManagerPlugin)
+    const rolesToRestore = lodash.intersection(persistedRoles, persistedData.roles, guildRoles).filter(
       (roleId) => !member.roles.cache.has(roleId),
-    );
+    )
 
     if (rolesToRestore.length) {
-      restoredData.push("roles");
+      restoredData.push('roles')
       for (const roleId of rolesToRestore) {
-        roleManager.addRole(member.id, roleId);
+        roleManager.addRole(member.id, roleId)
       }
     }
   }
 
   if (config.persist_nicknames && persistedData.nickname && member.nickname !== persistedData.nickname) {
-    restoredData.push("nickname");
+    restoredData.push('nickname')
     await member.edit({
       nick: persistedData.nickname,
-    });
+    })
   }
 
-  return restoredData;
+  return restoredData
 }
 
 export const LoadDataEvt = persistEvt({
-  event: "guildMemberAdd",
+  event: 'guildMemberAdd',
 
   async listener(meta) {
-    const member = meta.args.member;
-    const pluginData = meta.pluginData;
+    const member = meta.args.member
+    const pluginData = meta.pluginData
 
-    const persistedData = await pluginData.state.persistedData.find(member.id);
+    const persistedData = await pluginData.state.persistedData.find(member.id)
     if (!persistedData) {
-      return;
+      return
     }
-    await pluginData.state.persistedData.clear(member.id);
+    await pluginData.state.persistedData.clear(member.id)
 
-    const config = await pluginData.config.getForMember(member);
+    const config = await pluginData.config.getForMember(member)
 
     // Check permissions
-    const me = pluginData.guild.members.cache.get(pluginData.client.user!.id)!;
-    let requiredPermissions = 0n;
-    if (config.persist_nicknames) requiredPermissions |= p.ManageNicknames;
-    if (config.persisted_roles) requiredPermissions |= p.ManageRoles;
-    const missingPermissions = getMissingPermissions(me.permissions, requiredPermissions);
+    const me = pluginData.guild.members.cache.get(pluginData.client.user!.id)!
+    let requiredPermissions = 0n
+    if (config.persist_nicknames) requiredPermissions |= p.ManageNicknames
+    if (config.persisted_roles) requiredPermissions |= p.ManageRoles
+    const missingPermissions = getMissingPermissions(me.permissions, requiredPermissions)
     if (missingPermissions) {
       pluginData.getPlugin(LogsPlugin).logBotAlert({
         body: `Missing permissions for persist plugin: ${missingPermissionError(missingPermissions)}`,
-      });
-      return;
+      })
+      return
     }
 
-    const guildRoles = Array.from(pluginData.guild.roles.cache.keys());
+    const guildRoles = Array.from(pluginData.guild.roles.cache.keys())
 
     // Check specific role permissions
     if (config.persisted_roles) {
@@ -82,23 +82,23 @@ export const LoadDataEvt = persistEvt({
         if (!canAssignRole(pluginData.guild, me, roleId) && guildRoles.includes(roleId)) {
           pluginData.getPlugin(LogsPlugin).logBotAlert({
             body: `Missing permissions to assign role \`${roleId}\` in persist plugin`,
-          });
-          return;
+          })
+          return
         }
       }
     }
 
-    const restoredData = await applyPersistedData(pluginData, persistedData, member);
+    const restoredData = await applyPersistedData(pluginData, persistedData, member)
     setTimeout(() => {
       // Reapply persisted data after a while for better interop with other bots that restore roles
-      void applyPersistedData(pluginData, persistedData, member);
-    }, 5 * SECONDS);
+      void applyPersistedData(pluginData, persistedData, member)
+    }, 5 * SECONDS)
 
     if (restoredData.length) {
       pluginData.getPlugin(LogsPlugin).logMemberRestore({
         member,
-        restoredData: restoredData.join(", "),
-      });
+        restoredData: restoredData.join(', '),
+      })
     }
   },
-});
+})

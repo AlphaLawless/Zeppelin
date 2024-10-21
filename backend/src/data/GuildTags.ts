@@ -1,17 +1,17 @@
-import { Repository } from "typeorm";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { dataSource } from "./dataSource.js";
-import { Tag } from "./entities/Tag.js";
-import { TagResponse } from "./entities/TagResponse.js";
+import { Repository } from 'typeorm'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { dataSource } from './dataSource.js'
+import { Tag } from './entities/Tag.js'
+import { TagResponse } from './entities/TagResponse.js'
 
 export class GuildTags extends BaseGuildRepository {
-  private tags: Repository<Tag>;
-  private tagResponses: Repository<TagResponse>;
+  private tags: Repository<Tag>
+  private tagResponses: Repository<TagResponse>
 
   constructor(guildId) {
-    super(guildId);
-    this.tags = dataSource.getRepository(Tag);
-    this.tagResponses = dataSource.getRepository(TagResponse);
+    super(guildId)
+    this.tags = dataSource.getRepository(Tag)
+    this.tagResponses = dataSource.getRepository(TagResponse)
   }
 
   async all(): Promise<Tag[]> {
@@ -19,7 +19,7 @@ export class GuildTags extends BaseGuildRepository {
       where: {
         guild_id: this.guildId,
       },
-    });
+    })
   }
 
   async find(tag): Promise<Tag | null> {
@@ -28,11 +28,11 @@ export class GuildTags extends BaseGuildRepository {
         guild_id: this.guildId,
         tag,
       },
-    });
+    })
   }
 
   async createOrUpdate(tag, body, userId) {
-    const existingTag = await this.find(tag);
+    const existingTag = await this.find(tag)
     if (existingTag) {
       await this.tags
         .createQueryBuilder()
@@ -40,18 +40,18 @@ export class GuildTags extends BaseGuildRepository {
         .set({
           body,
           user_id: userId,
-          created_at: () => "NOW()",
+          created_at: () => 'NOW()',
         })
-        .where("guild_id = :guildId", { guildId: this.guildId })
-        .andWhere("tag = :tag", { tag })
-        .execute();
+        .where('guild_id = :guildId', { guildId: this.guildId })
+        .andWhere('tag = :tag', { tag })
+        .execute()
     } else {
       await this.tags.insert({
         guild_id: this.guildId,
         user_id: userId,
         tag,
         body,
-      });
+      })
     }
   }
 
@@ -59,7 +59,7 @@ export class GuildTags extends BaseGuildRepository {
     await this.tags.delete({
       guild_id: this.guildId,
       tag,
-    });
+    })
   }
 
   async findResponseByCommandMessageId(messageId: string): Promise<TagResponse | null> {
@@ -68,7 +68,7 @@ export class GuildTags extends BaseGuildRepository {
         guild_id: this.guildId,
         command_message_id: messageId,
       },
-    });
+    })
   }
 
   async findResponseByResponseMessageId(messageId: string): Promise<TagResponse | null> {
@@ -77,7 +77,7 @@ export class GuildTags extends BaseGuildRepository {
         guild_id: this.guildId,
         response_message_id: messageId,
       },
-    });
+    })
   }
 
   async addResponse(cmdMessageId, responseMessageId) {
@@ -85,20 +85,20 @@ export class GuildTags extends BaseGuildRepository {
       guild_id: this.guildId,
       command_message_id: cmdMessageId,
       response_message_id: responseMessageId,
-    });
+    })
   }
 
   async deleteResponseByCommandMessageId(messageId: string): Promise<void> {
     await this.tagResponses.delete({
       guild_id: this.guildId,
       command_message_id: messageId,
-    });
+    })
   }
 
   async deleteResponseByResponseMessageId(messageId: string): Promise<void> {
     await this.tagResponses.delete({
       guild_id: this.guildId,
       response_message_id: messageId,
-    });
+    })
   }
 }

@@ -1,4 +1,4 @@
-import { RecentActionType } from "../constants.js";
-import { createMessageSpamTrigger } from "../functions/createMessageSpamTrigger.js";
+import { RecentActionType } from '../constants.js'
+import { createMessageSpamTrigger } from '../functions/createMessageSpamTrigger.js'
 
-export const LinkSpamTrigger = createMessageSpamTrigger(RecentActionType.Link, "link");
+export const LinkSpamTrigger = createMessageSpamTrigger(RecentActionType.Link, 'link')

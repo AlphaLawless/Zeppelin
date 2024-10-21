@@ -1,16 +1,16 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("nickname_history")
+@Entity('nickname_history')
 export class NicknameHistoryEntry {
   @Column()
   @PrimaryColumn()
-  id: string;
+  id: string
 
-  @Column() guild_id: string;
+  @Column() guild_id: string
 
-  @Column() user_id: string;
+  @Column() user_id: string
 
-  @Column() nickname: string;
+  @Column() nickname: string
 
-  @Column() timestamp: string;
+  @Column() timestamp: string
 }

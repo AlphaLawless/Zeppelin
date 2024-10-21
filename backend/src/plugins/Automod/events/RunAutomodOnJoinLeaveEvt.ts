@@ -1,17 +1,17 @@
-import { guildPluginEventListener } from "knub";
-import { RecentActionType } from "../constants.js";
-import { runAutomod } from "../functions/runAutomod.js";
-import { AutomodContext, AutomodPluginType } from "../types.js";
+import { guildPluginEventListener } from 'knub'
+import { RecentActionType } from '../constants.js'
+import { runAutomod } from '../functions/runAutomod.js'
+import { AutomodContext, AutomodPluginType } from '../types.js'
 
 export const RunAutomodOnJoinEvt = guildPluginEventListener<AutomodPluginType>()({
-  event: "guildMemberAdd",
+  event: 'guildMemberAdd',
   listener({ pluginData, args: { member } }) {
     const context: AutomodContext = {
       timestamp: Date.now(),
       user: member.user,
       member,
       joined: true,
-    };
+    }
 
     pluginData.state.queue.add(() => {
       pluginData.state.recentActions.push({
@@ -19,21 +19,21 @@ export const RunAutomodOnJoinEvt = guildPluginEventListener<AutomodPluginType>()
         context,
         count: 1,
         identifier: null,
-      });
+      })
 
-      runAutomod(pluginData, context);
-    });
+      runAutomod(pluginData, context)
+    })
   },
-});
+})
 
 export const RunAutomodOnLeaveEvt = guildPluginEventListener<AutomodPluginType>()({
-  event: "guildMemberRemove",
+  event: 'guildMemberRemove',
   listener({ pluginData, args: { member } }) {
     const context: AutomodContext = {
       timestamp: Date.now(),
       partialMember: member,
       joined: true,
-    };
+    }
 
     pluginData.state.queue.add(() => {
       pluginData.state.recentActions.push({
@@ -41,9 +41,9 @@ export const RunAutomodOnLeaveEvt = guildPluginEventListener<AutomodPluginType>(
         context,
         count: 1,
         identifier: null,
-      });
+      })
 
-      runAutomod(pluginData, context);
-    });
+      runAutomod(pluginData, context)
+    })
   },
-});
+})

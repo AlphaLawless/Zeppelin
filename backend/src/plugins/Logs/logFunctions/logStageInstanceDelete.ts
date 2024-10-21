@@ -1,15 +1,15 @@
-import { StageChannel, StageInstance } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
-import { channelToTemplateSafeChannel, stageToTemplateSafeStage } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { StageChannel, StageInstance } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
+import { channelToTemplateSafeChannel, stageToTemplateSafeStage } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogStageInstanceDeleteData {
-  stageInstance: StageInstance;
-  stageChannel: StageChannel;
+  stageInstance: StageInstance
+  stageChannel: StageChannel
 }
 
 export function logStageInstanceDelete(pluginData: GuildPluginData<LogsPluginType>, data: LogStageInstanceDeleteData) {
@@ -23,5 +23,5 @@ export function logStageInstanceDelete(pluginData: GuildPluginData<LogsPluginTyp
     {
       ...resolveChannelIds(data.stageInstance.channel!),
     },
-  );
+  )
 }

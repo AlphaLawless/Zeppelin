@@ -1,9 +1,9 @@
-import { ZeppelinPluginDocs } from "../../types.js";
-import { zContextMenusConfig } from "./types.js";
+import { ZeppelinPluginDocs } from '../../types.js'
+import { zContextMenusConfig } from './types.js'
 
 export const contextMenuPluginDocs: ZeppelinPluginDocs = {
-  type: "stable",
+  type: 'stable',
   configSchema: zContextMenusConfig,
 
-  prettyName: "Context menu",
-};
+  prettyName: 'Context menu',
+}

@@ -1,25 +1,25 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity("counters")
+@Entity('counters')
 export class Counter {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column()
-  guild_id: string;
+  guild_id: string
 
   @Column()
-  name: string;
+  name: string
 
   @Column()
-  per_channel: boolean;
+  per_channel: boolean
 
   @Column()
-  per_user: boolean;
+  per_user: boolean
 
   @Column()
-  last_decay_at: string;
+  last_decay_at: string
 
-  @Column({ type: "datetime", nullable: true })
-  delete_at: string | null;
+  @Column({ type: 'datetime', nullable: true })
+  delete_at: string | null
 }

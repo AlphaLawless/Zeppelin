@@ -1,22 +1,22 @@
-import { GuildPluginData } from "knub";
-import { CaseTypes } from "../../../data/CaseTypes.js";
-import { CasesPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { CaseTypes } from '../../../data/CaseTypes.js'
+import { CasesPluginType } from '../types.js'
 
 export async function getCaseTypeAmountForUserId(
   pluginData: GuildPluginData<CasesPluginType>,
   userID: string,
   type: CaseTypes,
 ): Promise<number> {
-  const cases = (await pluginData.state.cases.getByUserId(userID)).filter((c) => !c.is_hidden);
-  let typeAmount = 0;
+  const cases = (await pluginData.state.cases.getByUserId(userID)).filter((c) => !c.is_hidden)
+  let typeAmount = 0
 
   if (cases.length > 0) {
     cases.forEach((singleCase) => {
       if (singleCase.type === type.valueOf()) {
-        typeAmount++;
+        typeAmount++
       }
-    });
+    })
   }
 
-  return typeAmount;
+  return typeAmount
 }

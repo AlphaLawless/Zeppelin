@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction, Message } from "discord.js";
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events'
+import { ChatInputCommandInteraction, Message } from 'discord.js'
 import {
   BasePluginType,
   guildPluginEventListener,
@@ -7,19 +7,19 @@ import {
   guildPluginSlashCommand,
   guildPluginSlashGroup,
   pluginUtils,
-} from "knub";
-import z from "zod";
-import { Queue } from "../../Queue.js";
-import { GuildCases } from "../../data/GuildCases.js";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { GuildMutes } from "../../data/GuildMutes.js";
-import { GuildTempbans } from "../../data/GuildTempbans.js";
-import { Case } from "../../data/entities/Case.js";
-import { UserNotificationMethod, UserNotificationResult } from "../../utils.js";
-import { CaseArgs } from "../Cases/types.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
+} from 'knub'
+import z from 'zod'
+import { Queue } from '../../Queue.js'
+import { GuildCases } from '../../data/GuildCases.js'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { GuildMutes } from '../../data/GuildMutes.js'
+import { GuildTempbans } from '../../data/GuildTempbans.js'
+import { Case } from '../../data/entities/Case.js'
+import { UserNotificationMethod, UserNotificationResult } from '../../utils.js'
+import { CaseArgs } from '../Cases/types.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
 
-export type AttachmentLinkReactionType = "none" | "warn" | "restrict" | null;
+export type AttachmentLinkReactionType = 'none' | 'warn' | 'restrict' | null
 
 export const zModActionsConfig = z.strictObject({
   dm_on_warn: z.boolean(),
@@ -39,7 +39,7 @@ export const zModActionsConfig = z.strictObject({
   warn_notify_threshold: z.number(),
   warn_notify_message: z.string(),
   ban_delete_message_days: z.number(),
-  attachment_link_reaction: z.nullable(z.union([z.literal("none"), z.literal("warn"), z.literal("restrict")])),
+  attachment_link_reaction: z.nullable(z.union([z.literal('none'), z.literal('warn'), z.literal('restrict')])),
   can_note: z.boolean(),
   can_warn: z.boolean(),
   can_mute: z.boolean(),
@@ -55,39 +55,39 @@ export const zModActionsConfig = z.strictObject({
   can_deletecase: z.boolean(),
   can_act_as_other: z.boolean(),
   create_cases_for_manual_actions: z.boolean(),
-});
+})
 
 export interface ModActionsEvents {
-  note: (userId: string, reason?: string) => void;
-  warn: (userId: string, reason?: string, isAutomodAction?: boolean) => void;
-  kick: (userId: string, reason?: string, isAutomodAction?: boolean) => void;
-  ban: (userId: string, reason?: string, isAutomodAction?: boolean) => void;
-  unban: (userId: string, reason?: string) => void;
+  note: (userId: string, reason?: string) => void
+  warn: (userId: string, reason?: string, isAutomodAction?: boolean) => void
+  kick: (userId: string, reason?: string, isAutomodAction?: boolean) => void
+  ban: (userId: string, reason?: string, isAutomodAction?: boolean) => void
+  unban: (userId: string, reason?: string) => void
   // mute/unmute are in the Mutes plugin
 }
 
 export interface ModActionsEventEmitter extends EventEmitter {
-  on<U extends keyof ModActionsEvents>(event: U, listener: ModActionsEvents[U]): this;
-  emit<U extends keyof ModActionsEvents>(event: U, ...args: Parameters<ModActionsEvents[U]>): boolean;
+  on<U extends keyof ModActionsEvents>(event: U, listener: ModActionsEvents[U]): this
+  emit<U extends keyof ModActionsEvents>(event: U, ...args: Parameters<ModActionsEvents[U]>): boolean
 }
 
 export interface ModActionsPluginType extends BasePluginType {
-  config: z.infer<typeof zModActionsConfig>;
+  config: z.infer<typeof zModActionsConfig>
   state: {
-    mutes: GuildMutes;
-    cases: GuildCases;
-    tempbans: GuildTempbans;
-    serverLogs: GuildLogs;
+    mutes: GuildMutes
+    cases: GuildCases
+    tempbans: GuildTempbans
+    serverLogs: GuildLogs
 
-    unloaded: boolean;
-    unregisterGuildEventListener: () => void;
-    ignoredEvents: IIgnoredEvent[];
-    massbanQueue: Queue;
+    unloaded: boolean
+    unregisterGuildEventListener: () => void
+    ignoredEvents: IIgnoredEvent[]
+    massbanQueue: Queue
 
-    events: ModActionsEventEmitter;
+    events: ModActionsEventEmitter
 
-    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
-  };
+    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>
+  }
 }
 
 export enum IgnoredEventType {
@@ -97,69 +97,69 @@ export enum IgnoredEventType {
 }
 
 export interface IIgnoredEvent {
-  type: IgnoredEventType;
-  userId: string;
+  type: IgnoredEventType
+  userId: string
 }
 
 export type WarnResult =
   | {
-      status: "failed";
-      error: string;
+      status: 'failed'
+      error: string
     }
   | {
-      status: "success";
-      case: Case;
-      notifyResult: UserNotificationResult;
-    };
+      status: 'success'
+      case: Case
+      notifyResult: UserNotificationResult
+    }
 
 export type KickResult =
   | {
-      status: "failed";
-      error: string;
+      status: 'failed'
+      error: string
     }
   | {
-      status: "success";
-      case: Case;
-      notifyResult: UserNotificationResult;
-    };
+      status: 'success'
+      case: Case
+      notifyResult: UserNotificationResult
+    }
 
 export type BanResult =
   | {
-      status: "failed";
-      error: string;
+      status: 'failed'
+      error: string
     }
   | {
-      status: "success";
-      case: Case;
-      notifyResult: UserNotificationResult;
-    };
+      status: 'success'
+      case: Case
+      notifyResult: UserNotificationResult
+    }
 
-export type WarnMemberNotifyRetryCallback = () => boolean | Promise<boolean>;
+export type WarnMemberNotifyRetryCallback = () => boolean | Promise<boolean>
 
 export interface WarnOptions {
-  caseArgs?: Partial<CaseArgs> | null;
-  contactMethods?: UserNotificationMethod[] | null;
-  retryPromptContext?: Message | ChatInputCommandInteraction | null;
-  isAutomodAction?: boolean;
+  caseArgs?: Partial<CaseArgs> | null
+  contactMethods?: UserNotificationMethod[] | null
+  retryPromptContext?: Message | ChatInputCommandInteraction | null
+  isAutomodAction?: boolean
 }
 
 export interface KickOptions {
-  caseArgs?: Partial<CaseArgs>;
-  contactMethods?: UserNotificationMethod[];
-  isAutomodAction?: boolean;
+  caseArgs?: Partial<CaseArgs>
+  contactMethods?: UserNotificationMethod[]
+  isAutomodAction?: boolean
 }
 
 export interface BanOptions {
-  caseArgs?: Partial<CaseArgs>;
-  contactMethods?: UserNotificationMethod[];
-  deleteMessageDays?: number;
-  modId?: string;
-  isAutomodAction?: boolean;
+  caseArgs?: Partial<CaseArgs>
+  contactMethods?: UserNotificationMethod[]
+  deleteMessageDays?: number
+  modId?: string
+  isAutomodAction?: boolean
 }
 
-export type ModActionType = "note" | "warn" | "mute" | "unmute" | "kick" | "ban" | "unban";
+export type ModActionType = 'note' | 'warn' | 'mute' | 'unmute' | 'kick' | 'ban' | 'unban'
 
-export const modActionsMsgCmd = guildPluginMessageCommand<ModActionsPluginType>();
-export const modActionsSlashGroup = guildPluginSlashGroup<ModActionsPluginType>();
-export const modActionsSlashCmd = guildPluginSlashCommand<ModActionsPluginType>();
-export const modActionsEvt = guildPluginEventListener<ModActionsPluginType>();
+export const modActionsMsgCmd = guildPluginMessageCommand<ModActionsPluginType>()
+export const modActionsSlashGroup = guildPluginSlashGroup<ModActionsPluginType>()
+export const modActionsSlashCmd = guildPluginSlashCommand<ModActionsPluginType>()
+export const modActionsEvt = guildPluginEventListener<ModActionsPluginType>()

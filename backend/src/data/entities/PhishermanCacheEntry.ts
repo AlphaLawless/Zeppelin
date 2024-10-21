@@ -1,18 +1,18 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
-import { PhishermanDomainInfo } from "../types/phisherman.js";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
+import { PhishermanDomainInfo } from '../types/phisherman.js'
 
-@Entity("phisherman_cache")
+@Entity('phisherman_cache')
 export class PhishermanCacheEntry {
   @Column()
   @PrimaryColumn()
-  id: number;
+  id: number
 
   @Column()
-  domain: string;
+  domain: string
 
-  @Column("simple-json")
-  data: PhishermanDomainInfo;
+  @Column('simple-json')
+  data: PhishermanDomainInfo
 
   @Column()
-  expires_at: string;
+  expires_at: string
 }

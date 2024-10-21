@@ -1,16 +1,16 @@
-import { Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import z from "zod";
-import { TemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { zSnowflake } from "../../../utils.js";
-import { ActionError } from "../ActionError.js";
-import { CustomEventsPluginType, TCustomEvent } from "../types.js";
+import { Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import z from 'zod'
+import { TemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { zSnowflake } from '../../../utils.js'
+import { ActionError } from '../ActionError.js'
+import { CustomEventsPluginType, TCustomEvent } from '../types.js'
 
 export const zMakeRoleUnmentionableAction = z.strictObject({
-  type: z.literal("make_role_unmentionable"),
+  type: z.literal('make_role_unmentionable'),
   role: zSnowflake,
-});
-export type TMakeRoleUnmentionableAction = z.infer<typeof zMakeRoleUnmentionableAction>;
+})
+export type TMakeRoleUnmentionableAction = z.infer<typeof zMakeRoleUnmentionableAction>
 
 export async function makeRoleUnmentionableAction(
   pluginData: GuildPluginData<CustomEventsPluginType>,
@@ -19,10 +19,10 @@ export async function makeRoleUnmentionableAction(
   event: TCustomEvent,
   eventData: any, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
-  const role = pluginData.guild.roles.cache.get(action.role as Snowflake);
+  const role = pluginData.guild.roles.cache.get(action.role as Snowflake)
   if (!role) {
-    throw new ActionError(`Unknown role: ${role}`);
+    throw new ActionError(`Unknown role: ${role}`)
   }
 
-  await role.setMentionable(false, `Custom event: ${event.name}`);
+  await role.setMentionable(false, `Custom event: ${event.name}`)
 }

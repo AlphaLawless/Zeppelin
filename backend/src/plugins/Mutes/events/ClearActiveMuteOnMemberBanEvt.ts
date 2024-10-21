@@ -1,14 +1,14 @@
-import { mutesEvt } from "../types.js";
+import { mutesEvt } from '../types.js'
 
 /**
  * Clear active mute from the member if the member is banned
  */
 export const ClearActiveMuteOnMemberBanEvt = mutesEvt({
-  event: "guildBanAdd",
+  event: 'guildBanAdd',
   async listener({ pluginData, args: { ban } }) {
-    const mute = await pluginData.state.mutes.findExistingMuteForUserId(ban.user.id);
+    const mute = await pluginData.state.mutes.findExistingMuteForUserId(ban.user.id)
     if (mute) {
-      pluginData.state.mutes.clear(ban.user.id);
+      pluginData.state.mutes.clear(ban.user.id)
     }
   },
-});
+})

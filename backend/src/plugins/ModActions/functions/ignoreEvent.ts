@@ -1,9 +1,9 @@
-import { GuildPluginData } from "knub";
-import { SECONDS } from "../../../utils.js";
-import { IgnoredEventType, ModActionsPluginType } from "../types.js";
-import { clearIgnoredEvents } from "./clearIgnoredEvents.js";
+import { GuildPluginData } from 'knub'
+import { SECONDS } from '../../../utils.js'
+import { IgnoredEventType, ModActionsPluginType } from '../types.js'
+import { clearIgnoredEvents } from './clearIgnoredEvents.js'
 
-const DEFAULT_TIMEOUT = 15 * SECONDS;
+const DEFAULT_TIMEOUT = 15 * SECONDS
 
 export function ignoreEvent(
   pluginData: GuildPluginData<ModActionsPluginType>,
@@ -11,10 +11,10 @@ export function ignoreEvent(
   userId: string,
   timeout = DEFAULT_TIMEOUT,
 ) {
-  pluginData.state.ignoredEvents.push({ type, userId });
+  pluginData.state.ignoredEvents.push({ type, userId })
 
   // Clear after expiry (15sec by default)
   setTimeout(() => {
-    clearIgnoredEvents(pluginData, type, userId);
-  }, timeout);
+    clearIgnoredEvents(pluginData, type, userId)
+  }, timeout)
 }

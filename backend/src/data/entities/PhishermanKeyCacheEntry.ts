@@ -1,17 +1,17 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("phisherman_key_cache")
+@Entity('phisherman_key_cache')
 export class PhishermanKeyCacheEntry {
   @Column()
   @PrimaryColumn()
-  id: number;
+  id: number
 
   @Column()
-  hash: string;
+  hash: string
 
   @Column()
-  is_valid: boolean;
+  is_valid: boolean
 
   @Column()
-  expires_at: string;
+  expires_at: string
 }

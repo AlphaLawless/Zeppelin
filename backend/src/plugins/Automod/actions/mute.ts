@@ -1,5 +1,5 @@
-import z from "zod";
-import { ERRORS, RecoverablePluginError } from "../../../RecoverablePluginError.js";
+import z from 'zod'
+import { ERRORS, RecoverablePluginError } from '../../../RecoverablePluginError.js'
 import {
   convertDelayStringToMS,
   nonNullish,
@@ -7,13 +7,13 @@ import {
   zBoundedCharacters,
   zDelayString,
   zSnowflake,
-} from "../../../utils.js";
-import { CaseArgs } from "../../Cases/types.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { MutesPlugin } from "../../Mutes/MutesPlugin.js";
-import { zNotify } from "../constants.js";
-import { resolveActionContactMethods } from "../functions/resolveActionContactMethods.js";
-import { automodAction } from "../helpers.js";
+} from '../../../utils.js'
+import { CaseArgs } from '../../Cases/types.js'
+import { LogsPlugin } from '../../Logs/LogsPlugin.js'
+import { MutesPlugin } from '../../Mutes/MutesPlugin.js'
+import { zNotify } from '../constants.js'
+import { resolveActionContactMethods } from '../functions/resolveActionContactMethods.js'
+import { automodAction } from '../helpers.js'
 
 export const MuteAction = automodAction({
   configSchema: z.strictObject({
@@ -34,11 +34,11 @@ export const MuteAction = automodAction({
   }),
 
   async apply({ pluginData, contexts, actionConfig, ruleName, matchResult }) {
-    const duration = actionConfig.duration ? convertDelayStringToMS(actionConfig.duration)! : undefined;
-    const reason = actionConfig.reason || "Muted automatically";
-    const contactMethods = actionConfig.notify ? resolveActionContactMethods(pluginData, actionConfig) : undefined;
-    const rolesToRemove = actionConfig.remove_roles_on_mute;
-    const rolesToRestore = actionConfig.restore_roles_on_mute;
+    const duration = actionConfig.duration ? convertDelayStringToMS(actionConfig.duration)! : undefined
+    const reason = actionConfig.reason || 'Muted automatically'
+    const contactMethods = actionConfig.notify ? resolveActionContactMethods(pluginData, actionConfig) : undefined
+    const rolesToRemove = actionConfig.remove_roles_on_mute
+    const rolesToRestore = actionConfig.restore_roles_on_mute
 
     const caseArgs: Partial<CaseArgs> = {
       modId: pluginData.client.user!.id,
@@ -46,11 +46,11 @@ export const MuteAction = automodAction({
       automatic: true,
       postInCaseLogOverride: actionConfig.postInCaseLog ?? undefined,
       hide: Boolean(actionConfig.hide_case),
-    };
+    }
 
-    const userIdsToMute = unique(contexts.map((c) => c.user?.id).filter(nonNullish));
+    const userIdsToMute = unique(contexts.map((c) => c.user?.id).filter(nonNullish))
 
-    const mutes = pluginData.getPlugin(MutesPlugin);
+    const mutes = pluginData.getPlugin(MutesPlugin)
     for (const userId of userIdsToMute) {
       try {
         await mutes.muteUser(
@@ -61,16 +61,16 @@ export const MuteAction = automodAction({
           { contactMethods, caseArgs, isAutomodAction: true },
           rolesToRemove,
           rolesToRestore,
-        );
+        )
       } catch (e) {
         if (e instanceof RecoverablePluginError && e.code === ERRORS.NO_MUTE_ROLE_IN_CONFIG) {
           pluginData.getPlugin(LogsPlugin).logBotAlert({
             body: `Failed to mute <@!${userId}> in Automod rule \`${ruleName}\` because a mute role has not been specified in server config`,
-          });
+          })
         } else {
-          throw e;
+          throw e
         }
       }
     }
   },
-});
+})

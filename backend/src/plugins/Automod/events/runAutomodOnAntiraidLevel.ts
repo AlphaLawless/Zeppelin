@@ -1,7 +1,7 @@
-import { User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { runAutomod } from "../functions/runAutomod.js";
-import { AutomodContext, AutomodPluginType } from "../types.js";
+import { User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { runAutomod } from '../functions/runAutomod.js'
+import { AutomodContext, AutomodPluginType } from '../types.js'
 
 export async function runAutomodOnAntiraidLevel(
   pluginData: GuildPluginData<AutomodPluginType>,
@@ -16,9 +16,9 @@ export async function runAutomodOnAntiraidLevel(
       oldLevel,
     },
     user,
-  };
+  }
 
   pluginData.state.queue.add(async () => {
-    await runAutomod(pluginData, context);
-  });
+    await runAutomod(pluginData, context)
+  })
 }

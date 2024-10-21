@@ -1,17 +1,17 @@
-import { GuildTextBasedChannel, User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
-import { channelToTemplateSafeChannel, userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildTextBasedChannel, User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
+import { channelToTemplateSafeChannel, userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogCleanData {
-  mod: User;
-  channel: GuildTextBasedChannel;
-  count: number;
-  archiveUrl: string;
+  mod: User
+  channel: GuildTextBasedChannel
+  count: number
+  archiveUrl: string
 }
 
 export function logClean(pluginData: GuildPluginData<LogsPluginType>, data: LogCleanData) {
@@ -27,5 +27,5 @@ export function logClean(pluginData: GuildPluginData<LogsPluginType>, data: LogC
     {
       ...resolveChannelIds(data.channel),
     },
-  );
+  )
 }

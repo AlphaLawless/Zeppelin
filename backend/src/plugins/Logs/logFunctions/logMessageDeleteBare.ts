@@ -1,15 +1,15 @@
-import { GuildTextBasedChannel } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
-import { channelToTemplateSafeChannel } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildTextBasedChannel } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
+import { channelToTemplateSafeChannel } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMessageDeleteBareData {
-  messageId: string;
-  channel: GuildTextBasedChannel;
+  messageId: string
+  channel: GuildTextBasedChannel
 }
 
 export function logMessageDeleteBare(pluginData: GuildPluginData<LogsPluginType>, data: LogMessageDeleteBareData) {
@@ -23,5 +23,5 @@ export function logMessageDeleteBare(pluginData: GuildPluginData<LogsPluginType>
     {
       ...resolveChannelIds(data.channel),
     },
-  );
+  )
 }

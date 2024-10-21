@@ -1,16 +1,16 @@
-import { Attachment, ChatInputCommandInteraction, GuildMember, Message } from "discord.js";
-import { GuildPluginData } from "knub";
-import { CaseTypes } from "../../../../data/CaseTypes.js";
-import { UserNotificationMethod, renderUsername } from "../../../../utils.js";
-import { waitForButtonConfirm } from "../../../../utils/waitForInteraction.js";
-import { CasesPlugin } from "../../../Cases/CasesPlugin.js";
-import { handleAttachmentLinkDetectionAndGetRestriction } from "../../functions/attachmentLinkReaction.js";
+import { Attachment, ChatInputCommandInteraction, GuildMember, Message } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { CaseTypes } from '../../../../data/CaseTypes.js'
+import { UserNotificationMethod, renderUsername } from '../../../../utils.js'
+import { waitForButtonConfirm } from '../../../../utils/waitForInteraction.js'
+import { CasesPlugin } from '../../../Cases/CasesPlugin.js'
+import { handleAttachmentLinkDetectionAndGetRestriction } from '../../functions/attachmentLinkReaction.js'
 import {
   formatReasonWithAttachments,
   formatReasonWithMessageLinkForAttachments,
-} from "../../functions/formatReasonForAttachments.js";
-import { warnMember } from "../../functions/warnMember.js";
-import { ModActionsPluginType } from "../../types.js";
+} from '../../functions/formatReasonForAttachments.js'
+import { warnMember } from '../../functions/warnMember.js'
+import { ModActionsPluginType } from '../../types.js'
 
 export async function actualWarnCmd(
   pluginData: GuildPluginData<ModActionsPluginType>,
@@ -23,24 +23,24 @@ export async function actualWarnCmd(
   contactMethods?: UserNotificationMethod[],
 ) {
   if (await handleAttachmentLinkDetectionAndGetRestriction(pluginData, context, reason)) {
-    return;
+    return
   }
 
-  const config = pluginData.config.get();
-  const formattedReason = await formatReasonWithMessageLinkForAttachments(pluginData, reason, context, attachments);
-  const formattedReasonWithAttachments = formatReasonWithAttachments(reason, attachments);
+  const config = pluginData.config.get()
+  const formattedReason = await formatReasonWithMessageLinkForAttachments(pluginData, reason, context, attachments)
+  const formattedReasonWithAttachments = formatReasonWithAttachments(reason, attachments)
 
-  const casesPlugin = pluginData.getPlugin(CasesPlugin);
-  const priorWarnAmount = await casesPlugin.getCaseTypeAmountForUserId(memberToWarn.id, CaseTypes.Warn);
+  const casesPlugin = pluginData.getPlugin(CasesPlugin)
+  const priorWarnAmount = await casesPlugin.getCaseTypeAmountForUserId(memberToWarn.id, CaseTypes.Warn)
   if (config.warn_notify_enabled && priorWarnAmount >= config.warn_notify_threshold) {
     const reply = await waitForButtonConfirm(
       context,
-      { content: config.warn_notify_message.replace("{priorWarnings}", `${priorWarnAmount}`) },
-      { confirmText: "Yes", cancelText: "No", restrictToId: authorId },
-    );
+      { content: config.warn_notify_message.replace('{priorWarnings}', `${priorWarnAmount}`) },
+      { confirmText: 'Yes', cancelText: 'No', restrictToId: authorId },
+    )
     if (!reply) {
-      await pluginData.state.common.sendErrorMessage(context, "Warn cancelled by moderator");
-      return;
+      await pluginData.state.common.sendErrorMessage(context, 'Warn cancelled by moderator')
+      return
     }
   }
 
@@ -52,20 +52,20 @@ export async function actualWarnCmd(
       reason: formattedReason,
     },
     retryPromptContext: context,
-  });
+  })
 
-  if (warnResult.status === "failed") {
-    const failReason = warnResult.error ? `: ${warnResult.error}` : "";
+  if (warnResult.status === 'failed') {
+    const failReason = warnResult.error ? `: ${warnResult.error}` : ''
 
-    await pluginData.state.common.sendErrorMessage(context, `Failed to warn user${failReason}`);
+    await pluginData.state.common.sendErrorMessage(context, `Failed to warn user${failReason}`)
 
-    return;
+    return
   }
 
-  const messageResultText = warnResult.notifyResult.text ? ` (${warnResult.notifyResult.text})` : "";
+  const messageResultText = warnResult.notifyResult.text ? ` (${warnResult.notifyResult.text})` : ''
 
   await pluginData.state.common.sendSuccessMessage(
     context,
     `Warned **${renderUsername(memberToWarn.user)}** (Case #${warnResult.case.case_number})${messageResultText}`,
-  );
+  )
 }

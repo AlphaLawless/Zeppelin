@@ -1,13 +1,13 @@
-import { PluginOptions, guildPlugin } from "knub";
-import { GuildArchives } from "../../data/GuildArchives.js";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { GuildMutes } from "../../data/GuildMutes.js";
-import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
-import { LogsPlugin } from "../Logs/LogsPlugin.js";
-import { SpamVoiceStateUpdateEvt } from "./events/SpamVoiceEvt.js";
-import { SpamPluginType, zSpamConfig } from "./types.js";
-import { clearOldRecentActions } from "./util/clearOldRecentActions.js";
-import { onMessageCreate } from "./util/onMessageCreate.js";
+import { PluginOptions, guildPlugin } from 'knub'
+import { GuildArchives } from '../../data/GuildArchives.js'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { GuildMutes } from '../../data/GuildMutes.js'
+import { GuildSavedMessages } from '../../data/GuildSavedMessages.js'
+import { LogsPlugin } from '../Logs/LogsPlugin.js'
+import { SpamVoiceStateUpdateEvt } from './events/SpamVoiceEvt.js'
+import { SpamPluginType, zSpamConfig } from './types.js'
+import { clearOldRecentActions } from './util/clearOldRecentActions.js'
+import { onMessageCreate } from './util/onMessageCreate.js'
 
 const defaultOptions: PluginOptions<SpamPluginType> = {
   config: {
@@ -24,7 +24,7 @@ const defaultOptions: PluginOptions<SpamPluginType> = {
   },
   overrides: [
     {
-      level: ">=50",
+      level: '>=50',
       config: {
         max_messages: null,
         max_mentions: null,
@@ -38,46 +38,44 @@ const defaultOptions: PluginOptions<SpamPluginType> = {
       },
     },
   ],
-};
+}
 
 export const SpamPlugin = guildPlugin<SpamPluginType>()({
-  name: "spam",
+  name: 'spam',
 
   dependencies: () => [LogsPlugin],
   configParser: (input) => zSpamConfig.parse(input),
   defaultOptions,
 
   // prettier-ignore
-  events: [
-    SpamVoiceStateUpdateEvt,
-  ],
+  events: [SpamVoiceStateUpdateEvt],
 
   beforeLoad(pluginData) {
-    const { state, guild } = pluginData;
+    const { state, guild } = pluginData
 
-    state.logs = new GuildLogs(guild.id);
-    state.archives = GuildArchives.getGuildInstance(guild.id);
-    state.savedMessages = GuildSavedMessages.getGuildInstance(guild.id);
-    state.mutes = GuildMutes.getGuildInstance(guild.id);
+    state.logs = new GuildLogs(guild.id)
+    state.archives = GuildArchives.getGuildInstance(guild.id)
+    state.savedMessages = GuildSavedMessages.getGuildInstance(guild.id)
+    state.mutes = GuildMutes.getGuildInstance(guild.id)
 
-    state.recentActions = [];
-    state.lastHandledMsgIds = new Map();
+    state.recentActions = []
+    state.lastHandledMsgIds = new Map()
 
-    state.spamDetectionQueue = Promise.resolve();
+    state.spamDetectionQueue = Promise.resolve()
   },
 
   afterLoad(pluginData) {
-    const { state } = pluginData;
+    const { state } = pluginData
 
-    state.expiryInterval = setInterval(() => clearOldRecentActions(pluginData), 1000 * 60);
-    state.onMessageCreateFn = (msg) => onMessageCreate(pluginData, msg);
-    state.savedMessages.events.on("create", state.onMessageCreateFn);
+    state.expiryInterval = setInterval(() => clearOldRecentActions(pluginData), 1000 * 60)
+    state.onMessageCreateFn = (msg) => onMessageCreate(pluginData, msg)
+    state.savedMessages.events.on('create', state.onMessageCreateFn)
   },
 
   beforeUnload(pluginData) {
-    const { state } = pluginData;
+    const { state } = pluginData
 
-    state.savedMessages.events.off("create", state.onMessageCreateFn);
-    clearInterval(state.expiryInterval);
+    state.savedMessages.events.off('create', state.onMessageCreateFn)
+    clearInterval(state.expiryInterval)
   },
-});
+})

@@ -174,144 +174,137 @@
 </style>
 
 <script lang="ts">
-  import Vue from "vue";
-  import {mapState} from "vuex";
-  import yaml from "js-yaml";
-  import CodeBlock from "./CodeBlock.vue";
-  import MarkdownBlock from "./MarkdownBlock.vue";
-  import Tabs from "../Tabs.vue";
-  import Tab from "../Tab.vue";
-  import Expandable from "../Expandable.vue";
-  import { DocsState } from "../../store/types";
-  import Alert from 'vue-material-design-icons/Alert.vue';
+import yaml from 'js-yaml'
+import Alert from 'vue-material-design-icons/Alert.vue'
+import { mapState } from 'vuex'
+import { DocsState } from '../../store/types'
+import Expandable from '../Expandable.vue'
+import Tab from '../Tab.vue'
+import Tabs from '../Tabs.vue'
+import CodeBlock from './CodeBlock.vue'
+import MarkdownBlock from './MarkdownBlock.vue'
 
-  const validTabs = ['usage', 'configuration'];
-  const defaultTab = 'usage';
+const validTabs = ['usage', 'configuration']
+const defaultTab = 'usage'
 
-  export default {
-    components: { CodeBlock, MarkdownBlock, Tabs, Tab, Expandable, Alert },
+export default {
+  components: { CodeBlock, MarkdownBlock, Tabs, Tab, Expandable, Alert },
 
-    async mounted() {
-      this.loading = true;
+  async mounted() {
+    this.loading = true
 
-      await this.$store.dispatch("docs/loadPluginData", this.pluginName);
+    await this.$store.dispatch('docs/loadPluginData', this.pluginName)
 
-      // If there's no usage info, use Configuration as the default tab
-      if (!this.hasUsageInfo && ! this.$route.params.tab) {
-        this.tab = 'configuration';
+    // If there's no usage info, use Configuration as the default tab
+    if (!this.hasUsageInfo && !this.$route.params.tab) {
+      this.tab = 'configuration'
+    }
+
+    this.loading = false
+
+    this.$nextTick(() => {
+      if (this.tab === 'usage' && window.location.hash) {
+        this.scrollToCommand(window.location.hash.slice(1))
+      }
+    })
+
+    this.hashChangeListener = () => this.scrollToCommand(window.location.hash.slice(1))
+    window.addEventListener('hashchange', this.hashChangeListener)
+  },
+  beforeDestroy() {
+    window.removeEventListener('hashchange', this.hashChangeListener)
+  },
+  methods: {
+    renderConfiguration(options) {
+      return yaml.dump({
+        [this.pluginName]: options,
+      })
+    },
+    getTriggers(command) {
+      return Array.isArray(command.trigger) ? command.trigger : [command.trigger]
+    },
+    getCommandSignatures(command) {
+      if (!command.signature) {
+        return []
       }
 
-      this.loading = false;
+      return Array.isArray(command.signature) ? command.signature : [command.signature]
+    },
+    getSignatureParameters(signature) {
+      return Array.from(Object.entries(signature))
+        .filter(([name, paramOrOption]) => !(paramOrOption as any).option)
+        .map(([name, param]) => ({ name, param }))
+    },
+    getSignatureOptions(signature) {
+      return Array.from(Object.entries(signature))
+        .filter(([name, paramOrOption]) => Boolean((paramOrOption as any).option))
+        .map(([name, option]) => ({ name, option }))
+    },
+    renderParameterOrOption(name, paramOrOption) {
+      if (paramOrOption.option) {
+        return this.renderOption(name, paramOrOption)
+      }
 
-      this.$nextTick(() => {
-        if (this.tab === "usage" && window.location.hash) {
-          this.scrollToCommand(window.location.hash.slice(1));
-        }
-      });
-
-      this.hashChangeListener = () => this.scrollToCommand(window.location.hash.slice(1));
-      window.addEventListener('hashchange', this.hashChangeListener);
+      return this.renderParameter(name, paramOrOption)
     },
-    beforeDestroy() {
-      window.removeEventListener('hashchange', this.hashChangeListener);
+    renderParameter(name, param) {
+      let str = name
+      if (param.rest) str += '...'
+      if (param.required !== false) {
+        return `<${str}>`
+      } else {
+        return `[${str}]`
+      }
     },
-    methods: {
-      renderConfiguration(options) {
-        return yaml.dump({
-          [this.pluginName]: options,
-        });
-      },
-      getTriggers(command) {
-        return Array.isArray(command.trigger)
-          ? command.trigger
-          : [command.trigger];
-      },
-      getCommandSignatures(command) {
-        if (!command.signature) {
-          return [];
-        }
-
-        return Array.isArray(command.signature)
-          ? command.signature
-          : [command.signature];
-      },
-      getSignatureParameters(signature) {
-        return Array.from(Object.entries(signature))
-          .filter(([name, paramOrOption]) => !(paramOrOption as any).option)
-          .map(([name, param]) => ({ name, param }));
-      },
-      getSignatureOptions(signature) {
-        return Array.from(Object.entries(signature))
-          .filter(([name, paramOrOption]) => Boolean((paramOrOption as any).option))
-          .map(([name, option]) => ({ name, option }));
-      },
-      renderParameterOrOption(name, paramOrOption) {
-        if (paramOrOption.option) {
-          return this.renderOption(name, paramOrOption);
-        }
-
-        return this.renderParameter(name, paramOrOption);
-      },
-      renderParameter(name, param) {
-        let str = name;
-        if (param.rest) str += '...';
-        if (param.required !== false) {
-          return `<${str}>`;
-        } else {
-          return `[${str}]`;
-        }
-      },
-      renderOption(name, opt) {
-        let str = `-${name}`;
-        if (opt.shortcut) {
-          str += `|-${opt.shortcut}`;
-        }
-        if (opt.required) {
-          return `<${str}>`;
-        } else {
-          return `[${str}]`;
-        }
-      },
-      getCommandSlug(command) {
-        const mainTrigger = this.getTriggers(command)[0];
-        return 'command-' + mainTrigger.trim().toLowerCase().replace(/\s/g, '-');
-      },
-      scrollToCommand(hash) {
-        if (this.$refs[hash]) {
-          this.targetCommandId = hash;
-          (this.$refs[hash][0] as Element).scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          });
-        } else {
-          this.targetCommandId = null;
-        }
-      },
+    renderOption(name, opt) {
+      let str = `-${name}`
+      if (opt.shortcut) {
+        str += `|-${opt.shortcut}`
+      }
+      if (opt.required) {
+        return `<${str}>`
+      } else {
+        return `[${str}]`
+      }
     },
-    data() {
-      return {
-        loading: true,
-        pluginName: this.$route.params.pluginName,
-        tab: validTabs.includes(this.$route.params.tab)
-          ? this.$route.params.tab
-          : defaultTab,
-        targetCommandId: null,
-        hashChangeListener: null
-      };
+    getCommandSlug(command) {
+      const mainTrigger = this.getTriggers(command)[0]
+      return 'command-' + mainTrigger.trim().toLowerCase().replace(/\s/g, '-')
     },
-    computed: {
-      ...mapState("docs", {
-        data(state: DocsState) {
-          return state.plugins[this.pluginName];
-        },
-        hasUsageInfo() {
-          if (!this.data) return true;
-          if (this.data.messageCommands?.length) return true;
-          if (this.data.slashCommands?.length) return true;
-          if (this.data.info?.usageGuide) return true;
-          return false;
-        },
-      }),
+    scrollToCommand(hash) {
+      if (this.$refs[hash]) {
+        this.targetCommandId = hash
+        ;(this.$refs[hash][0] as Element).scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        })
+      } else {
+        this.targetCommandId = null
+      }
     },
-  }
+  },
+  data() {
+    return {
+      loading: true,
+      pluginName: this.$route.params.pluginName,
+      tab: validTabs.includes(this.$route.params.tab) ? this.$route.params.tab : defaultTab,
+      targetCommandId: null,
+      hashChangeListener: null,
+    }
+  },
+  computed: {
+    ...mapState('docs', {
+      data(state: DocsState) {
+        return state.plugins[this.pluginName]
+      },
+      hasUsageInfo() {
+        if (!this.data) return true
+        if (this.data.messageCommands?.length) return true
+        if (this.data.slashCommands?.length) return true
+        if (this.data.info?.usageGuide) return true
+        return false
+      },
+    }),
+  },
+}
 </script>

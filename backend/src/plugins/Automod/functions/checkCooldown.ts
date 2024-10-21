@@ -1,8 +1,8 @@
-import { GuildPluginData } from "knub";
-import { AutomodContext, AutomodPluginType, TRule } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { AutomodContext, AutomodPluginType, TRule } from '../types.js'
 
 export function checkCooldown(pluginData: GuildPluginData<AutomodPluginType>, rule: TRule, context: AutomodContext) {
-  const cooldownKey = `${rule.name}-${context.user?.id}`;
+  const cooldownKey = `${rule.name}-${context.user?.id}`
 
-  return pluginData.state.cooldownManager.isOnCooldown(cooldownKey);
+  return pluginData.state.cooldownManager.isOnCooldown(cooldownKey)
 }

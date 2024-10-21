@@ -1,10 +1,10 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("context_menus")
+@Entity('context_menus')
 export class ContextMenuLink {
-  @Column() guild_id: string;
+  @Column() guild_id: string
 
-  @Column() @PrimaryColumn() context_id: string;
+  @Column() @PrimaryColumn() context_id: string
 
-  @Column() action_name: string;
+  @Column() action_name: string
 }

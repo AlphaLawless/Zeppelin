@@ -1,25 +1,25 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
 export class CreateSupportersTable1590616691907 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.createTable(
       new Table({
-        name: "supporters",
+        name: 'supporters',
         columns: [
           {
-            name: "user_id",
-            type: "bigint",
+            name: 'user_id',
+            type: 'bigint',
             unsigned: true,
             isPrimary: true,
           },
           {
-            name: "name",
-            type: "varchar",
-            length: "255",
+            name: 'name',
+            type: 'varchar',
+            length: '255',
           },
           {
-            name: "amount",
-            type: "decimal",
+            name: 'amount',
+            type: 'decimal',
             precision: 6,
             scale: 2,
             isNullable: true,
@@ -27,10 +27,10 @@ export class CreateSupportersTable1590616691907 implements MigrationInterface {
           },
         ],
       }),
-    );
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {
-    await queryRunner.dropTable("supporters");
+    await queryRunner.dropTable('supporters')
   }
 }

@@ -1,13 +1,13 @@
-import { getRepository, Repository } from "typeorm";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { ButtonRole } from "./entities/ButtonRole.js";
+import { Repository, getRepository } from 'typeorm'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { ButtonRole } from './entities/ButtonRole.js'
 
 export class GuildButtonRoles extends BaseGuildRepository {
-  private buttonRoles: Repository<ButtonRole>;
+  private buttonRoles: Repository<ButtonRole>
 
   constructor(guildId) {
-    super(guildId);
-    this.buttonRoles = getRepository(ButtonRole);
+    super(guildId)
+    this.buttonRoles = getRepository(ButtonRole)
   }
 
   async getForButtonId(buttonId: string) {
@@ -16,7 +16,7 @@ export class GuildButtonRoles extends BaseGuildRepository {
         guild_id: this.guildId,
         button_id: buttonId,
       },
-    });
+    })
   }
 
   async getAllForMessageId(messageId: string) {
@@ -25,21 +25,21 @@ export class GuildButtonRoles extends BaseGuildRepository {
         guild_id: this.guildId,
         message_id: messageId,
       },
-    });
+    })
   }
 
   async removeForButtonId(buttonId: string) {
     return this.buttonRoles.delete({
       guild_id: this.guildId,
       button_id: buttonId,
-    });
+    })
   }
 
   async removeAllForMessageId(messageId: string) {
     return this.buttonRoles.delete({
       guild_id: this.guildId,
       message_id: messageId,
-    });
+    })
   }
 
   async getForButtonGroup(buttonGroup: string) {
@@ -48,7 +48,7 @@ export class GuildButtonRoles extends BaseGuildRepository {
         guild_id: this.guildId,
         button_group: buttonGroup,
       },
-    });
+    })
   }
 
   async add(channelId: string, messageId: string, buttonId: string, buttonGroup: string, buttonName: string) {
@@ -59,6 +59,6 @@ export class GuildButtonRoles extends BaseGuildRepository {
       button_id: buttonId,
       button_group: buttonGroup,
       button_name: buttonName,
-    });
+    })
   }
 }

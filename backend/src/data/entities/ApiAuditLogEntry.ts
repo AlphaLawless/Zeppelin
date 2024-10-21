@@ -1,24 +1,24 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
-import { AuditLogEventData, AuditLogEventType } from "../apiAuditLogTypes.js";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
+import { AuditLogEventData, AuditLogEventType } from '../apiAuditLogTypes.js'
 
-@Entity("api_audit_log")
+@Entity('api_audit_log')
 export class ApiAuditLogEntry<TEventType extends AuditLogEventType> {
   @Column()
   @PrimaryColumn()
-  id: number;
+  id: number
 
   @Column()
-  guild_id: string;
+  guild_id: string
 
   @Column()
-  author_id: string;
+  author_id: string
 
   @Column({ type: String })
-  event_type: TEventType;
+  event_type: TEventType
 
-  @Column("simple-json")
-  event_data: AuditLogEventData[TEventType];
+  @Column('simple-json')
+  event_data: AuditLogEventData[TEventType]
 
   @Column()
-  created_at: string;
+  created_at: string
 }

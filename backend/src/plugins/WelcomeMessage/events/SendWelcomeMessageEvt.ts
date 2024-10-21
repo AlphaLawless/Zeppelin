@@ -1,34 +1,34 @@
-import { Snowflake, TextChannel } from "discord.js";
-import { TemplateParseError, TemplateSafeValueContainer, renderTemplate } from "../../../templateFormatter.js";
-import { createChunkedMessage, verboseChannelMention, verboseUserMention } from "../../../utils.js";
-import { sendDM } from "../../../utils/sendDM.js";
+import { Snowflake, TextChannel } from 'discord.js'
+import { TemplateParseError, TemplateSafeValueContainer, renderTemplate } from '../../../templateFormatter.js'
+import { createChunkedMessage, verboseChannelMention, verboseUserMention } from '../../../utils.js'
+import { sendDM } from '../../../utils/sendDM.js'
 import {
   guildToTemplateSafeGuild,
   memberToTemplateSafeMember,
   userToTemplateSafeUser,
-} from "../../../utils/templateSafeObjects.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { welcomeMessageEvt } from "../types.js";
+} from '../../../utils/templateSafeObjects.js'
+import { LogsPlugin } from '../../Logs/LogsPlugin.js'
+import { welcomeMessageEvt } from '../types.js'
 
 export const SendWelcomeMessageEvt = welcomeMessageEvt({
-  event: "guildMemberAdd",
+  event: 'guildMemberAdd',
 
   async listener(meta) {
-    const pluginData = meta.pluginData;
-    const member = meta.args.member;
+    const pluginData = meta.pluginData
+    const member = meta.args.member
 
-    const config = pluginData.config.get();
-    if (!config.message) return;
-    if (!config.send_dm && !config.send_to_channel) return;
+    const config = pluginData.config.get()
+    if (!config.message) return
+    if (!config.send_dm && !config.send_to_channel) return
 
     // Only send welcome messages once per user (even if they rejoin) until the plugin is reloaded
     if (pluginData.state.sentWelcomeMessages.has(member.id)) {
-      return;
+      return
     }
 
-    pluginData.state.sentWelcomeMessages.add(member.id);
+    pluginData.state.sentWelcomeMessages.add(member.id)
 
-    let formatted;
+    let formatted
 
     try {
       formatted = await renderTemplate(
@@ -38,44 +38,44 @@ export const SendWelcomeMessageEvt = welcomeMessageEvt({
           user: userToTemplateSafeUser(member.user),
           guild: guildToTemplateSafeGuild(member.guild),
         }),
-      );
+      )
     } catch (e) {
       if (e instanceof TemplateParseError) {
         pluginData.getPlugin(LogsPlugin).logBotAlert({
           body: `Error formatting welcome message: ${e.message}`,
-        });
-        return;
+        })
+        return
       }
 
-      throw e;
+      throw e
     }
 
     if (config.send_dm) {
       try {
-        await sendDM(member.user, formatted, "welcome message");
+        await sendDM(member.user, formatted, 'welcome message')
       } catch {
         pluginData.getPlugin(LogsPlugin).logDmFailed({
-          source: "welcome message",
+          source: 'welcome message',
           user: member.user,
-        });
+        })
       }
     }
 
     if (config.send_to_channel) {
-      const channel = meta.args.member.guild.channels.cache.get(config.send_to_channel as Snowflake);
-      if (!channel || !(channel instanceof TextChannel)) return;
+      const channel = meta.args.member.guild.channels.cache.get(config.send_to_channel as Snowflake)
+      if (!channel || !(channel instanceof TextChannel)) return
 
       try {
         await createChunkedMessage(channel, formatted, {
-          parse: ["users"],
-        });
+          parse: ['users'],
+        })
       } catch {
         pluginData.getPlugin(LogsPlugin).logBotAlert({
           body: `Failed send a welcome message for ${verboseUserMention(member.user)} to ${verboseChannelMention(
             channel,
           )}`,
-        });
+        })
       }
     }
   },
-});
+})

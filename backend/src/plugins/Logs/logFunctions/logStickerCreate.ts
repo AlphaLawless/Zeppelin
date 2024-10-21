@@ -1,13 +1,13 @@
-import { Sticker } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { stickerToTemplateSafeSticker } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { Sticker } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { stickerToTemplateSafeSticker } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogStickerCreateData {
-  sticker: Sticker;
+  sticker: Sticker
 }
 
 export function logStickerCreate(pluginData: GuildPluginData<LogsPluginType>, data: LogStickerCreateData) {
@@ -18,5 +18,5 @@ export function logStickerCreate(pluginData: GuildPluginData<LogsPluginType>, da
       sticker: stickerToTemplateSafeSticker(data.sticker),
     }),
     {},
-  );
+  )
 }

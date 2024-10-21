@@ -1,11 +1,11 @@
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogSetAntiraidAutoData {
-  level: string;
+  level: string
 }
 
 export function logSetAntiraidAuto(pluginData: GuildPluginData<LogsPluginType>, data: LogSetAntiraidAutoData) {
@@ -16,5 +16,5 @@ export function logSetAntiraidAuto(pluginData: GuildPluginData<LogsPluginType>, 
       level: data.level,
     }),
     {},
-  );
+  )
 }

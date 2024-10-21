@@ -1,18 +1,18 @@
-import humanizeDuration from "humanize-duration";
+import humanizeDuration from 'humanize-duration'
 
 export const humanizeDurationShort = humanizeDuration.humanizer({
-  language: "shortEn",
+  language: 'shortEn',
   languages: {
     shortEn: {
-      y: () => "y",
-      mo: () => "mo",
-      w: () => "w",
-      d: () => "d",
-      h: () => "h",
-      m: () => "m",
-      s: () => "s",
-      ms: () => "ms",
+      y: () => 'y',
+      mo: () => 'mo',
+      w: () => 'w',
+      d: () => 'd',
+      h: () => 'h',
+      m: () => 'm',
+      s: () => 's',
+      ms: () => 'ms',
     },
   },
-  spacer: "",
-});
+  spacer: '',
+})

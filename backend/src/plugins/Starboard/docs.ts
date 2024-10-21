@@ -1,10 +1,10 @@
-import { ZeppelinPluginDocs } from "../../types.js";
-import { trimPluginDescription } from "../../utils.js";
-import { zStarboardConfig } from "./types.js";
+import { ZeppelinPluginDocs } from '../../types.js'
+import { trimPluginDescription } from '../../utils.js'
+import { zStarboardConfig } from './types.js'
 
 export const starboardPluginDocs: ZeppelinPluginDocs = {
-  type: "stable",
-  prettyName: "Starboard",
+  type: 'stable',
+  prettyName: 'Starboard',
   description: trimPluginDescription(`
     This plugin allows you to set up starboards on your server. Starboards are like user voted pins where messages with enough reactions get immortalized on a "starboard" channel.
   `),
@@ -93,4 +93,4 @@ export const starboardPluginDocs: ZeppelinPluginDocs = {
     ~~~
   `),
   configSchema: zStarboardConfig,
-};
+}

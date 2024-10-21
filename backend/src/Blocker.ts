@@ -1,11 +1,11 @@
 export type Block = {
-  count: number;
-  unblock: () => void;
-  getPromise: () => Promise<void>;
-};
+  count: number
+  unblock: () => void
+  getPromise: () => Promise<void>
+}
 
 export class Blocker {
-  #blocks: Map<string, Block> = new Map();
+  #blocks: Map<string, Block> = new Map()
 
   block(key: string): void {
     if (!this.#blocks.has(key)) {
@@ -13,28 +13,28 @@ export class Blocker {
         this.#blocks.set(key, {
           count: 0, // Incremented to 1 further below
           unblock() {
-            this.count--;
+            this.count--
             if (this.count === 0) {
-              resolve();
+              resolve()
             }
           },
           getPromise: () => promise, // :d
-        });
-      });
+        })
+      })
     }
-    this.#blocks.get(key)!.count++;
+    this.#blocks.get(key)!.count++
   }
 
   unblock(key: string): void {
     if (this.#blocks.has(key)) {
-      this.#blocks.get(key)!.unblock();
+      this.#blocks.get(key)!.unblock()
     }
   }
 
   async waitToBeUnblocked(key: string): Promise<void> {
     if (!this.#blocks.has(key)) {
-      return;
+      return
     }
-    await this.#blocks.get(key)!.getPromise();
+    await this.#blocks.get(key)!.getPromise()
   }
 }

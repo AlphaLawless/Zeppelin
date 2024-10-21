@@ -1,9 +1,9 @@
-import { GuildPluginData } from "knub";
-import { LocateUserPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { LocateUserPluginType } from '../types.js'
 
 export async function removeUserIdFromActiveAlerts(pluginData: GuildPluginData<LocateUserPluginType>, userId: string) {
-  const index = pluginData.state.usersWithAlerts.indexOf(userId);
+  const index = pluginData.state.usersWithAlerts.indexOf(userId)
   if (index > -1) {
-    pluginData.state.usersWithAlerts.splice(index, 1);
+    pluginData.state.usersWithAlerts.splice(index, 1)
   }
 }

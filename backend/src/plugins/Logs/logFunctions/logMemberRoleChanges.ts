@@ -1,17 +1,17 @@
-import { GuildMember, Role, User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { UnknownUser } from "../../../utils.js";
-import { memberToTemplateSafeMember, userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildMember, Role, User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { UnknownUser } from '../../../utils.js'
+import { memberToTemplateSafeMember, userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberRoleChangesData {
-  mod: User | UnknownUser | null;
-  member: GuildMember;
-  addedRoles: Role[];
-  removedRoles: Role[];
+  mod: User | UnknownUser | null
+  member: GuildMember
+  addedRoles: Role[]
+  removedRoles: Role[]
 }
 
 /**
@@ -24,12 +24,12 @@ export function logMemberRoleChanges(pluginData: GuildPluginData<LogsPluginType>
     createTypedTemplateSafeValueContainer({
       mod: data.mod ? userToTemplateSafeUser(data.mod) : null,
       member: memberToTemplateSafeMember(data.member),
-      addedRoles: data.addedRoles.map((r) => r.name).join(", "),
-      removedRoles: data.removedRoles.map((r) => r.name).join(", "),
+      addedRoles: data.addedRoles.map((r) => r.name).join(', '),
+      removedRoles: data.removedRoles.map((r) => r.name).join(', '),
     }),
     {
       userId: data.member.id,
       bot: data.member.user.bot,
     },
-  );
+  )
 }

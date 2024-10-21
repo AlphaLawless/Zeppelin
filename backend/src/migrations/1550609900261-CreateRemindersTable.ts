@@ -1,53 +1,53 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
 export class CreateRemindersTable1550609900261 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.createTable(
       new Table({
-        name: "reminders",
+        name: 'reminders',
         columns: [
           {
-            name: "id",
-            type: "int",
+            name: 'id',
+            type: 'int',
             unsigned: true,
             isGenerated: true,
-            generationStrategy: "increment",
+            generationStrategy: 'increment',
             isPrimary: true,
           },
           {
-            name: "guild_id",
-            type: "bigint",
+            name: 'guild_id',
+            type: 'bigint',
             unsigned: true,
           },
           {
-            name: "user_id",
-            type: "bigint",
+            name: 'user_id',
+            type: 'bigint',
             unsigned: true,
           },
           {
-            name: "channel_id",
-            type: "bigint",
+            name: 'channel_id',
+            type: 'bigint',
             unsigned: true,
           },
           {
-            name: "remind_at",
-            type: "datetime",
+            name: 'remind_at',
+            type: 'datetime',
           },
           {
-            name: "body",
-            type: "text",
+            name: 'body',
+            type: 'text',
           },
         ],
         indices: [
           {
-            columnNames: ["guild_id", "user_id"],
+            columnNames: ['guild_id', 'user_id'],
           },
         ],
       }),
-    );
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {
-    await queryRunner.dropTable("reminders", true);
+    await queryRunner.dropTable('reminders', true)
   }
 }

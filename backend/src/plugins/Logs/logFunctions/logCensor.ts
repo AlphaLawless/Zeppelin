@@ -1,24 +1,24 @@
-import { GuildTextBasedChannel, User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { deactivateMentions, disableCodeBlocks } from "knub/helpers";
-import { LogType } from "../../../data/LogType.js";
-import { SavedMessage } from "../../../data/entities/SavedMessage.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { UnknownUser } from "../../../utils.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
+import { GuildTextBasedChannel, User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { deactivateMentions, disableCodeBlocks } from 'knub/helpers'
+import { LogType } from '../../../data/LogType.js'
+import { SavedMessage } from '../../../data/entities/SavedMessage.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { UnknownUser } from '../../../utils.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
 import {
   channelToTemplateSafeChannel,
   savedMessageToTemplateSafeSavedMessage,
   userToTemplateSafeUser,
-} from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+} from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogCensorData {
-  user: User | UnknownUser;
-  channel: GuildTextBasedChannel;
-  reason: string;
-  message: SavedMessage;
+  user: User | UnknownUser
+  channel: GuildTextBasedChannel
+  reason: string
+  message: SavedMessage
 }
 
 export function logCensor(pluginData: GuildPluginData<LogsPluginType>, data: LogCensorData) {
@@ -37,5 +37,5 @@ export function logCensor(pluginData: GuildPluginData<LogsPluginType>, data: Log
       bot: data.user instanceof User ? data.user.bot : false,
       ...resolveChannelIds(data.channel),
     },
-  );
+  )
 }

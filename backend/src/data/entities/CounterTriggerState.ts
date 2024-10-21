@@ -1,17 +1,17 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("counter_trigger_states")
+@Entity('counter_trigger_states')
 export class CounterTriggerState {
-  @Column({ type: "bigint", generated: "increment" })
+  @Column({ type: 'bigint', generated: 'increment' })
   @PrimaryColumn()
-  id: string;
+  id: string
 
   @Column()
-  trigger_id: number;
+  trigger_id: number
 
-  @Column({ type: "bigint" })
-  channel_id: string;
+  @Column({ type: 'bigint' })
+  channel_id: string
 
-  @Column({ type: "bigint" })
-  user_id: string;
+  @Column({ type: 'bigint' })
+  user_id: string
 }

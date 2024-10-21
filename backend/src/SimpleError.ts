@@ -1,13 +1,13 @@
-import util from "util";
+import util from 'util'
 
 export class SimpleError extends Error {
-  public message: string;
+  public message: string
 
   constructor(message: string) {
-    super(message);
+    super(message)
   }
 
   [util.inspect.custom]() {
-    return `Error: ${this.message}`;
+    return `Error: ${this.message}`
   }
 }

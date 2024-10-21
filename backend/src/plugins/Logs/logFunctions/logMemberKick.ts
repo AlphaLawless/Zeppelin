@@ -1,17 +1,17 @@
-import { User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { UnknownUser } from "../../../utils.js";
-import { userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { UnknownUser } from '../../../utils.js'
+import { userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberKickData {
-  mod: User | UnknownUser | null;
-  user: User;
-  caseNumber: number;
-  reason: string;
+  mod: User | UnknownUser | null
+  user: User
+  caseNumber: number
+  reason: string
 }
 
 export function logMemberKick(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberKickData) {
@@ -28,5 +28,5 @@ export function logMemberKick(pluginData: GuildPluginData<LogsPluginType>, data:
       userId: data.user.id,
       bot: data.user.bot,
     },
-  );
+  )
 }

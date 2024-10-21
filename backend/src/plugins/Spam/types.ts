@@ -1,10 +1,10 @@
-import { BasePluginType, guildPluginEventListener } from "knub";
-import z from "zod";
-import { GuildArchives } from "../../data/GuildArchives.js";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { GuildMutes } from "../../data/GuildMutes.js";
-import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
-import { zSnowflake } from "../../utils.js";
+import { BasePluginType, guildPluginEventListener } from 'knub'
+import z from 'zod'
+import { GuildArchives } from '../../data/GuildArchives.js'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { GuildMutes } from '../../data/GuildMutes.js'
+import { GuildSavedMessages } from '../../data/GuildSavedMessages.js'
+import { zSnowflake } from '../../utils.js'
 
 const zBaseSingleSpamConfig = z.strictObject({
   interval: z.number(),
@@ -14,8 +14,8 @@ const zBaseSingleSpamConfig = z.strictObject({
   remove_roles_on_mute: z.union([z.boolean(), z.array(zSnowflake)]).default(false),
   restore_roles_on_mute: z.union([z.boolean(), z.array(zSnowflake)]).default(false),
   clean: z.boolean().default(false),
-});
-export type TBaseSingleSpamConfig = z.infer<typeof zBaseSingleSpamConfig>;
+})
+export type TBaseSingleSpamConfig = z.infer<typeof zBaseSingleSpamConfig>
 
 export const zSpamConfig = z.strictObject({
   max_censor: zBaseSingleSpamConfig.nullable(),
@@ -28,7 +28,7 @@ export const zSpamConfig = z.strictObject({
   max_duplicates: zBaseSingleSpamConfig.nullable(),
   max_characters: zBaseSingleSpamConfig.nullable(),
   max_voice_moves: zBaseSingleSpamConfig.nullable(),
-});
+})
 
 export enum RecentActionType {
   Message = 1,
@@ -43,37 +43,37 @@ export enum RecentActionType {
 }
 
 export interface IRecentAction<T> {
-  type: RecentActionType;
-  userId: string;
-  actionGroupId: string;
-  extraData: T;
-  timestamp: number;
-  count: number;
+  type: RecentActionType
+  userId: string
+  actionGroupId: string
+  extraData: T
+  timestamp: number
+  count: number
 }
 
 export interface SpamPluginType extends BasePluginType {
-  config: z.infer<typeof zSpamConfig>;
+  config: z.infer<typeof zSpamConfig>
   state: {
-    logs: GuildLogs;
-    archives: GuildArchives;
-    savedMessages: GuildSavedMessages;
-    mutes: GuildMutes;
+    logs: GuildLogs
+    archives: GuildArchives
+    savedMessages: GuildSavedMessages
+    mutes: GuildMutes
 
-    onMessageCreateFn;
+    onMessageCreateFn
 
     // Handle spam detection with a queue so we don't have overlapping detections on the same user
-    spamDetectionQueue: Promise<void>;
+    spamDetectionQueue: Promise<void>
 
     // List of recent potentially-spammy actions
-    recentActions: Array<IRecentAction<any>>;
+    recentActions: Array<IRecentAction<any>>
 
     // A map of userId => channelId => msgId
     // Keeps track of the last handled (= spam detected and acted on) message ID per user, per channel
     // TODO: Prevent this from growing infinitely somehow
-    lastHandledMsgIds: Map<string, Map<string, string>>;
+    lastHandledMsgIds: Map<string, Map<string, string>>
 
-    expiryInterval;
-  };
+    expiryInterval
+  }
 }
 
-export const spamEvt = guildPluginEventListener<SpamPluginType>();
+export const spamEvt = guildPluginEventListener<SpamPluginType>()

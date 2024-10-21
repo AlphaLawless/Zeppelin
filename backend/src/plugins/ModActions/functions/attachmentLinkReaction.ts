@@ -1,19 +1,19 @@
-import { ChatInputCommandInteraction, Message, TextBasedChannel } from "discord.js";
-import { AnyPluginData, GuildPluginData } from "knub";
-import { ModActionsPluginType } from "../types.js";
+import { ChatInputCommandInteraction, Message, TextBasedChannel } from 'discord.js'
+import { AnyPluginData, GuildPluginData } from 'knub'
+import { ModActionsPluginType } from '../types.js'
 
 export function shouldReactToAttachmentLink(pluginData: GuildPluginData<ModActionsPluginType>) {
-  const config = pluginData.config.get();
+  const config = pluginData.config.get()
 
-  return !config.attachment_link_reaction || config.attachment_link_reaction !== "none";
+  return !config.attachment_link_reaction || config.attachment_link_reaction !== 'none'
 }
 
 export function attachmentLinkShouldRestrict(pluginData: GuildPluginData<ModActionsPluginType>) {
-  return pluginData.config.get().attachment_link_reaction === "restrict";
+  return pluginData.config.get().attachment_link_reaction === 'restrict'
 }
 
 export function detectAttachmentLink(reason: string | null | undefined) {
-  return reason && /https:\/\/(cdn|media)\.discordapp\.(com|net)\/(ephemeral-)?attachments/gu.test(reason);
+  return reason && /https:\/\/(cdn|media)\.discordapp\.(com|net)\/(ephemeral-)?attachments/gu.test(reason)
 }
 
 export function sendAttachmentLinkDetectionErrorMessage(
@@ -21,14 +21,14 @@ export function sendAttachmentLinkDetectionErrorMessage(
   context: TextBasedChannel | Message | ChatInputCommandInteraction,
   restricted = false,
 ) {
-  const emoji = pluginData.state.common.getErrorEmoji();
+  const emoji = pluginData.state.common.getErrorEmoji()
 
   pluginData.state.common.sendErrorMessage(
     context,
-    "You manually added a Discord attachment link to the reason. This link will only work for a limited time.\n" +
-      "You should instead **re-upload** the attachment with the command, in the same message.\n\n" +
-      (restricted ? `${emoji} **Command canceled.** ${emoji}` : "").trim(),
-  );
+    'You manually added a Discord attachment link to the reason. This link will only work for a limited time.\n' +
+      'You should instead **re-upload** the attachment with the command, in the same message.\n\n' +
+      (restricted ? `${emoji} **Command canceled.** ${emoji}` : '').trim(),
+  )
 }
 
 export async function handleAttachmentLinkDetectionAndGetRestriction(
@@ -37,12 +37,12 @@ export async function handleAttachmentLinkDetectionAndGetRestriction(
   reason: string | null | undefined,
 ) {
   if (!shouldReactToAttachmentLink(pluginData) || !detectAttachmentLink(reason)) {
-    return false;
+    return false
   }
 
-  const restricted = attachmentLinkShouldRestrict(pluginData);
+  const restricted = attachmentLinkShouldRestrict(pluginData)
 
-  sendAttachmentLinkDetectionErrorMessage(pluginData, context, restricted);
+  sendAttachmentLinkDetectionErrorMessage(pluginData, context, restricted)
 
-  return restricted;
+  return restricted
 }

@@ -1,20 +1,20 @@
-import { GuildTextBasedChannel, User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
-import { channelToTemplateSafeChannel, userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildTextBasedChannel, User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
+import { channelToTemplateSafeChannel, userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogScheduledRepeatedMessageData {
-  author: User;
-  channel: GuildTextBasedChannel;
-  datetime: string;
-  date: string;
-  time: string;
-  repeatInterval: string;
-  repeatDetails: string;
+  author: User
+  channel: GuildTextBasedChannel
+  datetime: string
+  date: string
+  time: string
+  repeatInterval: string
+  repeatDetails: string
 }
 
 export function logScheduledRepeatedMessage(
@@ -38,5 +38,5 @@ export function logScheduledRepeatedMessage(
       bot: data.author.bot,
       ...resolveChannelIds(data.channel),
     },
-  );
+  )
 }

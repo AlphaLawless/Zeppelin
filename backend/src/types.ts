@@ -1,53 +1,53 @@
-import { GlobalPluginBlueprint, GuildPluginBlueprint, Knub } from "knub";
-import z, { ZodTypeAny } from "zod";
-import { zSnowflake } from "./utils.js";
+import { GlobalPluginBlueprint, GuildPluginBlueprint, Knub } from 'knub'
+import z, { ZodTypeAny } from 'zod'
+import { zSnowflake } from './utils.js'
 
 export const zZeppelinGuildConfig = z.strictObject({
   // From BaseConfig
   prefix: z.string().optional(),
   levels: z.record(zSnowflake, z.number()).optional(),
   plugins: z.record(z.string(), z.unknown()).optional(),
-});
+})
 
-export type TZeppelinKnub = Knub;
+export type TZeppelinKnub = Knub
 
 /**
  * Wrapper for the string type that indicates the text will be parsed as Markdown later
  */
-export type TMarkdown = string;
+export type TMarkdown = string
 
 export interface ZeppelinGuildPluginInfo {
-  plugin: GuildPluginBlueprint<any, any>;
-  docs: ZeppelinPluginDocs;
-  autoload?: boolean;
+  plugin: GuildPluginBlueprint<any, any>
+  docs: ZeppelinPluginDocs
+  autoload?: boolean
 }
 
 export interface ZeppelinGlobalPluginInfo {
-  plugin: GlobalPluginBlueprint<any, any>;
-  docs: ZeppelinPluginDocs;
+  plugin: GlobalPluginBlueprint<any, any>
+  docs: ZeppelinPluginDocs
 }
 
-export type DocsPluginType = "stable" | "legacy" | "internal";
+export type DocsPluginType = 'stable' | 'legacy' | 'internal'
 
 export interface ZeppelinPluginDocs {
-  type: DocsPluginType;
-  configSchema: ZodTypeAny;
+  type: DocsPluginType
+  configSchema: ZodTypeAny
 
-  prettyName?: string;
-  description?: TMarkdown;
-  usageGuide?: TMarkdown;
-  configurationGuide?: TMarkdown;
+  prettyName?: string
+  description?: TMarkdown
+  usageGuide?: TMarkdown
+  configurationGuide?: TMarkdown
 }
 
 export interface CommandInfo {
-  description?: TMarkdown;
-  basicUsage?: TMarkdown;
-  examples?: TMarkdown;
-  usageGuide?: TMarkdown;
+  description?: TMarkdown
+  basicUsage?: TMarkdown
+  examples?: TMarkdown
+  usageGuide?: TMarkdown
   parameterDescriptions?: {
-    [key: string]: TMarkdown;
-  };
+    [key: string]: TMarkdown
+  }
   optionDescriptions?: {
-    [key: string]: TMarkdown;
-  };
+    [key: string]: TMarkdown
+  }
 }

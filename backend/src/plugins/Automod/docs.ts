@@ -1,12 +1,12 @@
-import { ZeppelinPluginDocs } from "../../types.js";
-import { trimPluginDescription } from "../../utils.js";
-import { zAutomodConfig } from "./types.js";
+import { ZeppelinPluginDocs } from '../../types.js'
+import { trimPluginDescription } from '../../utils.js'
+import { zAutomodConfig } from './types.js'
 
 export const automodPluginDocs: ZeppelinPluginDocs = {
-  type: "stable",
+  type: 'stable',
   configSchema: zAutomodConfig,
 
-  prettyName: "Automod",
+  prettyName: 'Automod',
   description: trimPluginDescription(`
       Allows specifying automated actions in response to triggers. Example use cases include word filtering and spam prevention.
   `),
@@ -103,4 +103,4 @@ export const automodPluginDocs: ZeppelinPluginDocs = {
                     {matchSummary}
       ~~~
   `),
-};
+}

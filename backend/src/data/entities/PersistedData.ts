@@ -1,18 +1,18 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("persisted_data")
+@Entity('persisted_data')
 export class PersistedData {
   @Column()
   @PrimaryColumn()
-  guild_id: string;
+  guild_id: string
 
   @Column()
   @PrimaryColumn()
-  user_id: string;
+  user_id: string
 
-  @Column("simple-array") roles: string[];
+  @Column('simple-array') roles: string[]
 
-  @Column() nickname: string;
+  @Column() nickname: string
 
-  @Column({ type: "boolean" }) is_voice_muted: boolean;
+  @Column({ type: 'boolean' }) is_voice_muted: boolean
 }

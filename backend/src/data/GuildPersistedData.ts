@@ -1,14 +1,14 @@
-import { Repository } from "typeorm";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { dataSource } from "./dataSource.js";
-import { PersistedData } from "./entities/PersistedData.js";
+import { Repository } from 'typeorm'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { dataSource } from './dataSource.js'
+import { PersistedData } from './entities/PersistedData.js'
 
 export class GuildPersistedData extends BaseGuildRepository {
-  private persistedData: Repository<PersistedData>;
+  private persistedData: Repository<PersistedData>
 
   constructor(guildId) {
-    super(guildId);
-    this.persistedData = dataSource.getRepository(PersistedData);
+    super(guildId)
+    this.persistedData = dataSource.getRepository(PersistedData)
   }
 
   async find(userId: string) {
@@ -17,11 +17,11 @@ export class GuildPersistedData extends BaseGuildRepository {
         guild_id: this.guildId,
         user_id: userId,
       },
-    });
+    })
   }
 
   async set(userId: string, data: Partial<PersistedData> = {}) {
-    const existing = await this.find(userId);
+    const existing = await this.find(userId)
     if (existing) {
       await this.persistedData.update(
         {
@@ -29,13 +29,13 @@ export class GuildPersistedData extends BaseGuildRepository {
           user_id: userId,
         },
         data,
-      );
+      )
     } else {
       await this.persistedData.insert({
         ...data,
         guild_id: this.guildId,
         user_id: userId,
-      });
+      })
     }
   }
 
@@ -43,6 +43,6 @@ export class GuildPersistedData extends BaseGuildRepository {
     await this.persistedData.delete({
       guild_id: this.guildId,
       user_id: userId,
-    });
+    })
   }
 }

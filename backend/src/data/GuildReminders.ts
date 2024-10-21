@@ -1,22 +1,22 @@
-import { Repository } from "typeorm";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { dataSource } from "./dataSource.js";
-import { Reminder } from "./entities/Reminder.js";
+import { Repository } from 'typeorm'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { dataSource } from './dataSource.js'
+import { Reminder } from './entities/Reminder.js'
 
 export class GuildReminders extends BaseGuildRepository {
-  private reminders: Repository<Reminder>;
+  private reminders: Repository<Reminder>
 
   constructor(guildId) {
-    super(guildId);
-    this.reminders = dataSource.getRepository(Reminder);
+    super(guildId)
+    this.reminders = dataSource.getRepository(Reminder)
   }
 
   async getDueReminders(): Promise<Reminder[]> {
     return this.reminders
       .createQueryBuilder()
-      .where("guild_id = :guildId", { guildId: this.guildId })
-      .andWhere("remind_at <= NOW()")
-      .getMany();
+      .where('guild_id = :guildId', { guildId: this.guildId })
+      .andWhere('remind_at <= NOW()')
+      .getMany()
   }
 
   async getRemindersByUserId(userId: string): Promise<Reminder[]> {
@@ -25,20 +25,20 @@ export class GuildReminders extends BaseGuildRepository {
         guild_id: this.guildId,
         user_id: userId,
       },
-    });
+    })
   }
 
   find(id: number) {
     return this.reminders.findOne({
       where: { id },
-    });
+    })
   }
 
   async delete(id) {
     await this.reminders.delete({
       guild_id: this.guildId,
       id,
-    });
+    })
   }
 
   async add(userId: string, channelId: string, remindAt: string, body: string, created_at: string) {
@@ -49,8 +49,8 @@ export class GuildReminders extends BaseGuildRepository {
       remind_at: remindAt,
       body,
       created_at,
-    });
+    })
 
-    return (await this.find(result.identifiers[0].id))!;
+    return (await this.find(result.identifiers[0].id))!
   }
 }

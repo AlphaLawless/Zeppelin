@@ -1,14 +1,14 @@
-import { Snowflake, TextChannel } from "discord.js";
-import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { messageLink } from "../../../utils.js";
-import { canReadChannel } from "../../../utils/canReadChannel.js";
-import { utilityCmd } from "../types.js";
+import { Snowflake, TextChannel } from 'discord.js'
+import { commandTypeHelpers as ct } from '../../../commandTypes.js'
+import { messageLink } from '../../../utils.js'
+import { canReadChannel } from '../../../utils/canReadChannel.js'
+import { utilityCmd } from '../types.js'
 
 export const ContextCmd = utilityCmd({
-  trigger: "context",
-  description: "Get a link to the context of the specified message",
-  usage: "!context 94882524378968064 650391267720822785",
-  permission: "can_context",
+  trigger: 'context',
+  description: 'Get a link to the context of the specified message',
+  usage: '!context 94882524378968064 650391267720822785',
+  permission: 'can_context',
 
   signature: [
     {
@@ -22,16 +22,16 @@ export const ContextCmd = utilityCmd({
 
   async run({ message: msg, args, pluginData }) {
     if (args.channel && !(args.channel instanceof TextChannel)) {
-      void pluginData.state.common.sendErrorMessage(msg, "Channel must be a text channel");
-      return;
+      void pluginData.state.common.sendErrorMessage(msg, 'Channel must be a text channel')
+      return
     }
 
-    const channel = args.channel ?? args.message.channel;
-    const messageId = args.messageId ?? args.message.messageId;
+    const channel = args.channel ?? args.message.channel
+    const messageId = args.messageId ?? args.message.messageId
 
     if (!canReadChannel(channel, msg.member)) {
-      void pluginData.state.common.sendErrorMessage(msg, "Message context not found");
-      return;
+      void pluginData.state.common.sendErrorMessage(msg, 'Message context not found')
+      return
     }
 
     const previousMessage = (
@@ -39,12 +39,12 @@ export const ContextCmd = utilityCmd({
         limit: 1,
         before: messageId as Snowflake,
       })
-    )[0];
+    )[0]
     if (!previousMessage) {
-      void pluginData.state.common.sendErrorMessage(msg, "Message context not found");
-      return;
+      void pluginData.state.common.sendErrorMessage(msg, 'Message context not found')
+      return
     }
 
-    msg.channel.send(messageLink(pluginData.guild.id, previousMessage.channel.id, previousMessage.id));
+    msg.channel.send(messageLink(pluginData.guild.id, previousMessage.channel.id, previousMessage.id))
   },
-});
+})

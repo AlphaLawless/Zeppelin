@@ -1,14 +1,14 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("auto_reactions")
+@Entity('auto_reactions')
 export class AutoReaction {
   @Column()
   @PrimaryColumn()
-  guild_id: string;
+  guild_id: string
 
   @Column()
   @PrimaryColumn()
-  channel_id: string;
+  channel_id: string
 
-  @Column("simple-array") reactions: string[];
+  @Column('simple-array') reactions: string[]
 }

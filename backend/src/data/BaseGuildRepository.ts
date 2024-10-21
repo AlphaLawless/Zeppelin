@@ -1,13 +1,13 @@
-import { BaseRepository } from "./BaseRepository.js";
+import { BaseRepository } from './BaseRepository.js'
 
 export class BaseGuildRepository<TEntity = unknown> extends BaseRepository<TEntity> {
-  private static guildInstances: Map<string, any>;
+  private static guildInstances: Map<string, any>
 
-  protected guildId: string;
+  protected guildId: string
 
   constructor(guildId: string) {
-    super();
-    this.guildId = guildId;
+    super()
+    this.guildId = guildId
   }
 
   /**
@@ -16,13 +16,13 @@ export class BaseGuildRepository<TEntity = unknown> extends BaseRepository<TEnti
    */
   public static getGuildInstance<T extends typeof BaseGuildRepository>(this: T, guildId: string): InstanceType<T> {
     if (!this.guildInstances) {
-      this.guildInstances = new Map();
+      this.guildInstances = new Map()
     }
 
     if (!this.guildInstances.has(guildId)) {
-      this.guildInstances.set(guildId, new this(guildId));
+      this.guildInstances.set(guildId, new this(guildId))
     }
 
-    return this.guildInstances.get(guildId) as InstanceType<T>;
+    return this.guildInstances.get(guildId) as InstanceType<T>
   }
 }

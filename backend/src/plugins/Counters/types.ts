@@ -1,19 +1,19 @@
-import { EventEmitter } from "events";
-import { BasePluginType, pluginUtils } from "knub";
-import z from "zod";
-import { GuildCounters, MAX_COUNTER_VALUE, MIN_COUNTER_VALUE } from "../../data/GuildCounters.js";
+import { EventEmitter } from 'events'
+import { BasePluginType, pluginUtils } from 'knub'
+import z from 'zod'
+import { GuildCounters, MAX_COUNTER_VALUE, MIN_COUNTER_VALUE } from '../../data/GuildCounters.js'
 import {
   CounterTrigger,
   buildCounterConditionString,
   getReverseCounterComparisonOp,
   parseCounterConditionString,
-} from "../../data/entities/CounterTrigger.js";
-import { zBoundedCharacters, zBoundedRecord, zDelayString } from "../../utils.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
-import Timeout = NodeJS.Timeout;
+} from '../../data/entities/CounterTrigger.js'
+import { zBoundedCharacters, zBoundedRecord, zDelayString } from '../../utils.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
+import Timeout = NodeJS.Timeout
 
-const MAX_COUNTERS = 5;
-const MAX_TRIGGERS_PER_COUNTER = 5;
+const MAX_COUNTERS = 5
+const MAX_TRIGGERS_PER_COUNTER = 5
 
 export const zTrigger = z
   .strictObject({
@@ -21,45 +21,45 @@ export const zTrigger = z
     name: z
       .never()
       .optional()
-      .transform(() => ""),
+      .transform(() => ''),
     pretty_name: zBoundedCharacters(0, 100).nullable().default(null),
     condition: zBoundedCharacters(1, 64).refine((str) => parseCounterConditionString(str) !== null, {
-      message: "Invalid counter trigger condition",
+      message: 'Invalid counter trigger condition',
     }),
     reverse_condition: zBoundedCharacters(1, 64)
       .refine((str) => parseCounterConditionString(str) !== null, {
-        message: "Invalid counter trigger reverse condition",
+        message: 'Invalid counter trigger reverse condition',
       })
       .optional(),
   })
   .transform((val, ctx) => {
-    const ruleName = String(ctx.path[ctx.path.length - 1]).trim();
+    const ruleName = String(ctx.path[ctx.path.length - 1]).trim()
 
-    let reverseCondition = val.reverse_condition;
+    let reverseCondition = val.reverse_condition
     if (!reverseCondition) {
-      const parsedCondition = parseCounterConditionString(val.condition)!;
+      const parsedCondition = parseCounterConditionString(val.condition)!
       reverseCondition = buildCounterConditionString(
         getReverseCounterComparisonOp(parsedCondition[0]),
         parsedCondition[1],
-      );
+      )
     }
 
     return {
       ...val,
       name: ruleName,
       reverse_condition: reverseCondition,
-    };
-  });
+    }
+  })
 
 const zTriggerFromString = zBoundedCharacters(0, 100).transform((val, ctx) => {
-  const ruleName = String(ctx.path[ctx.path.length - 1]).trim();
-  const parsedCondition = parseCounterConditionString(val);
+  const ruleName = String(ctx.path[ctx.path.length - 1]).trim()
+  const parsedCondition = parseCounterConditionString(val)
   if (!parsedCondition) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "Invalid counter trigger condition",
-    });
-    return z.NEVER;
+      message: 'Invalid counter trigger condition',
+    })
+    return z.NEVER
   }
   return {
     name: ruleName,
@@ -69,10 +69,10 @@ const zTriggerFromString = zBoundedCharacters(0, 100).transform((val, ctx) => {
       getReverseCounterComparisonOp(parsedCondition[0]),
       parsedCondition[1],
     ),
-  };
-});
+  }
+})
 
-const zTriggerInput = z.union([zTrigger, zTriggerFromString]);
+const zTriggerInput = z.union([zTrigger, zTriggerFromString])
 
 export const zCounter = z.strictObject({
   // Typed as "never" because you are not expected to supply this directly.
@@ -81,15 +81,15 @@ export const zCounter = z.strictObject({
     .never()
     .optional()
     .transform((_, ctx) => {
-      const ruleName = String(ctx.path[ctx.path.length - 2]).trim();
+      const ruleName = String(ctx.path[ctx.path.length - 2]).trim()
       if (!ruleName) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Counters must have names",
-        });
-        return z.NEVER;
+          message: 'Counters must have names',
+        })
+        return z.NEVER
       }
-      return ruleName;
+      return ruleName
     }),
   pretty_name: zBoundedCharacters(0, 100).nullable().default(null),
   per_channel: z.boolean().default(false),
@@ -106,33 +106,33 @@ export const zCounter = z.strictObject({
   can_view: z.boolean().default(false),
   can_edit: z.boolean().default(false),
   can_reset_all: z.boolean().default(false),
-});
+})
 
 export const zCountersConfig = z.strictObject({
   counters: zBoundedRecord(z.record(zBoundedCharacters(0, 100), zCounter), 0, MAX_COUNTERS),
   can_view: z.boolean(),
   can_edit: z.boolean(),
   can_reset_all: z.boolean(),
-});
+})
 
 export interface CounterEvents {
-  trigger: (counterName: string, triggerName: string, channelId: string | null, userId: string | null) => void;
-  reverseTrigger: (counterName: string, triggerName: string, channelId: string | null, userId: string | null) => void;
+  trigger: (counterName: string, triggerName: string, channelId: string | null, userId: string | null) => void
+  reverseTrigger: (counterName: string, triggerName: string, channelId: string | null, userId: string | null) => void
 }
 
 export interface CounterEventEmitter extends EventEmitter {
-  on<U extends keyof CounterEvents>(event: U, listener: CounterEvents[U]): this;
-  emit<U extends keyof CounterEvents>(event: U, ...args: Parameters<CounterEvents[U]>): boolean;
+  on<U extends keyof CounterEvents>(event: U, listener: CounterEvents[U]): this
+  emit<U extends keyof CounterEvents>(event: U, ...args: Parameters<CounterEvents[U]>): boolean
 }
 
 export interface CountersPluginType extends BasePluginType {
-  config: z.infer<typeof zCountersConfig>;
+  config: z.infer<typeof zCountersConfig>
   state: {
-    counters: GuildCounters;
-    counterIds: Record<string, number>;
-    decayTimers: Timeout[];
-    events: CounterEventEmitter;
-    counterTriggersByCounterId: Map<number, CounterTrigger[]>;
-    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
-  };
+    counters: GuildCounters
+    counterIds: Record<string, number>
+    decayTimers: Timeout[]
+    events: CounterEventEmitter
+    counterTriggersByCounterId: Map<number, CounterTrigger[]>
+    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>
+  }
 }

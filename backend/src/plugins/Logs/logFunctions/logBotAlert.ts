@@ -1,11 +1,11 @@
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogBotAlertData {
-  body: string;
+  body: string
 }
 
 export function logBotAlert(pluginData: GuildPluginData<LogsPluginType>, data: LogBotAlertData) {
@@ -16,5 +16,5 @@ export function logBotAlert(pluginData: GuildPluginData<LogsPluginType>, data: L
       body: data.body,
     }),
     {},
-  );
+  )
 }

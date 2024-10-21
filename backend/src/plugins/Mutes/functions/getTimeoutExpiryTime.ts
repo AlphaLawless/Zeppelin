@@ -1,4 +1,4 @@
-import { MAX_TIMEOUT_DURATION } from "../../../data/Mutes.js";
+import { MAX_TIMEOUT_DURATION } from '../../../data/Mutes.js'
 
 /**
  * Since timeouts have a limited duration (max 28d) but we support mutes longer than that,
@@ -8,7 +8,7 @@ import { MAX_TIMEOUT_DURATION } from "../../../data/Mutes.js";
  */
 export function getTimeoutExpiryTime(muteExpiresAt: number | null | undefined): number {
   if (muteExpiresAt && muteExpiresAt - Date.now() <= MAX_TIMEOUT_DURATION) {
-    return muteExpiresAt;
+    return muteExpiresAt
   }
-  return Date.now() + MAX_TIMEOUT_DURATION;
+  return Date.now() + MAX_TIMEOUT_DURATION
 }

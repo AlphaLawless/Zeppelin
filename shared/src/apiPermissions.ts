@@ -21,7 +21,6 @@ export const permissionNames = {
 
 export type TPermissionHierarchy = Array<ApiPermissions | [ApiPermissions, TPermissionHierarchy]>;
 
-// prettier-ignore
 export const permissionHierarchy: TPermissionHierarchy = [
   [ApiPermissions.Owner, [
     [ApiPermissions.ManageAccess, [

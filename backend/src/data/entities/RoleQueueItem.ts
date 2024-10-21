@@ -1,16 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity("role_queue")
+@Entity('role_queue')
 export class RoleQueueItem {
-  @PrimaryGeneratedColumn() id: number;
+  @PrimaryGeneratedColumn() id: number
 
-  @Column() guild_id: string;
+  @Column() guild_id: string
 
-  @Column() user_id: string;
+  @Column() user_id: string
 
-  @Column() role_id: string;
+  @Column() role_id: string
 
-  @Column() should_add: boolean;
+  @Column() should_add: boolean
 
-  @Column() priority: number;
+  @Column() priority: number
 }

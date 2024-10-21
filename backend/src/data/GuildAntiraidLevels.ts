@@ -1,14 +1,14 @@
-import { Repository } from "typeorm";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { dataSource } from "./dataSource.js";
-import { AntiraidLevel } from "./entities/AntiraidLevel.js";
+import { Repository } from 'typeorm'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { dataSource } from './dataSource.js'
+import { AntiraidLevel } from './entities/AntiraidLevel.js'
 
 export class GuildAntiraidLevels extends BaseGuildRepository {
-  protected antiraidLevels: Repository<AntiraidLevel>;
+  protected antiraidLevels: Repository<AntiraidLevel>
 
   constructor(guildId: string) {
-    super(guildId);
-    this.antiraidLevels = dataSource.getRepository(AntiraidLevel);
+    super(guildId)
+    this.antiraidLevels = dataSource.getRepository(AntiraidLevel)
   }
 
   async get() {
@@ -16,16 +16,16 @@ export class GuildAntiraidLevels extends BaseGuildRepository {
       where: {
         guild_id: this.guildId,
       },
-    });
+    })
 
-    return row?.level ?? null;
+    return row?.level ?? null
   }
 
   async set(level: string | null) {
     if (level === null) {
       await this.antiraidLevels.delete({
         guild_id: this.guildId,
-      });
+      })
     } else {
       // Upsert: https://stackoverflow.com/a/47064558/316944
       // But the MySQL version: https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
@@ -37,10 +37,10 @@ export class GuildAntiraidLevels extends BaseGuildRepository {
           level,
         })
         .orUpdate({
-          conflict_target: ["guild_id"],
-          overwrite: ["level"],
+          conflict_target: ['guild_id'],
+          overwrite: ['level'],
         })
-        .execute();
+        .execute()
     }
   }
 }

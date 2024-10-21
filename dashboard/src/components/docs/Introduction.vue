@@ -36,9 +36,9 @@
 </template>
 
 <script lang="ts">
-  import Alert from 'vue-material-design-icons/Alert.vue';
+import Alert from 'vue-material-design-icons/Alert.vue'
 
-  export default {
-    components: { Alert },
-  };
+export default {
+  components: { Alert },
+}
 </script>

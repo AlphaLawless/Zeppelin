@@ -1,10 +1,10 @@
-import { ZeppelinPluginDocs } from "../../types.js";
-import { trimPluginDescription } from "../../utils.js";
-import { zRoleButtonsConfig } from "./types.js";
+import { ZeppelinPluginDocs } from '../../types.js'
+import { trimPluginDescription } from '../../utils.js'
+import { zRoleButtonsConfig } from './types.js'
 
 export const roleButtonsPluginDocs: ZeppelinPluginDocs = {
-  type: "stable",
-  prettyName: "Role buttons",
+  type: 'stable',
+  prettyName: 'Role buttons',
   description: trimPluginDescription(`
     Allow users to pick roles by clicking on buttons
   `),
@@ -80,4 +80,4 @@ export const roleButtonsPluginDocs: ZeppelinPluginDocs = {
     ~~~
   `),
   configSchema: zRoleButtonsConfig,
-};
+}

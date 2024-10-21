@@ -1,30 +1,30 @@
-import { logger } from "../logger.js";
+import { logger } from '../logger.js'
 
-const customIdFormat = /^([^:]+):\d+:(.*)$/;
+const customIdFormat = /^([^:]+):\d+:(.*)$/
 
 export function parseCustomId(customId: string): { namespace: string; data: any } {
-  const parts = customId.match(customIdFormat);
+  const parts = customId.match(customIdFormat)
   if (!parts) {
     return {
-      namespace: "",
+      namespace: '',
       data: null,
-    };
+    }
   }
 
-  let parsedData: any;
+  let parsedData: any
   try {
-    parsedData = JSON.parse(parts[2]);
+    parsedData = JSON.parse(parts[2])
   } catch (err) {
-    logger.debug(`Error while parsing custom id data (custom id: ${customId}): ${String(err)}`);
+    logger.debug(`Error while parsing custom id data (custom id: ${customId}): ${String(err)}`)
     return {
-      namespace: "",
+      namespace: '',
       data: null,
-    };
+    }
   }
 
   return {
     namespace: parts[1],
     // Skipping timestamp
     data: parsedData,
-  };
+  }
 }

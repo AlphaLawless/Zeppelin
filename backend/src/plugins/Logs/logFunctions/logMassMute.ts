@@ -1,14 +1,14 @@
-import { User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMassMuteData {
-  mod: User;
-  count: number;
+  mod: User
+  count: number
 }
 
 export function logMassMute(pluginData: GuildPluginData<LogsPluginType>, data: LogMassMuteData) {
@@ -20,5 +20,5 @@ export function logMassMute(pluginData: GuildPluginData<LogsPluginType>, data: L
       count: data.count,
     }),
     {},
-  );
+  )
 }

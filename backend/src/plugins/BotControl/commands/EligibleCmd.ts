@@ -1,11 +1,11 @@
-import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { isGuildInvite, resolveInvite } from "../../../utils.js";
-import { isEligible } from "../functions/isEligible.js";
-import { botControlCmd } from "../types.js";
+import { commandTypeHelpers as ct } from '../../../commandTypes.js'
+import { isGuildInvite, resolveInvite } from '../../../utils.js'
+import { isEligible } from '../functions/isEligible.js'
+import { botControlCmd } from '../types.js'
 
 export const EligibleCmd = botControlCmd({
-  trigger: ["eligible", "is_eligible", "iseligible"],
-  permission: "can_eligible",
+  trigger: ['eligible', 'is_eligible', 'iseligible'],
+  permission: 'can_eligible',
 
   signature: {
     user: ct.resolvedUser(),
@@ -13,19 +13,19 @@ export const EligibleCmd = botControlCmd({
   },
 
   async run({ pluginData, message: msg, args }) {
-    const invite = await resolveInvite(pluginData.client, args.inviteCode, true);
+    const invite = await resolveInvite(pluginData.client, args.inviteCode, true)
     if (!invite || !isGuildInvite(invite)) {
-      void msg.channel.send("Could not resolve invite");
-      return;
+      void msg.channel.send('Could not resolve invite')
+      return
     }
 
-    const { result, explanation } = await isEligible(pluginData, args.user, invite);
+    const { result, explanation } = await isEligible(pluginData, args.user, invite)
 
     if (result) {
-      void msg.channel.send(`Server is eligible: ${explanation}`);
-      return;
+      void msg.channel.send(`Server is eligible: ${explanation}`)
+      return
     }
 
-    void msg.channel.send(`Server is **NOT** eligible: ${explanation}`);
+    void msg.channel.send(`Server is **NOT** eligible: ${explanation}`)
   },
-});
+})

@@ -1,33 +1,33 @@
-import { MessageCreateOptions, NewsChannel, RESTJSONErrorCodes, Snowflake, TextChannel } from "discord.js";
-import { GuildPluginData } from "knub";
-import { Case } from "../../../data/entities/Case.js";
-import { isDiscordAPIError } from "../../../utils.js";
-import { InternalPosterPlugin } from "../../InternalPoster/InternalPosterPlugin.js";
-import { InternalPosterMessageResult } from "../../InternalPoster/functions/sendMessage.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { CasesPluginType } from "../types.js";
-import { getCaseEmbed } from "./getCaseEmbed.js";
-import { resolveCaseId } from "./resolveCaseId.js";
+import { MessageCreateOptions, NewsChannel, RESTJSONErrorCodes, Snowflake, TextChannel } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { Case } from '../../../data/entities/Case.js'
+import { isDiscordAPIError } from '../../../utils.js'
+import { InternalPosterPlugin } from '../../InternalPoster/InternalPosterPlugin.js'
+import { InternalPosterMessageResult } from '../../InternalPoster/functions/sendMessage.js'
+import { LogsPlugin } from '../../Logs/LogsPlugin.js'
+import { CasesPluginType } from '../types.js'
+import { getCaseEmbed } from './getCaseEmbed.js'
+import { resolveCaseId } from './resolveCaseId.js'
 
 export async function postToCaseLogChannel(
   pluginData: GuildPluginData<CasesPluginType>,
   content: MessageCreateOptions,
-  files?: MessageCreateOptions["files"],
+  files?: MessageCreateOptions['files'],
 ): Promise<InternalPosterMessageResult | null> {
-  const caseLogChannelId = pluginData.config.get().case_log_channel;
-  if (!caseLogChannelId) return null;
+  const caseLogChannelId = pluginData.config.get().case_log_channel
+  if (!caseLogChannelId) return null
 
-  const caseLogChannel = pluginData.guild.channels.cache.get(caseLogChannelId as Snowflake);
+  const caseLogChannel = pluginData.guild.channels.cache.get(caseLogChannelId as Snowflake)
   // This doesn't use `!isText() || isThread()` because TypeScript had some issues inferring types from it
-  if (!caseLogChannel || !(caseLogChannel instanceof TextChannel || caseLogChannel instanceof NewsChannel)) return null;
+  if (!caseLogChannel || !(caseLogChannel instanceof TextChannel || caseLogChannel instanceof NewsChannel)) return null
 
-  let result: InternalPosterMessageResult | null = null;
+  let result: InternalPosterMessageResult | null = null
   try {
     if (files != null) {
-      content.files = files;
+      content.files = files
     }
-    const poster = pluginData.getPlugin(InternalPosterPlugin);
-    result = await poster.sendMessage(caseLogChannel, { ...content });
+    const poster = pluginData.getPlugin(InternalPosterPlugin)
+    result = await poster.sendMessage(caseLogChannel, { ...content })
   } catch (e) {
     if (
       isDiscordAPIError(e) &&
@@ -35,53 +35,53 @@ export async function postToCaseLogChannel(
     ) {
       pluginData.getPlugin(LogsPlugin).logBotAlert({
         body: `Missing permissions to post mod cases in <#${caseLogChannel.id}>`,
-      });
-      return null;
+      })
+      return null
     }
 
-    throw e;
+    throw e
   }
 
-  return result;
+  return result
 }
 
 export async function postCaseToCaseLogChannel(
   pluginData: GuildPluginData<CasesPluginType>,
   caseOrCaseId: Case | number,
 ): Promise<void> {
-  const theCase = await pluginData.state.cases.find(resolveCaseId(caseOrCaseId));
-  if (!theCase) return;
+  const theCase = await pluginData.state.cases.find(resolveCaseId(caseOrCaseId))
+  if (!theCase) return
 
-  const caseEmbed = await getCaseEmbed(pluginData, caseOrCaseId, undefined, true);
-  if (!caseEmbed) return;
+  const caseEmbed = await getCaseEmbed(pluginData, caseOrCaseId, undefined, true)
+  if (!caseEmbed) return
 
   if (theCase.log_message_id) {
-    const [channelId, messageId] = theCase.log_message_id.split("-");
+    const [channelId, messageId] = theCase.log_message_id.split('-')
 
     try {
-      const poster = pluginData.getPlugin(InternalPosterPlugin);
-      const channel = pluginData.guild.channels.resolve(channelId as Snowflake);
+      const poster = pluginData.getPlugin(InternalPosterPlugin)
+      const channel = pluginData.guild.channels.resolve(channelId as Snowflake)
       if (channel?.isTextBased()) {
-        const message = await channel.messages.fetch(messageId);
+        const message = await channel.messages.fetch(messageId)
         if (message) {
-          await poster.editMessage(message, caseEmbed);
+          await poster.editMessage(message, caseEmbed)
         }
       }
-      return;
+      return
     } catch {} // eslint-disable-line no-empty
   }
 
   try {
-    const postedMessage = await postToCaseLogChannel(pluginData, caseEmbed);
+    const postedMessage = await postToCaseLogChannel(pluginData, caseEmbed)
     if (postedMessage) {
       await pluginData.state.cases.update(theCase.id, {
         log_message_id: `${postedMessage.channelId}-${postedMessage.id}`,
-      });
+      })
     }
   } catch {
     pluginData.getPlugin(LogsPlugin).logBotAlert({
       body: `Failed to post case #${theCase.case_number} to the case log channel`,
-    });
-    return;
+    })
+    return
   }
 }

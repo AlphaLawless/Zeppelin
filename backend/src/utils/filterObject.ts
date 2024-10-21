@@ -1,6 +1,6 @@
 type FilterResult<T> = {
-  [K in keyof T]?: T[K];
-};
+  [K in keyof T]?: T[K]
+}
 
 /**
  * Filter an object's properties based on its values and keys
@@ -12,5 +12,5 @@ export function filterObject<T extends object>(
 ): FilterResult<T> {
   return Object.fromEntries(
     Object.entries(object).filter(([key, value]) => filterFn(value as any, key as keyof T)),
-  ) as FilterResult<T>;
+  ) as FilterResult<T>
 }

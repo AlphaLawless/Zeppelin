@@ -1,30 +1,30 @@
-import { User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { runAutomodOnAntiraidLevel } from "../events/runAutomodOnAntiraidLevel.js";
-import { AutomodPluginType } from "../types.js";
+import { User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogsPlugin } from '../../Logs/LogsPlugin.js'
+import { runAutomodOnAntiraidLevel } from '../events/runAutomodOnAntiraidLevel.js'
+import { AutomodPluginType } from '../types.js'
 
 export async function setAntiraidLevel(
   pluginData: GuildPluginData<AutomodPluginType>,
   newLevel: string | null,
   user?: User,
 ) {
-  const oldLevel = pluginData.state.cachedAntiraidLevel;
-  pluginData.state.cachedAntiraidLevel = newLevel;
-  await pluginData.state.antiraidLevels.set(newLevel);
+  const oldLevel = pluginData.state.cachedAntiraidLevel
+  pluginData.state.cachedAntiraidLevel = newLevel
+  await pluginData.state.antiraidLevels.set(newLevel)
 
-  runAutomodOnAntiraidLevel(pluginData, newLevel, oldLevel, user);
+  runAutomodOnAntiraidLevel(pluginData, newLevel, oldLevel, user)
 
-  const logs = pluginData.getPlugin(LogsPlugin);
+  const logs = pluginData.getPlugin(LogsPlugin)
 
   if (user) {
     logs.logSetAntiraidUser({
-      level: newLevel ?? "off",
+      level: newLevel ?? 'off',
       user,
-    });
+    })
   } else {
     logs.logSetAntiraidAuto({
-      level: newLevel ?? "off",
-    });
+      level: newLevel ?? 'off',
+    })
   }
 }

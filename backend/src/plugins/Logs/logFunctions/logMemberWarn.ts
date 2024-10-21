@@ -1,16 +1,16 @@
-import { GuildMember } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { memberToTemplateSafeMember } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildMember } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { memberToTemplateSafeMember } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberWarnData {
-  mod: GuildMember;
-  member: GuildMember;
-  caseNumber: number;
-  reason: string;
+  mod: GuildMember
+  member: GuildMember
+  caseNumber: number
+  reason: string
 }
 
 export function logMemberWarn(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberWarnData) {
@@ -28,5 +28,5 @@ export function logMemberWarn(pluginData: GuildPluginData<LogsPluginType>, data:
       roles: Array.from(data.member.roles.cache.keys()),
       bot: data.member.user.bot,
     },
-  );
+  )
 }

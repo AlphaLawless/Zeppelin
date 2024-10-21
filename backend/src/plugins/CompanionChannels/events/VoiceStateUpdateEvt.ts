@@ -1,17 +1,17 @@
-import { handleCompanionPermissions } from "../functions/handleCompanionPermissions.js";
-import { companionChannelsEvt } from "../types.js";
+import { handleCompanionPermissions } from '../functions/handleCompanionPermissions.js'
+import { companionChannelsEvt } from '../types.js'
 
 export const VoiceStateUpdateEvt = companionChannelsEvt({
-  event: "voiceStateUpdate",
+  event: 'voiceStateUpdate',
   listener({ pluginData, args: { oldState, newState } }) {
-    const oldChannel = oldState.channel;
-    const newChannel = newState.channel;
+    const oldChannel = oldState.channel
+    const newChannel = newState.channel
 
-    const memberId = newState.member?.id ?? oldState.member?.id;
+    const memberId = newState.member?.id ?? oldState.member?.id
     if (!memberId) {
-      return;
+      return
     }
 
-    handleCompanionPermissions(pluginData, memberId, newChannel, oldChannel);
+    handleCompanionPermissions(pluginData, memberId, newChannel, oldChannel)
   },
-});
+})

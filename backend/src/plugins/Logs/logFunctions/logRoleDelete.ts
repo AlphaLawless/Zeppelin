@@ -1,13 +1,13 @@
-import { Role } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { roleToTemplateSafeRole } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { Role } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { roleToTemplateSafeRole } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogRoleDeleteData {
-  role: Role;
+  role: Role
 }
 
 export function logRoleDelete(pluginData: GuildPluginData<LogsPluginType>, data: LogRoleDeleteData) {
@@ -18,5 +18,5 @@ export function logRoleDelete(pluginData: GuildPluginData<LogsPluginType>, data:
       role: roleToTemplateSafeRole(data.role),
     }),
     {},
-  );
+  )
 }

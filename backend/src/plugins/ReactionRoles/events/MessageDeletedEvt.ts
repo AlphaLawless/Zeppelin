@@ -1,13 +1,13 @@
-import { reactionRolesEvt } from "../types.js";
+import { reactionRolesEvt } from '../types.js'
 
 export const MessageDeletedEvt = reactionRolesEvt({
-  event: "messageDelete",
+  event: 'messageDelete',
   allowBots: true,
   allowSelf: true,
 
   async listener(meta) {
-    const pluginData = meta.pluginData;
+    const pluginData = meta.pluginData
 
-    await pluginData.state.reactionRoles.removeFromMessage(meta.args.message.id);
+    await pluginData.state.reactionRoles.removeFromMessage(meta.args.message.id)
   },
-});
+})

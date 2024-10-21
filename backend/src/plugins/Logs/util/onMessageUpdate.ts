@@ -1,10 +1,10 @@
-import { EmbedData, GuildTextBasedChannel, Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import { cloneDeep } from "lodash";
-import { SavedMessage } from "../../../data/entities/SavedMessage.js";
-import { resolveUser } from "../../../utils.js";
-import { logMessageEdit } from "../logFunctions/logMessageEdit.js";
-import { LogsPluginType } from "../types.js";
+import { EmbedData, GuildTextBasedChannel, Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import lodash from 'lodash'
+import { SavedMessage } from '../../../data/entities/SavedMessage.js'
+import { resolveUser } from '../../../utils.js'
+import { logMessageEdit } from '../logFunctions/logMessageEdit.js'
+import { LogsPluginType } from '../types.js'
 
 export async function onMessageUpdate(
   pluginData: GuildPluginData<LogsPluginType>,
@@ -12,25 +12,25 @@ export async function onMessageUpdate(
   oldSavedMessage: SavedMessage,
 ) {
   // To log a message update, either the message content or a rich embed has to change
-  let logUpdate = false;
+  let logUpdate = false
 
   const oldEmbedsToCompare = ((oldSavedMessage.data.embeds || []) as EmbedData[])
-    .map((e) => cloneDeep(e))
-    .filter((e) => (e as EmbedData).type === "rich");
+    .map((e) => lodash.cloneDeep(e))
+    .filter((e) => (e as EmbedData).type === 'rich')
 
   const newEmbedsToCompare = ((savedMessage.data.embeds || []) as EmbedData[])
-    .map((e) => cloneDeep(e))
-    .filter((e) => (e as EmbedData).type === "rich");
+    .map((e) => lodash.cloneDeep(e))
+    .filter((e) => (e as EmbedData).type === 'rich')
 
   for (const embed of [...oldEmbedsToCompare, ...newEmbedsToCompare]) {
     if (embed.thumbnail) {
-      delete embed.thumbnail.width;
-      delete embed.thumbnail.height;
+      delete embed.thumbnail.width
+      delete embed.thumbnail.height
     }
 
     if (embed.image) {
-      delete embed.image.width;
-      delete embed.image.height;
+      delete embed.image.width
+      delete embed.image.height
     }
   }
 
@@ -39,20 +39,20 @@ export async function onMessageUpdate(
     oldEmbedsToCompare.length !== newEmbedsToCompare.length ||
     JSON.stringify(oldEmbedsToCompare) !== JSON.stringify(newEmbedsToCompare)
   ) {
-    logUpdate = true;
+    logUpdate = true
   }
 
   if (!logUpdate) {
-    return;
+    return
   }
 
-  const user = await resolveUser(pluginData.client, savedMessage.user_id);
-  const channel = pluginData.guild.channels.resolve(savedMessage.channel_id as Snowflake)! as GuildTextBasedChannel;
+  const user = await resolveUser(pluginData.client, savedMessage.user_id)
+  const channel = pluginData.guild.channels.resolve(savedMessage.channel_id as Snowflake)! as GuildTextBasedChannel
 
   logMessageEdit(pluginData, {
     user,
     channel,
     before: oldSavedMessage,
     after: savedMessage,
-  });
+  })
 }

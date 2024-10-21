@@ -1,14 +1,14 @@
-import { AnyThreadChannel } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
-import { channelToTemplateSafeChannel } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { AnyThreadChannel } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
+import { channelToTemplateSafeChannel } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogThreadCreateData {
-  thread: AnyThreadChannel;
+  thread: AnyThreadChannel
 }
 
 export function logThreadCreate(pluginData: GuildPluginData<LogsPluginType>, data: LogThreadCreateData) {
@@ -21,5 +21,5 @@ export function logThreadCreate(pluginData: GuildPluginData<LogsPluginType>, dat
     {
       ...resolveChannelIds(data.thread),
     },
-  );
+  )
 }

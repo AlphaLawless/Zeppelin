@@ -1,22 +1,21 @@
-import { guildPluginEventListener } from "knub";
-import { difference } from "lodash";
-import { isEqual } from "lodash";
-import { runAutomod } from "../functions/runAutomod.js";
-import { AutomodContext, AutomodPluginType } from "../types.js";
+import { guildPluginEventListener } from 'knub'
+import lodash from 'lodash'
+import { runAutomod } from '../functions/runAutomod.js'
+import { AutomodContext, AutomodPluginType } from '../types.js'
 
 export const RunAutomodOnMemberUpdate = guildPluginEventListener<AutomodPluginType>()({
-  event: "guildMemberUpdate",
+  event: 'guildMemberUpdate',
   listener({ pluginData, args: { oldMember, newMember } }) {
-    if (!oldMember) return;
-    if (oldMember.partial) return;
+    if (!oldMember) return
+    if (oldMember.partial) return
 
-    const oldRoles = [...oldMember.roles.cache.keys()];
-    const newRoles = [...newMember.roles.cache.keys()];
+    const oldRoles = [...oldMember.roles.cache.keys()]
+    const newRoles = [...newMember.roles.cache.keys()]
 
-    if (isEqual(oldRoles, newRoles)) return;
+    if (lodash.isEqual(oldRoles, newRoles)) return
 
-    const addedRoles = difference(newRoles, oldRoles);
-    const removedRoles = difference(oldRoles, newRoles);
+    const addedRoles = lodash.difference(newRoles, oldRoles)
+    const removedRoles = lodash.difference(oldRoles, newRoles)
 
     if (addedRoles.length || removedRoles.length) {
       const context: AutomodContext = {
@@ -27,11 +26,11 @@ export const RunAutomodOnMemberUpdate = guildPluginEventListener<AutomodPluginTy
           added: addedRoles,
           removed: removedRoles,
         },
-      };
+      }
 
       pluginData.state.queue.add(() => {
-        runAutomod(pluginData, context);
-      });
+        runAutomod(pluginData, context)
+      })
     }
   },
-});
+})

@@ -1,19 +1,19 @@
-import moment from "moment-timezone";
-import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { GuildArchives } from "../../../data/GuildArchives.js";
-import { getBaseUrl } from "../../../pluginUtils.js";
-import { sorter } from "../../../utils.js";
-import { botControlCmd } from "../types.js";
+import moment from 'moment-timezone'
+import { commandTypeHelpers as ct } from '../../../commandTypes.js'
+import { GuildArchives } from '../../../data/GuildArchives.js'
+import { getBaseUrl } from '../../../pluginUtils.js'
+import { sorter } from '../../../utils.js'
+import { botControlCmd } from '../types.js'
 
 const sortProps = {
-  totalTime: "TOTAL TIME",
-  averageTime: "AVERAGE TIME",
-  count: "SAMPLES",
-};
+  totalTime: 'TOTAL TIME',
+  averageTime: 'AVERAGE TIME',
+  count: 'SAMPLES',
+}
 
 export const ProfilerDataCmd = botControlCmd({
-  trigger: ["profiler_data"],
-  permission: "can_performance",
+  trigger: ['profiler_data'],
+  permission: 'can_performance',
 
   signature: {
     filter: ct.string({ required: false }),
@@ -21,36 +21,36 @@ export const ProfilerDataCmd = botControlCmd({
   },
 
   async run({ pluginData, message: msg, args }) {
-    if (args.sort === "samples") {
-      args.sort = "count";
+    if (args.sort === 'samples') {
+      args.sort = 'count'
     }
-    const sortProp = args.sort && sortProps[args.sort] ? args.sort : "totalTime";
+    const sortProp = args.sort && sortProps[args.sort] ? args.sort : 'totalTime'
 
-    const headerInfoItems = [`sorted by ${sortProps[sortProp]}`];
+    const headerInfoItems = [`sorted by ${sortProps[sortProp]}`]
 
-    const profilerData = pluginData.getKnubInstance().profiler.getData();
-    let entries = Object.entries(profilerData);
-    entries.sort(sorter((entry) => entry[1][sortProp], "DESC"));
+    const profilerData = pluginData.getKnubInstance().profiler.getData()
+    let entries = Object.entries(profilerData)
+    entries.sort(sorter((entry) => entry[1][sortProp], 'DESC'))
 
     if (args.filter) {
-      entries = entries.filter(([key]) => key.includes(args.filter));
-      headerInfoItems.push(`matching "${args.filter}"`);
+      entries = entries.filter(([key]) => key.includes(args.filter))
+      headerInfoItems.push(`matching "${args.filter}"`)
     }
 
     const formattedEntries = entries.map(([key, data]) => {
       const dataLines = [
-        ["Total time", `${Math.round(data.totalTime)} ms`],
-        ["Average time", `${Math.round(data.averageTime)} ms`],
-        ["Samples", data.count],
-      ];
-      return `${key}\n${dataLines.map((v) => `  ${v[0]}: ${v[1]}`).join("\n")}`;
-    });
-    const formatted = `Profiler data, ${headerInfoItems.join(", ")}:\n\n${formattedEntries.join("\n\n")}`;
+        ['Total time', `${Math.round(data.totalTime)} ms`],
+        ['Average time', `${Math.round(data.averageTime)} ms`],
+        ['Samples', data.count],
+      ]
+      return `${key}\n${dataLines.map((v) => `  ${v[0]}: ${v[1]}`).join('\n')}`
+    })
+    const formatted = `Profiler data, ${headerInfoItems.join(', ')}:\n\n${formattedEntries.join('\n\n')}`
 
-    const archives = GuildArchives.getGuildInstance("0");
-    const archiveId = await archives.create(formatted, moment().add(1, "hour"));
-    const archiveUrl = archives.getUrl(getBaseUrl(pluginData), archiveId);
+    const archives = GuildArchives.getGuildInstance('0')
+    const archiveId = await archives.create(formatted, moment().add(1, 'hour'))
+    const archiveUrl = archives.getUrl(getBaseUrl(pluginData), archiveId)
 
-    msg.channel.send(`Link: ${archiveUrl}`);
+    msg.channel.send(`Link: ${archiveUrl}`)
   },
-});
+})

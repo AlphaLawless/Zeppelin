@@ -1,16 +1,16 @@
-import { PersistedData } from "../../../data/entities/PersistedData.js";
-import { persistEvt } from "../types.js";
+import { PersistedData } from '../../../data/entities/PersistedData.js'
+import { persistEvt } from '../types.js'
 
 export const StoreDataEvt = persistEvt({
-  event: "guildMemberRemove",
+  event: 'guildMemberRemove',
 
   async listener({ pluginData, args: { member } }) {
-    const config = await pluginData.config.getForUser(member.user);
-    const persistData: Partial<PersistedData> = {};
+    const config = await pluginData.config.getForUser(member.user)
+    const persistData: Partial<PersistedData> = {}
 
     // FIXME: New caching thing, or fix deadlocks with this plugin
     if (member.partial) {
-      return;
+      return
       // Djs hasn't cached member data => use db cache
       /*
       const data = await pluginData.getPlugin(GuildMemberCachePlugin).getCachedMemberData(member.id);
@@ -27,18 +27,18 @@ export const StoreDataEvt = persistEvt({
       }*/
     } else {
       // Djs has cached member data => use that
-      const memberRoles = Array.from(member.roles.cache.keys());
-      const rolesToPersist = config.persisted_roles.filter((roleId) => memberRoles.includes(roleId));
+      const memberRoles = Array.from(member.roles.cache.keys())
+      const rolesToPersist = config.persisted_roles.filter((roleId) => memberRoles.includes(roleId))
       if (rolesToPersist.length) {
-        persistData.roles = rolesToPersist;
+        persistData.roles = rolesToPersist
       }
       if (config.persist_nicknames && member.nickname) {
-        persistData.nickname = member.nickname as any;
+        persistData.nickname = member.nickname as any
       }
     }
 
     if (Object.keys(persistData).length) {
-      pluginData.state.persistedData.set(member.id, persistData);
+      pluginData.state.persistedData.set(member.id, persistData)
     }
   },
-});
+})

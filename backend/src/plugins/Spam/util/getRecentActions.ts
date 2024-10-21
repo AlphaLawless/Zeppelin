@@ -1,5 +1,5 @@
-import { GuildPluginData } from "knub";
-import { RecentActionType, SpamPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { RecentActionType, SpamPluginType } from '../types.js'
 
 export function getRecentActions(
   pluginData: GuildPluginData<SpamPluginType>,
@@ -9,10 +9,10 @@ export function getRecentActions(
   since: number,
 ) {
   return pluginData.state.recentActions.filter((action) => {
-    if (action.timestamp < since) return false;
-    if (action.type !== type) return false;
-    if (action.actionGroupId !== actionGroupId) return false;
-    if (action.userId !== userId) return false;
-    return true;
-  });
+    if (action.timestamp < since) return false
+    if (action.type !== type) return false
+    if (action.actionGroupId !== actionGroupId) return false
+    if (action.userId !== userId) return false
+    return true
+  })
 }

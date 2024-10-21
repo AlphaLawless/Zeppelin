@@ -1,23 +1,23 @@
-import { Attachment, ChatInputCommandInteraction, GuildMember, Message, User } from "discord.js";
-import humanizeDuration from "humanize-duration";
-import { GuildPluginData } from "knub";
-import { ERRORS, RecoverablePluginError } from "../../../../RecoverablePluginError.js";
-import { logger } from "../../../../logger.js";
+import { Attachment, ChatInputCommandInteraction, GuildMember, Message, User } from 'discord.js'
+import humanizeDuration from 'humanize-duration'
+import { GuildPluginData } from 'knub'
+import { ERRORS, RecoverablePluginError } from '../../../../RecoverablePluginError.js'
+import { logger } from '../../../../logger.js'
 import {
   UnknownUser,
   UserNotificationMethod,
   asSingleLine,
   isDiscordAPIError,
   renderUsername,
-} from "../../../../utils.js";
-import { MutesPlugin } from "../../../Mutes/MutesPlugin.js";
-import { MuteResult } from "../../../Mutes/types.js";
-import { handleAttachmentLinkDetectionAndGetRestriction } from "../../functions/attachmentLinkReaction.js";
+} from '../../../../utils.js'
+import { MutesPlugin } from '../../../Mutes/MutesPlugin.js'
+import { MuteResult } from '../../../Mutes/types.js'
+import { handleAttachmentLinkDetectionAndGetRestriction } from '../../functions/attachmentLinkReaction.js'
 import {
   formatReasonWithAttachments,
   formatReasonWithMessageLinkForAttachments,
-} from "../../functions/formatReasonForAttachments.js";
-import { ModActionsPluginType } from "../../types.js";
+} from '../../functions/formatReasonForAttachments.js'
+import { ModActionsPluginType } from '../../types.js'
 
 /**
  * The actual function run by both !mute and !forcemute.
@@ -35,19 +35,19 @@ export async function actualMuteCmd(
   contactMethods?: UserNotificationMethod[],
 ) {
   if (await handleAttachmentLinkDetectionAndGetRestriction(pluginData, context, reason)) {
-    return;
+    return
   }
 
-  const timeUntilUnmute = time && humanizeDuration(time);
+  const timeUntilUnmute = time && humanizeDuration(time)
   const formattedReason =
     reason || attachments.length > 0
-      ? await formatReasonWithMessageLinkForAttachments(pluginData, reason ?? "", context, attachments)
-      : undefined;
+      ? await formatReasonWithMessageLinkForAttachments(pluginData, reason ?? '', context, attachments)
+      : undefined
   const formattedReasonWithAttachments =
-    reason || attachments.length > 0 ? formatReasonWithAttachments(reason ?? "", attachments) : undefined;
+    reason || attachments.length > 0 ? formatReasonWithAttachments(reason ?? '', attachments) : undefined
 
-  let muteResult: MuteResult;
-  const mutesPlugin = pluginData.getPlugin(MutesPlugin);
+  let muteResult: MuteResult
+  const mutesPlugin = pluginData.getPlugin(MutesPlugin)
 
   try {
     muteResult = await mutesPlugin.muteUser(user.id, time, formattedReason, formattedReasonWithAttachments, {
@@ -56,53 +56,53 @@ export async function actualMuteCmd(
         modId: mod.id,
         ppId,
       },
-    });
+    })
   } catch (e) {
     if (e instanceof RecoverablePluginError && e.code === ERRORS.NO_MUTE_ROLE_IN_CONFIG) {
-      pluginData.state.common.sendErrorMessage(context, "Could not mute the user: no mute role set in config");
+      pluginData.state.common.sendErrorMessage(context, 'Could not mute the user: no mute role set in config')
     } else if (isDiscordAPIError(e) && e.code === 10007) {
-      pluginData.state.common.sendErrorMessage(context, "Could not mute the user: unknown member");
+      pluginData.state.common.sendErrorMessage(context, 'Could not mute the user: unknown member')
     } else {
-      logger.error(`Failed to mute user ${user.id}: ${e.stack}`);
+      logger.error(`Failed to mute user ${user.id}: ${e.stack}`)
       if (user.id == null) {
         // FIXME: Debug
         // tslint:disable-next-line:no-console
-        console.trace("[DEBUG] Null user.id for mute");
+        console.trace('[DEBUG] Null user.id for mute')
       }
-      pluginData.state.common.sendErrorMessage(context, "Could not mute the user");
+      pluginData.state.common.sendErrorMessage(context, 'Could not mute the user')
     }
 
-    return;
+    return
   }
 
   // Confirm the action to the moderator
-  let response: string;
+  let response: string
   if (time) {
     if (muteResult.updatedExistingMute) {
       response = asSingleLine(`
         Updated **${renderUsername(user)}**'s
         mute to ${timeUntilUnmute} (Case #${muteResult.case.case_number})
-      `);
+      `)
     } else {
       response = asSingleLine(`
         Muted **${renderUsername(user)}**
         for ${timeUntilUnmute} (Case #${muteResult.case.case_number})
-      `);
+      `)
     }
   } else {
     if (muteResult.updatedExistingMute) {
       response = asSingleLine(`
         Updated **${renderUsername(user)}**'s
         mute to indefinite (Case #${muteResult.case.case_number})
-      `);
+      `)
     } else {
       response = asSingleLine(`
         Muted **${renderUsername(user)}**
         indefinitely (Case #${muteResult.case.case_number})
-      `);
+      `)
     }
   }
 
-  if (muteResult.notifyResult.text) response += ` (${muteResult.notifyResult.text})`;
-  pluginData.state.common.sendSuccessMessage(context, response);
+  if (muteResult.notifyResult.text) response += ` (${muteResult.notifyResult.text})`
+  pluginData.state.common.sendSuccessMessage(context, response)
 }

@@ -1,19 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity("reminders")
+@Entity('reminders')
 export class Reminder {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
-  @Column() guild_id: string;
+  @Column() guild_id: string
 
-  @Column() user_id: string;
+  @Column() user_id: string
 
-  @Column() channel_id: string;
+  @Column() channel_id: string
 
-  @Column() remind_at: string;
+  @Column() remind_at: string
 
-  @Column() body: string;
+  @Column() body: string
 
-  @Column() created_at: string;
+  @Column() created_at: string
 }

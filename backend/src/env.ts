@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
-import fs from "fs";
-import path from "path";
-import { z } from "zod";
-import { rootDir } from "./paths.js";
+import fs from 'fs'
+import path from 'path'
+import dotenv from 'dotenv'
+import { z } from 'zod'
+import { rootDir } from './paths.js'
 
 const envType = z.object({
   KEY: z.string().length(32),
@@ -18,9 +18,9 @@ const envType = z.object({
     .preprocess(
       (v) =>
         String(v)
-          .split(",")
+          .split(',')
           .map((s) => s.trim())
-          .filter((s) => s !== ""),
+          .filter((s) => s !== ''),
       z.array(z.string()),
     )
     .optional(),
@@ -29,9 +29,9 @@ const envType = z.object({
     .preprocess(
       (v) =>
         String(v)
-          .split(",")
+          .split(',')
           .map((s) => s.trim())
-          .filter((s) => s !== ""),
+          .filter((s) => s !== ''),
       z.array(z.string()),
     )
     .optional(),
@@ -51,16 +51,16 @@ const envType = z.object({
   DEBUG: z
     .string()
     .optional()
-    .transform((str) => str === "true"),
+    .transform((str) => str === 'true'),
 
-  NODE_ENV: z.string().default("development"),
-});
+  NODE_ENV: z.string().default('development'),
+})
 
-let toValidate = { ...process.env };
-const envPath = path.join(rootDir, ".env");
+let toValidate = { ...process.env }
+const envPath = path.join(rootDir, '.env')
 if (fs.existsSync(envPath)) {
-  const buf = fs.readFileSync(envPath);
-  toValidate = { ...toValidate, ...dotenv.parse(buf) };
+  const buf = fs.readFileSync(envPath)
+  toValidate = { ...toValidate, ...dotenv.parse(buf) }
 }
 
-export const env = envType.parse(toValidate);
+export const env = envType.parse(toValidate)

@@ -1,10 +1,10 @@
-import { GuildPluginData } from "knub";
-import { MemberCacheItem } from "../../../data/entities/MemberCacheItem.js";
-import { GuildMemberCachePluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { MemberCacheItem } from '../../../data/entities/MemberCacheItem.js'
+import { GuildMemberCachePluginType } from '../types.js'
 
 export function getCachedMemberData(
   pluginData: GuildPluginData<GuildMemberCachePluginType>,
   userId: string,
 ): Promise<MemberCacheItem | null> {
-  return pluginData.state.memberCache.getCachedMemberData(userId);
+  return pluginData.state.memberCache.getCachedMemberData(userId)
 }

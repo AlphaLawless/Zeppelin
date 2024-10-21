@@ -1,12 +1,12 @@
-import { ZeppelinPluginDocs } from "../../types.js";
-import { zCountersConfig } from "./types.js";
+import { ZeppelinPluginDocs } from '../../types.js'
+import { zCountersConfig } from './types.js'
 
 export const countersPluginDocs: ZeppelinPluginDocs = {
-  type: "stable",
+  type: 'stable',
   configSchema: zCountersConfig,
 
-  prettyName: "Counters",
+  prettyName: 'Counters',
   description:
-    "Keep track of per-user, per-channel, or global numbers and trigger specific actions based on this number",
+    'Keep track of per-user, per-channel, or global numbers and trigger specific actions based on this number',
   configurationGuide: "See <a href='/docs/setup-guides/counters'>Counters setup guide</a>",
-};
+}

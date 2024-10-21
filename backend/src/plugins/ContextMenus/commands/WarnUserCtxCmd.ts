@@ -1,11 +1,11 @@
-import { PermissionFlagsBits } from "discord.js";
-import { guildPluginUserContextMenuCommand } from "knub";
-import { launchWarnActionModal } from "../actions/warn.js";
+import { PermissionFlagsBits } from 'discord.js'
+import { guildPluginUserContextMenuCommand } from 'knub'
+import { launchWarnActionModal } from '../actions/warn.js'
 
 export const WarnCmd = guildPluginUserContextMenuCommand({
-  name: "Warn",
+  name: 'Warn',
   defaultMemberPermissions: PermissionFlagsBits.ManageMessages.toString(),
   async run({ pluginData, interaction }) {
-    await launchWarnActionModal(pluginData, interaction, interaction.targetId);
+    await launchWarnActionModal(pluginData, interaction, interaction.targetId)
   },
-});
+})

@@ -1,8 +1,8 @@
-import { ChatInputCommandInteraction, Message } from "discord.js";
-import { GuildPluginData } from "knub";
-import { sendContextResponse } from "../../../../pluginUtils.js";
-import { CasesPlugin } from "../../../Cases/CasesPlugin.js";
-import { ModActionsPluginType } from "../../types.js";
+import { ChatInputCommandInteraction, Message } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { sendContextResponse } from '../../../../pluginUtils.js'
+import { CasesPlugin } from '../../../Cases/CasesPlugin.js'
+import { ModActionsPluginType } from '../../types.js'
 
 export async function actualCaseCmd(
   pluginData: GuildPluginData<ModActionsPluginType>,
@@ -11,15 +11,15 @@ export async function actualCaseCmd(
   caseNumber: number,
   show: boolean | null,
 ) {
-  const theCase = await pluginData.state.cases.findByCaseNumber(caseNumber);
+  const theCase = await pluginData.state.cases.findByCaseNumber(caseNumber)
 
   if (!theCase) {
-    void pluginData.state.common.sendErrorMessage(context, "Case not found", undefined, undefined, show !== true);
-    return;
+    void pluginData.state.common.sendErrorMessage(context, 'Case not found', undefined, undefined, show !== true)
+    return
   }
 
-  const casesPlugin = pluginData.getPlugin(CasesPlugin);
-  const embed = await casesPlugin.getCaseEmbed(theCase.id, authorId);
+  const casesPlugin = pluginData.getPlugin(CasesPlugin)
+  const embed = await casesPlugin.getCaseEmbed(theCase.id, authorId)
 
-  void sendContextResponse(context, { ...embed, ephemeral: show !== true });
+  void sendContextResponse(context, { ...embed, ephemeral: show !== true })
 }

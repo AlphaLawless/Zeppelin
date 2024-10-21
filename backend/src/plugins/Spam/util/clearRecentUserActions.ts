@@ -1,5 +1,5 @@
-import { GuildPluginData } from "knub";
-import { RecentActionType, SpamPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { RecentActionType, SpamPluginType } from '../types.js'
 
 export function clearRecentUserActions(
   pluginData: GuildPluginData<SpamPluginType>,
@@ -8,6 +8,6 @@ export function clearRecentUserActions(
   actionGroupId: string,
 ) {
   pluginData.state.recentActions = pluginData.state.recentActions.filter((action) => {
-    return action.type !== type || action.userId !== userId || action.actionGroupId !== actionGroupId;
-  });
+    return action.type !== type || action.userId !== userId || action.actionGroupId !== actionGroupId
+  })
 }

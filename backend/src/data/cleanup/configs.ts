@@ -1,22 +1,22 @@
-import moment from "moment-timezone";
-import { In } from "typeorm";
-import { DBDateFormat } from "../../utils.js";
-import { dataSource } from "../dataSource.js";
-import { Config } from "../entities/Config.js";
+import moment from 'moment-timezone'
+import { In } from 'typeorm'
+import { DBDateFormat } from '../../utils.js'
+import { dataSource } from '../dataSource.js'
+import { Config } from '../entities/Config.js'
 
-const CLEAN_PER_LOOP = 50;
+const CLEAN_PER_LOOP = 50
 
 export async function cleanupConfigs() {
-  const configRepository = dataSource.getRepository(Config);
+  const configRepository = dataSource.getRepository(Config)
 
   // FIXME: The query below doesn't work on MySQL 8.0. Pending an update.
-  return;
+  return
 
-  let cleaned = 0;
-  let rows;
+  let cleaned = 0
+  let rows
 
   // >1 month old: 1 config retained per month
-  const oneMonthCutoff = moment.utc().subtract(30, "days").format(DBDateFormat);
+  const oneMonthCutoff = moment.utc().subtract(30, 'days').format(DBDateFormat)
   do {
     rows = await dataSource.query(
       `
@@ -42,19 +42,19 @@ export async function cleanupConfigs() {
       WHERE row_num > 1
     `,
       [oneMonthCutoff],
-    );
+    )
 
     if (rows.length > 0) {
       await configRepository.delete({
         id: In(rows.map((r) => r.id)),
-      });
+      })
     }
 
-    cleaned += rows.length;
-  } while (rows.length === CLEAN_PER_LOOP);
+    cleaned += rows.length
+  } while (rows.length === CLEAN_PER_LOOP)
 
   // >2 weeks old: 1 config retained per day
-  const twoWeekCutoff = moment.utc().subtract(2, "weeks").format(DBDateFormat);
+  const twoWeekCutoff = moment.utc().subtract(2, 'weeks').format(DBDateFormat)
   do {
     rows = await dataSource.query(
       `
@@ -80,16 +80,16 @@ export async function cleanupConfigs() {
       WHERE row_num > 1
     `,
       [twoWeekCutoff, oneMonthCutoff],
-    );
+    )
 
     if (rows.length > 0) {
       await configRepository.delete({
         id: In(rows.map((r) => r.id)),
-      });
+      })
     }
 
-    cleaned += rows.length;
-  } while (rows.length === CLEAN_PER_LOOP);
+    cleaned += rows.length
+  } while (rows.length === CLEAN_PER_LOOP)
 
-  return cleaned;
+  return cleaned
 }

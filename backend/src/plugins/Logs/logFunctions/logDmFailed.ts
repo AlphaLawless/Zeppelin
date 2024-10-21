@@ -1,15 +1,15 @@
-import { User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { UnknownUser } from "../../../utils.js";
-import { userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { UnknownUser } from '../../../utils.js'
+import { userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogDmFailedData {
-  source: string;
-  user: User | UnknownUser;
+  source: string
+  user: User | UnknownUser
 }
 
 export function logDmFailed(pluginData: GuildPluginData<LogsPluginType>, data: LogDmFailedData) {
@@ -24,5 +24,5 @@ export function logDmFailed(pluginData: GuildPluginData<LogsPluginType>, data: L
       userId: data.user.id,
       bot: data.user instanceof User ? data.user.bot : false,
     },
-  );
+  )
 }

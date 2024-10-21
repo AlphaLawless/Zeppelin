@@ -1,16 +1,16 @@
-import { GuildTextBasedChannel, User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { resolveChannelIds } from "../../../utils/resolveChannelIds.js";
-import { channelToTemplateSafeChannel, userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildTextBasedChannel, User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { resolveChannelIds } from '../../../utils/resolveChannelIds.js'
+import { channelToTemplateSafeChannel, userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogPostedScheduledMessageData {
-  author: User;
-  channel: GuildTextBasedChannel;
-  messageId: string;
+  author: User
+  channel: GuildTextBasedChannel
+  messageId: string
 }
 
 export function logPostedScheduledMessage(
@@ -30,5 +30,5 @@ export function logPostedScheduledMessage(
       bot: data.author.bot,
       ...resolveChannelIds(data.channel),
     },
-  );
+  )
 }

@@ -36,36 +36,34 @@
 </template>
 
 <script lang="ts">
-import { mapState } from "vuex";
-import { ApiPermissions, hasPermission } from "@zeppelinbot/shared/apiPermissions.js";
-import { AuthState, GuildState } from "../../store/types";
-import { ApiError, formPost } from "../../api";
-import moment from "moment";
+import { mapState } from 'vuex'
+import { ApiError, formPost } from '../../api'
+import { GuildState } from '../../store/types'
 
 export default {
   async mounted() {
     try {
-      await this.$store.dispatch("guilds/loadGuild", this.$route.params.guildId);
+      await this.$store.dispatch('guilds/loadGuild', this.$route.params.guildId)
     } catch (err) {
       if (err instanceof ApiError) {
-        this.$router.push('/dashboard');
-        return;
+        this.$router.push('/dashboard')
+        return
       }
 
-      throw err;
+      throw err
     }
 
     if (this.guild == null) {
-      this.$router.push('/dashboard');
-      return;
+      this.$router.push('/dashboard')
+      return
     }
 
-    this.loading = false;
+    this.loading = false
   },
   computed: {
-    ...mapState("guilds", {
+    ...mapState('guilds', {
       guild(guilds: GuildState) {
-        return guilds.available.get(this.$route.params.guildId);
+        return guilds.available.get(this.$route.params.guildId)
       },
     }),
   },
@@ -76,52 +74,52 @@ export default {
       importing: false,
       importError: null,
       importFile: null,
-      importCaseMode: "bumpImportedCases",
+      importCaseMode: 'bumpImportedCases',
 
       exporting: false,
-    };
+    }
   },
   methods: {
     selectImportFile(file: File) {
-      this.importFile = file;
+      this.importFile = file
     },
     async runImport() {
       if (this.importing) {
-        return;
+        return
       }
 
-      if (! this.importFile) {
-        return;
+      if (!this.importFile) {
+        return
       }
 
-      this.importError = null;
-      this.importing = true;
+      this.importError = null
+      this.importing = true
 
       try {
-        await this.$store.dispatch("guilds/importData", {
+        await this.$store.dispatch('guilds/importData', {
           guildId: this.$route.params.guildId,
           data: JSON.parse(await (this.importFile as File).text()),
           caseHandlingMode: this.importCaseMode,
-        });
+        })
       } catch (err) {
-        this.importError = err.body?.error ?? String(err);
-        return;
+        this.importError = err.body?.error ?? String(err)
+        return
       } finally {
-        this.importing = false;
-        this.importFile = null;
+        this.importing = false
+        this.importFile = null
       }
 
-      window.alert("Data imported successfully!");
+      window.alert('Data imported successfully!')
     },
     async runExport() {
       if (this.exporting) {
-        return;
+        return
       }
 
-      this.exporting = true;
+      this.exporting = true
 
-      formPost(`guilds/${this.$route.params.guildId}/export`, {}, { target: "_blank" });
+      formPost(`guilds/${this.$route.params.guildId}/export`, {}, { target: '_blank' })
     },
   },
-};
+}
 </script>

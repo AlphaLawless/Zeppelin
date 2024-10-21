@@ -1,20 +1,21 @@
 import {
-  escapeCodeBlock,
-  escapeInlineCode,
   GuildChannel,
   GuildMember,
   GuildTextBasedChannel,
   Snowflake,
   User,
-} from "discord.js";
+  escapeCodeBlock,
+  escapeInlineCode,
+} from 'discord.js'
 import {
-  baseCommandParameterTypeHelpers,
   CommandContext,
-  messageCommandBaseTypeConverters,
   TypeConversionError,
-} from "knub";
-import { createTypeHelper } from "knub-command-manager";
+  baseCommandParameterTypeHelpers,
+  messageCommandBaseTypeConverters,
+} from 'knub'
+import { createTypeHelper } from 'knub-command-manager'
 import {
+  UnknownUser,
   channelMentionRegex,
   convertDelayStringToMS,
   inputPatternToRegExp,
@@ -23,99 +24,98 @@ import {
   resolveUser,
   resolveUserId,
   roleMentionRegex,
-  UnknownUser,
-} from "./utils.js";
-import { isValidTimezone } from "./utils/isValidTimezone.js";
-import { MessageTarget, resolveMessageTarget } from "./utils/resolveMessageTarget.js";
+} from './utils.js'
+import { isValidTimezone } from './utils/isValidTimezone.js'
+import { MessageTarget, resolveMessageTarget } from './utils/resolveMessageTarget.js'
 
 export const commandTypes = {
   ...messageCommandBaseTypeConverters,
 
   delay(value) {
-    const result = convertDelayStringToMS(value);
+    const result = convertDelayStringToMS(value)
     if (result == null) {
-      throw new TypeConversionError(`Could not convert ${value} to a delay`);
+      throw new TypeConversionError(`Could not convert ${value} to a delay`)
     }
 
-    return result;
+    return result
   },
 
   async resolvedUser(value, context: CommandContext<any>) {
-    const result = await resolveUser(context.pluginData.client, value);
+    const result = await resolveUser(context.pluginData.client, value)
     if (result == null || result instanceof UnknownUser) {
-      throw new TypeConversionError(`User \`${escapeCodeBlock(value)}\` was not found`);
+      throw new TypeConversionError(`User \`${escapeCodeBlock(value)}\` was not found`)
     }
-    return result;
+    return result
   },
 
   async resolvedUserLoose(value, context: CommandContext<any>) {
-    const result = await resolveUser(context.pluginData.client, value);
+    const result = await resolveUser(context.pluginData.client, value)
     if (result == null) {
-      throw new TypeConversionError(`Invalid user: \`${escapeCodeBlock(value)}\``);
+      throw new TypeConversionError(`Invalid user: \`${escapeCodeBlock(value)}\``)
     }
-    return result;
+    return result
   },
 
   async resolvedMember(value, context: CommandContext<any>) {
     if (!(context.message.channel instanceof GuildChannel)) {
-      throw new TypeConversionError(`Cannot resolve member for non-guild channels`);
+      throw new TypeConversionError(`Cannot resolve member for non-guild channels`)
     }
 
-    const result = await resolveMember(context.pluginData.client, context.message.channel.guild, value);
+    const result = await resolveMember(context.pluginData.client, context.message.channel.guild, value)
     if (result == null) {
-      throw new TypeConversionError(`Member \`${escapeCodeBlock(value)}\` was not found or they have left the server`);
+      throw new TypeConversionError(`Member \`${escapeCodeBlock(value)}\` was not found or they have left the server`)
     }
-    return result;
+    return result
   },
 
   async messageTarget(value: string, context: CommandContext<any>) {
-    value = String(value).trim();
+    value = String(value).trim()
 
-    const result = await resolveMessageTarget(context.pluginData, value);
+    const result = await resolveMessageTarget(context.pluginData, value)
     if (!result) {
-      throw new TypeConversionError(`Unknown message \`${escapeInlineCode(value)}\``);
+      throw new TypeConversionError(`Unknown message \`${escapeInlineCode(value)}\``)
     }
 
-    return result;
+    return result
   },
 
   async anyId(value: string, context: CommandContext<any>) {
-    const userId = resolveUserId(context.pluginData.client, value);
-    if (userId) return userId as Snowflake;
+    const userId = resolveUserId(context.pluginData.client, value)
+    if (userId) return userId as Snowflake
 
-    const channelIdMatch = value.match(channelMentionRegex);
-    if (channelIdMatch) return channelIdMatch[1] as Snowflake;
+    const channelIdMatch = value.match(channelMentionRegex)
+    if (channelIdMatch) return channelIdMatch[1] as Snowflake
 
-    const roleIdMatch = value.match(roleMentionRegex);
-    if (roleIdMatch) return roleIdMatch[1] as Snowflake;
+    const roleIdMatch = value.match(roleMentionRegex)
+    if (roleIdMatch) return roleIdMatch[1] as Snowflake
 
     if (isValidSnowflake(value)) {
-      return value as Snowflake;
+      return value as Snowflake
     }
 
-    throw new TypeConversionError(`Could not parse ID: \`${escapeInlineCode(value)}\``);
+    throw new TypeConversionError(`Could not parse ID: \`${escapeInlineCode(value)}\``)
   },
 
   regex(value: string): RegExp {
     try {
-      return inputPatternToRegExp(value);
+      return inputPatternToRegExp(value)
     } catch (e) {
-      throw new TypeConversionError(`Could not parse RegExp: \`${escapeInlineCode(e.message)}\``);
+      throw new TypeConversionError(`Could not parse RegExp: \`${escapeInlineCode(e.message)}\``)
     }
   },
 
   timezone(value: string) {
     if (!isValidTimezone(value)) {
-      throw new TypeConversionError(`Invalid timezone: ${escapeInlineCode(value)}`);
+      throw new TypeConversionError(`Invalid timezone: ${escapeInlineCode(value)}`)
     }
 
-    return value;
+    return value
   },
 
   guildTextBasedChannel(value: string, context: CommandContext<any>) {
-    return messageCommandBaseTypeConverters.textChannel(value, context);
+    return messageCommandBaseTypeConverters.textChannel(value, context)
   },
-};
+}
 
 export const commandTypeHelpers = {
   ...baseCommandParameterTypeHelpers,
@@ -129,4 +129,4 @@ export const commandTypeHelpers = {
   regex: createTypeHelper<RegExp>(commandTypes.regex),
   timezone: createTypeHelper<string>(commandTypes.timezone),
   guildTextBasedChannel: createTypeHelper<GuildTextBasedChannel>(commandTypes.guildTextBasedChannel),
-};
+}

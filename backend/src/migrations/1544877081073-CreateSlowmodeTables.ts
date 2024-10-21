@@ -1,73 +1,70 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
 export class CreateSlowmodeTables1544877081073 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.createTable(
       new Table({
-        name: "slowmode_channels",
+        name: 'slowmode_channels',
         columns: [
           {
-            name: "guild_id",
-            type: "bigint",
+            name: 'guild_id',
+            type: 'bigint',
             unsigned: true,
             isPrimary: true,
           },
           {
-            name: "channel_id",
-            type: "bigint",
+            name: 'channel_id',
+            type: 'bigint',
             unsigned: true,
             isPrimary: true,
           },
           {
-            name: "slowmode_seconds",
-            type: "int",
+            name: 'slowmode_seconds',
+            type: 'int',
             unsigned: true,
           },
         ],
         indices: [],
       }),
-    );
+    )
 
     await queryRunner.createTable(
       new Table({
-        name: "slowmode_users",
+        name: 'slowmode_users',
         columns: [
           {
-            name: "guild_id",
-            type: "bigint",
+            name: 'guild_id',
+            type: 'bigint',
             unsigned: true,
             isPrimary: true,
           },
           {
-            name: "channel_id",
-            type: "bigint",
+            name: 'channel_id',
+            type: 'bigint',
             unsigned: true,
             isPrimary: true,
           },
           {
-            name: "user_id",
-            type: "bigint",
+            name: 'user_id',
+            type: 'bigint',
             unsigned: true,
             isPrimary: true,
           },
           {
-            name: "expires_at",
-            type: "datetime",
+            name: 'expires_at',
+            type: 'datetime',
           },
         ],
         indices: [
           {
-            columnNames: ["expires_at"],
+            columnNames: ['expires_at'],
           },
         ],
       }),
-    );
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {
-    await Promise.all([
-      queryRunner.dropTable("slowmode_channels", true),
-      queryRunner.dropTable("slowmode_users", true),
-    ]);
+    await Promise.all([queryRunner.dropTable('slowmode_channels', true), queryRunner.dropTable('slowmode_users', true)])
   }
 }

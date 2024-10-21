@@ -1,26 +1,26 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("reaction_roles")
+@Entity('reaction_roles')
 export class ReactionRole {
   @Column()
   @PrimaryColumn()
-  guild_id: string;
+  guild_id: string
 
   @Column()
   @PrimaryColumn()
-  channel_id: string;
+  channel_id: string
 
   @Column()
   @PrimaryColumn()
-  message_id: string;
+  message_id: string
 
   @Column()
   @PrimaryColumn()
-  emoji: string;
+  emoji: string
 
-  @Column() role_id: string;
+  @Column() role_id: string
 
-  @Column() is_exclusive: boolean;
+  @Column() is_exclusive: boolean
 
-  @Column() order: number;
+  @Column() order: number
 }

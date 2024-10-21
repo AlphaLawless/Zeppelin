@@ -1,11 +1,11 @@
-import { PermissionFlagsBits } from "discord.js";
-import { guildPluginUserContextMenuCommand } from "knub";
-import { launchNoteActionModal } from "../actions/note.js";
+import { PermissionFlagsBits } from 'discord.js'
+import { guildPluginUserContextMenuCommand } from 'knub'
+import { launchNoteActionModal } from '../actions/note.js'
 
 export const NoteCmd = guildPluginUserContextMenuCommand({
-  name: "Note",
+  name: 'Note',
   defaultMemberPermissions: PermissionFlagsBits.ManageMessages.toString(),
   async run({ pluginData, interaction }) {
-    await launchNoteActionModal(pluginData, interaction, interaction.targetId);
+    await launchNoteActionModal(pluginData, interaction, interaction.targetId)
   },
-});
+})

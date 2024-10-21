@@ -1,11 +1,11 @@
-import { commandTypeHelpers as ct } from "../../../../commandTypes.js";
-import { modActionsMsgCmd } from "../../types.js";
-import { actualHideCaseCmd } from "../hidecase/actualHideCaseCmd.js";
+import { commandTypeHelpers as ct } from '../../../../commandTypes.js'
+import { modActionsMsgCmd } from '../../types.js'
+import { actualHideCaseCmd } from '../hidecase/actualHideCaseCmd.js'
 
 export const UnhideCaseMsgCmd = modActionsMsgCmd({
-  trigger: ["unhide", "unhidecase", "unhide_case"],
-  permission: "can_hidecase",
-  description: "Un-hide the specified case, making it appear in !cases and !info again",
+  trigger: ['unhide', 'unhidecase', 'unhide_case'],
+  permission: 'can_hidecase',
+  description: 'Un-hide the specified case, making it appear in !cases and !info again',
 
   signature: [
     {
@@ -14,6 +14,6 @@ export const UnhideCaseMsgCmd = modActionsMsgCmd({
   ],
 
   async run({ pluginData, message: msg, args }) {
-    actualHideCaseCmd(pluginData, msg, args.caseNum);
+    actualHideCaseCmd(pluginData, msg, args.caseNum)
   },
-});
+})

@@ -1,35 +1,35 @@
-import { Repository } from "typeorm";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { dataSource } from "./dataSource.js";
-import { RoleQueueItem } from "./entities/RoleQueueItem.js";
+import { Repository } from 'typeorm'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { dataSource } from './dataSource.js'
+import { RoleQueueItem } from './entities/RoleQueueItem.js'
 
 export class GuildRoleQueue extends BaseGuildRepository {
-  private roleQueue: Repository<RoleQueueItem>;
+  private roleQueue: Repository<RoleQueueItem>
 
   constructor(guildId) {
-    super(guildId);
-    this.roleQueue = dataSource.getRepository(RoleQueueItem);
+    super(guildId)
+    this.roleQueue = dataSource.getRepository(RoleQueueItem)
   }
 
   consumeNextRoleAssignments(count: number): Promise<RoleQueueItem[]> {
     return dataSource.transaction(async (entityManager) => {
-      const repository = entityManager.getRepository(RoleQueueItem);
+      const repository = entityManager.getRepository(RoleQueueItem)
 
       const nextAssignments = await repository
         .createQueryBuilder()
-        .where("guild_id = :guildId", { guildId: this.guildId })
-        .addOrderBy("priority", "DESC")
-        .addOrderBy("id", "ASC")
+        .where('guild_id = :guildId', { guildId: this.guildId })
+        .addOrderBy('priority', 'DESC')
+        .addOrderBy('id', 'ASC')
         .take(count)
-        .getMany();
+        .getMany()
 
       if (nextAssignments.length > 0) {
-        const ids = nextAssignments.map((assignment) => assignment.id);
-        await repository.createQueryBuilder().where("id IN (:ids)", { ids }).delete().execute();
+        const ids = nextAssignments.map((assignment) => assignment.id)
+        await repository.createQueryBuilder().where('id IN (:ids)', { ids }).delete().execute()
       }
 
-      return nextAssignments;
-    });
+      return nextAssignments
+    })
   }
 
   async addQueueItem(userId: string, roleId: string, shouldAdd: boolean, priority = 0) {
@@ -39,6 +39,6 @@ export class GuildRoleQueue extends BaseGuildRepository {
       role_id: roleId,
       should_add: shouldAdd,
       priority,
-    });
+    })
   }
 }

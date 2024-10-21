@@ -1,52 +1,52 @@
-import type { Knub } from "knub";
-import { performance } from "perf_hooks";
-import { noop, SECONDS } from "../utils.js";
+import type { Knub } from 'knub'
+import { performance } from 'perf_hooks'
+import { SECONDS, noop } from '../utils.js'
 
-type Profiler = Knub["profiler"];
+type Profiler = Knub['profiler']
 
-let _profilingEnabled = false;
+let _profilingEnabled = false
 
 export const profilingEnabled = () => {
-  return _profilingEnabled;
-};
+  return _profilingEnabled
+}
 
 export const enableProfiling = () => {
-  _profilingEnabled = true;
-};
+  _profilingEnabled = true
+}
 
 export const disableProfiling = () => {
-  _profilingEnabled = false;
-};
+  _profilingEnabled = false
+}
 
 export const startProfiling = (profiler: Profiler, key: string) => {
   if (!profilingEnabled()) {
-    return noop;
+    return noop
   }
 
-  const startTime = performance.now();
+  const startTime = performance.now()
   return () => {
-    profiler.addDataPoint(key, performance.now() - startTime);
-  };
-};
+    profiler.addDataPoint(key, performance.now() - startTime)
+  }
+}
 
 export const calculateBlocking = (coarseness = 10) => {
   if (!profilingEnabled()) {
-    return () => 0;
+    return () => 0
   }
 
-  let last = performance.now();
-  let result = 0;
+  let last = performance.now()
+  let result = 0
   const interval = setInterval(() => {
-    const now = performance.now();
-    const blockedTime = Math.max(0, now - last - coarseness);
-    result += blockedTime;
-    last = now;
-  }, coarseness);
+    const now = performance.now()
+    const blockedTime = Math.max(0, now - last - coarseness)
+    result += blockedTime
+    last = now
+  }, coarseness)
 
-  setTimeout(() => clearInterval(interval), 10 * SECONDS);
+  setTimeout(() => clearInterval(interval), 10 * SECONDS)
 
   return () => {
-    clearInterval(interval);
-    return result;
-  };
-};
+    clearInterval(interval)
+    return result
+  }
+}

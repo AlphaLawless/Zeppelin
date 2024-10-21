@@ -1,17 +1,17 @@
-import { Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import z from "zod";
-import { TemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { convertDelayStringToMS, noop, zDelayString, zSnowflake } from "../../../utils.js";
-import { ActionError } from "../ActionError.js";
-import { CustomEventsPluginType, TCustomEvent } from "../types.js";
+import { Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import z from 'zod'
+import { TemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { convertDelayStringToMS, noop, zDelayString, zSnowflake } from '../../../utils.js'
+import { ActionError } from '../ActionError.js'
+import { CustomEventsPluginType, TCustomEvent } from '../types.js'
 
 export const zMakeRoleMentionableAction = z.strictObject({
-  type: z.literal("make_role_mentionable"),
+  type: z.literal('make_role_mentionable'),
   role: zSnowflake,
   timeout: zDelayString,
-});
-export type TMakeRoleMentionableAction = z.infer<typeof zMakeRoleMentionableAction>;
+})
+export type TMakeRoleMentionableAction = z.infer<typeof zMakeRoleMentionableAction>
 
 export async function makeRoleMentionableAction(
   pluginData: GuildPluginData<CustomEventsPluginType>,
@@ -20,15 +20,15 @@ export async function makeRoleMentionableAction(
   event: TCustomEvent,
   eventData: any, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
-  const role = pluginData.guild.roles.cache.get(action.role as Snowflake);
+  const role = pluginData.guild.roles.cache.get(action.role as Snowflake)
   if (!role) {
-    throw new ActionError(`Unknown role: ${role}`);
+    throw new ActionError(`Unknown role: ${role}`)
   }
 
-  await role.setMentionable(true, `Custom event: ${event.name}`);
+  await role.setMentionable(true, `Custom event: ${event.name}`)
 
-  const timeout = convertDelayStringToMS(action.timeout)!;
+  const timeout = convertDelayStringToMS(action.timeout)!
   setTimeout(() => {
-    role.setMentionable(false, `Custom event: ${event.name}`).catch(noop);
-  }, timeout);
+    role.setMentionable(false, `Custom event: ${event.name}`).catch(noop)
+  }, timeout)
 }

@@ -32,7 +32,7 @@
 </style>
 
 <script lang="ts">
-  export default {
-    props: ["active"],
-  };
+export default {
+  props: ['active'],
+}
 </script>

@@ -1,15 +1,15 @@
-import { Snowflake } from "discord.js";
-import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { canUseEmoji, isDiscordAPIError, isValidEmoji, noop, trimPluginDescription } from "../../../utils.js";
-import { canReadChannel } from "../../../utils/canReadChannel.js";
-import { TReactionRolePair, reactionRolesCmd } from "../types.js";
-import { applyReactionRoleReactionsToMessage } from "../util/applyReactionRoleReactionsToMessage.js";
+import { Snowflake } from 'discord.js'
+import { commandTypeHelpers as ct } from '../../../commandTypes.js'
+import { canUseEmoji, isDiscordAPIError, isValidEmoji, noop, trimPluginDescription } from '../../../utils.js'
+import { canReadChannel } from '../../../utils/canReadChannel.js'
+import { TReactionRolePair, reactionRolesCmd } from '../types.js'
+import { applyReactionRoleReactionsToMessage } from '../util/applyReactionRoleReactionsToMessage.js'
 
-const CLEAR_ROLES_EMOJI = "❌";
+const CLEAR_ROLES_EMOJI = '❌'
 
 export const InitReactionRolesCmd = reactionRolesCmd({
-  trigger: "reaction_roles",
-  permission: "can_manage",
+  trigger: 'reaction_roles',
+  permission: 'can_manage',
   description: trimPluginDescription(`
   This command allows you to add reaction roles to a given message.  
   The basic usage is as follows:  
@@ -28,7 +28,7 @@ export const InitReactionRolesCmd = reactionRolesCmd({
     message: ct.messageTarget(),
     reactionRolePairs: ct.string({ catchAll: true }),
 
-    exclusive: ct.bool({ option: true, isSwitch: true, shortcut: "e" }),
+    exclusive: ct.bool({ option: true, isSwitch: true, shortcut: 'e' }),
   },
 
   async run({ message: msg, args, pluginData }) {
@@ -36,39 +36,39 @@ export const InitReactionRolesCmd = reactionRolesCmd({
       void pluginData.state.common.sendErrorMessage(
         msg,
         "You can't add reaction roles to channels you can't see yourself",
-      );
-      return;
+      )
+      return
     }
 
-    let targetMessage;
+    let targetMessage
     try {
-      targetMessage = await args.message.channel.messages.fetch(args.message.messageId);
+      targetMessage = await args.message.channel.messages.fetch(args.message.messageId)
     } catch (e) {
       if (isDiscordAPIError(e)) {
-        void pluginData.state.common.sendErrorMessage(msg, `Error ${e.code} while getting message: ${e.message}`);
-        return;
+        void pluginData.state.common.sendErrorMessage(msg, `Error ${e.code} while getting message: ${e.message}`)
+        return
       }
 
-      throw e;
+      throw e
     }
 
     // Clear old reaction roles for the message from the DB
-    await pluginData.state.reactionRoles.removeFromMessage(targetMessage.id);
+    await pluginData.state.reactionRoles.removeFromMessage(targetMessage.id)
 
     // Turn "emoji = role" pairs into an array of tuples of the form [emoji, roleId]
     // Emoji is either a unicode emoji or the snowflake of a custom emoji
     const emojiRolePairs: TReactionRolePair[] = args.reactionRolePairs
       .trim()
-      .split("\n")
+      .split('\n')
       .map((v) => v.split(/[\s=,]+/).map((v) => v.trim())) // tslint:disable-line
       .map((pair): TReactionRolePair => {
-        const customEmojiMatch = pair[0].match(/^<a?:(.*?):(\d+)>$/);
+        const customEmojiMatch = pair[0].match(/^<a?:(.*?):(\d+)>$/)
         if (customEmojiMatch) {
-          return [customEmojiMatch[2], pair[1], customEmojiMatch[1]];
+          return [customEmojiMatch[2], pair[1], customEmojiMatch[1]]
         } else {
-          return pair as TReactionRolePair;
+          return pair as TReactionRolePair
         }
-      });
+      })
 
     // Verify the specified emojis and roles are valid and usable
     for (const pair of emojiRolePairs) {
@@ -76,33 +76,33 @@ export const InitReactionRolesCmd = reactionRolesCmd({
         void pluginData.state.common.sendErrorMessage(
           msg,
           `The emoji for clearing roles (${CLEAR_ROLES_EMOJI}) is reserved and cannot be used`,
-        );
-        return;
+        )
+        return
       }
 
       if (!isValidEmoji(pair[0])) {
-        void pluginData.state.common.sendErrorMessage(msg, `Invalid emoji: ${pair[0]}`);
-        return;
+        void pluginData.state.common.sendErrorMessage(msg, `Invalid emoji: ${pair[0]}`)
+        return
       }
 
       if (!canUseEmoji(pluginData.client, pair[0])) {
         void pluginData.state.common.sendErrorMessage(
           msg,
           "I can only use regular emojis and custom emojis from servers I'm on",
-        );
-        return;
+        )
+        return
       }
 
       if (!pluginData.guild.roles.cache.has(pair[1] as Snowflake)) {
-        void pluginData.state.common.sendErrorMessage(msg, `Unknown role ${pair[1]}`);
-        return;
+        void pluginData.state.common.sendErrorMessage(msg, `Unknown role ${pair[1]}`)
+        return
       }
     }
 
-    const progressMessage = msg.channel.send("Adding reaction roles...");
+    const progressMessage = msg.channel.send('Adding reaction roles...')
 
     // Save the new reaction roles to the database
-    let pos = 0;
+    let pos = 0
     for (const pair of emojiRolePairs) {
       await pluginData.state.reactionRoles.add(
         args.message.channel.id,
@@ -111,25 +111,25 @@ export const InitReactionRolesCmd = reactionRolesCmd({
         pair[1],
         args.exclusive,
         pos,
-      );
-      pos++;
+      )
+      pos++
     }
 
     // Apply the reactions themselves
-    const reactionRoles = await pluginData.state.reactionRoles.getForMessage(targetMessage.id);
+    const reactionRoles = await pluginData.state.reactionRoles.getForMessage(targetMessage.id)
     const errors = await applyReactionRoleReactionsToMessage(
       pluginData,
       targetMessage.channel.id,
       targetMessage.id,
       reactionRoles,
-    );
+    )
 
     if (errors?.length) {
-      void pluginData.state.common.sendErrorMessage(msg, `Errors while adding reaction roles:\n${errors.join("\n")}`);
+      void pluginData.state.common.sendErrorMessage(msg, `Errors while adding reaction roles:\n${errors.join('\n')}`)
     } else {
-      void pluginData.state.common.sendSuccessMessage(msg, "Reaction roles added");
+      void pluginData.state.common.sendSuccessMessage(msg, 'Reaction roles added')
     }
 
-    (await progressMessage).delete().catch(noop);
+    ;(await progressMessage).delete().catch(noop)
   },
-});
+})

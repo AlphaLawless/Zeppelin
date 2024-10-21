@@ -1,24 +1,24 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("button_roles")
+@Entity('button_roles')
 export class ButtonRole {
   @Column()
   @PrimaryColumn()
-  guild_id: string;
+  guild_id: string
 
   @Column()
   @PrimaryColumn()
-  channel_id: string;
+  channel_id: string
 
   @Column()
   @PrimaryColumn()
-  message_id: string;
+  message_id: string
 
   @Column()
   @PrimaryColumn()
-  button_id: string;
+  button_id: string
 
-  @Column() button_group: string;
+  @Column() button_group: string
 
-  @Column() button_name: string;
+  @Column() button_name: string
 }

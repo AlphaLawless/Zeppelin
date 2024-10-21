@@ -20,9 +20,9 @@ export const CaseNameToType = {
   unmute: CaseTypes.Unmute,
   deleted: CaseTypes.Deleted,
   softban: CaseTypes.Softban,
-};
+}
 
 export const CaseTypeToName = Object.entries(CaseNameToType).reduce((map, [name, type]) => {
-  map[type] = name;
-  return map;
-}, {}) as Record<CaseTypes, string>;
+  map[type] = name
+  return map
+}, {}) as Record<CaseTypes, string>

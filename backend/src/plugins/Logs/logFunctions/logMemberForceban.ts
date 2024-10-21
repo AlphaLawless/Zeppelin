@@ -1,16 +1,16 @@
-import { GuildMember, Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { memberToTemplateSafeMember } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildMember, Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { memberToTemplateSafeMember } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberForcebanData {
-  mod: GuildMember;
-  userId: Snowflake;
-  caseNumber: number;
-  reason: string;
+  mod: GuildMember
+  userId: Snowflake
+  caseNumber: number
+  reason: string
 }
 
 export function logMemberForceban(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberForcebanData) {
@@ -26,5 +26,5 @@ export function logMemberForceban(pluginData: GuildPluginData<LogsPluginType>, d
     {
       userId: data.userId,
     },
-  );
+  )
 }

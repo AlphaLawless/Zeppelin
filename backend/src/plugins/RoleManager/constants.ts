@@ -1,1 +1,1 @@
-export const PRIORITY_ROLE_PRIORITY = 10;
+export const PRIORITY_ROLE_PRIORITY = 10

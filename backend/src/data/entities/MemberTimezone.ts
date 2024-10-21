@@ -1,14 +1,14 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("member_timezones")
+@Entity('member_timezones')
 export class MemberTimezone {
   @Column()
   @PrimaryColumn()
-  guild_id: string;
+  guild_id: string
 
   @Column()
   @PrimaryColumn()
-  member_id: string;
+  member_id: string
 
-  @Column() timezone: string;
+  @Column() timezone: string
 }

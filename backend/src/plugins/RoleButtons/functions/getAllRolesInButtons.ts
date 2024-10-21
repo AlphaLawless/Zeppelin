@@ -1,10 +1,10 @@
-import { TRoleButtonsConfigItem } from "../types.js";
+import { TRoleButtonsConfigItem } from '../types.js'
 
 // This function will be more complex in the future when the plugin supports select menus + sub-menus
 export function getAllRolesInButtons(buttons: TRoleButtonsConfigItem): string[] {
-  const roles = new Set<string>();
+  const roles = new Set<string>()
   for (const option of buttons.options) {
-    roles.add(option.role_id);
+    roles.add(option.role_id)
   }
-  return Array.from(roles);
+  return Array.from(roles)
 }

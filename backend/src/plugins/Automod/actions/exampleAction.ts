@@ -1,6 +1,6 @@
-import z from "zod";
-import { zBoundedCharacters } from "../../../utils.js";
-import { automodAction } from "../helpers.js";
+import z from 'zod'
+import { zBoundedCharacters } from '../../../utils.js'
+import { automodAction } from '../helpers.js'
 
 export const ExampleAction = automodAction({
   configSchema: z.strictObject({
@@ -11,4 +11,4 @@ export const ExampleAction = automodAction({
   async apply({ pluginData, contexts, actionConfig }) {
     // TODO: Everything
   },
-});
+})

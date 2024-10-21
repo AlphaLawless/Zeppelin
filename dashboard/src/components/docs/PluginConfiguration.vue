@@ -137,10 +137,10 @@
 </template>
 
 <script lang="ts">
-  import CodeBlock from "./CodeBlock.vue";
-  import Expandable from "../Expandable.vue";
+import Expandable from '../Expandable.vue'
+import CodeBlock from './CodeBlock.vue'
 
-  export default {
-    components: { CodeBlock, Expandable },
-  };
+export default {
+  components: { CodeBlock, Expandable },
+}
 </script>

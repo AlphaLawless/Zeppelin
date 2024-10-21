@@ -1,11 +1,11 @@
-import { BasePluginType } from "knub";
-import { z } from "zod";
+import { BasePluginType } from 'knub'
+import { z } from 'zod'
 
-export const zGuildInfoSaverConfig = z.strictObject({});
+export const zGuildInfoSaverConfig = z.strictObject({})
 
 export interface GuildInfoSaverPluginType extends BasePluginType {
-  config: z.infer<typeof zGuildInfoSaverConfig>;
+  config: z.infer<typeof zGuildInfoSaverConfig>
   state: {
-    updateInterval: NodeJS.Timeout;
-  };
+    updateInterval: NodeJS.Timeout
+  }
 }

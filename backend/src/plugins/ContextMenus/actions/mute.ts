@@ -6,20 +6,20 @@ import {
   ModalSubmitInteraction,
   TextInputBuilder,
   TextInputStyle,
-} from "discord.js";
-import humanizeDuration from "humanize-duration";
-import { GuildPluginData } from "knub";
-import { ERRORS, RecoverablePluginError } from "../../../RecoverablePluginError.js";
-import { logger } from "../../../logger.js";
-import { canActOn } from "../../../pluginUtils.js";
-import { convertDelayStringToMS } from "../../../utils.js";
-import { CaseArgs } from "../../Cases/types.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { ModActionsPlugin } from "../../ModActions/ModActionsPlugin.js";
-import { MutesPlugin } from "../../Mutes/MutesPlugin.js";
-import { MODAL_TIMEOUT } from "../commands/ModMenuUserCtxCmd.js";
-import { ContextMenuPluginType, ModMenuActionType } from "../types.js";
-import { updateAction } from "./update.js";
+} from 'discord.js'
+import humanizeDuration from 'humanize-duration'
+import { GuildPluginData } from 'knub'
+import { ERRORS, RecoverablePluginError } from '../../../RecoverablePluginError.js'
+import { logger } from '../../../logger.js'
+import { canActOn } from '../../../pluginUtils.js'
+import { convertDelayStringToMS } from '../../../utils.js'
+import { CaseArgs } from '../../Cases/types.js'
+import { LogsPlugin } from '../../Logs/LogsPlugin.js'
+import { ModActionsPlugin } from '../../ModActions/ModActionsPlugin.js'
+import { MutesPlugin } from '../../Mutes/MutesPlugin.js'
+import { MODAL_TIMEOUT } from '../commands/ModMenuUserCtxCmd.js'
+import { ContextMenuPluginType, ModMenuActionType } from '../types.js'
+import { updateAction } from './update.js'
 
 async function muteAction(
   pluginData: GuildPluginData<ContextMenuPluginType>,
@@ -30,64 +30,64 @@ async function muteAction(
   interaction: ButtonInteraction | ContextMenuCommandInteraction,
   submitInteraction: ModalSubmitInteraction,
 ) {
-  const interactionToReply = interaction.isButton() ? interaction : submitInteraction;
-  const executingMember = await pluginData.guild.members.fetch(interaction.user.id);
+  const interactionToReply = interaction.isButton() ? interaction : submitInteraction
+  const executingMember = await pluginData.guild.members.fetch(interaction.user.id)
   const userCfg = await pluginData.config.getMatchingConfig({
     channelId: interaction.channelId,
     member: executingMember,
-  });
+  })
 
-  const modactions = pluginData.getPlugin(ModActionsPlugin);
+  const modactions = pluginData.getPlugin(ModActionsPlugin)
   if (!userCfg.can_use || !(await modactions.hasMutePermission(executingMember, interaction.channelId))) {
     await interactionToReply.editReply({
-      content: "Cannot mute: insufficient permissions",
+      content: 'Cannot mute: insufficient permissions',
       embeds: [],
       components: [],
-    });
-    return;
+    })
+    return
   }
 
-  const targetMember = await pluginData.guild.members.fetch(target);
+  const targetMember = await pluginData.guild.members.fetch(target)
   if (!canActOn(pluginData, executingMember, targetMember)) {
     await interactionToReply.editReply({
-      content: "Cannot mute: insufficient permissions",
+      content: 'Cannot mute: insufficient permissions',
       embeds: [],
       components: [],
-    });
-    return;
+    })
+    return
   }
 
   const caseArgs: Partial<CaseArgs> = {
     modId: executingMember.id,
-  };
-  const mutes = pluginData.getPlugin(MutesPlugin);
-  const durationMs = duration ? convertDelayStringToMS(duration)! : undefined;
+  }
+  const mutes = pluginData.getPlugin(MutesPlugin)
+  const durationMs = duration ? convertDelayStringToMS(duration)! : undefined
 
   try {
-    const result = await mutes.muteUser(target, durationMs, reason, reason, { caseArgs });
-    const messageResultText = result.notifyResult.text ? ` (${result.notifyResult.text})` : "";
+    const result = await mutes.muteUser(target, durationMs, reason, reason, { caseArgs })
+    const messageResultText = result.notifyResult.text ? ` (${result.notifyResult.text})` : ''
     const muteMessage = `Muted **${result.case!.user_name}** ${
-      durationMs ? `for ${humanizeDuration(durationMs)}` : "indefinitely"
-    } (Case #${result.case!.case_number})${messageResultText}`;
+      durationMs ? `for ${humanizeDuration(durationMs)}` : 'indefinitely'
+    } (Case #${result.case!.case_number})${messageResultText}`
 
     if (evidence) {
-      await updateAction(pluginData, executingMember, result.case!, evidence);
+      await updateAction(pluginData, executingMember, result.case!, evidence)
     }
 
-    await interactionToReply.editReply({ content: muteMessage, embeds: [], components: [] });
+    await interactionToReply.editReply({ content: muteMessage, embeds: [], components: [] })
   } catch (e) {
     await interactionToReply.editReply({
-      content: "Plugin error, please check your BOT_ALERTs",
+      content: 'Plugin error, please check your BOT_ALERTs',
       embeds: [],
       components: [],
-    });
+    })
 
     if (e instanceof RecoverablePluginError && e.code === ERRORS.NO_MUTE_ROLE_IN_CONFIG) {
       pluginData.getPlugin(LogsPlugin).logBotAlert({
         body: `Failed to mute <@!${target}> in ContextMenu action \`mute\` because a mute role has not been specified in server config`,
-      });
+      })
     } else {
-      throw e;
+      throw e
     }
   }
 }
@@ -97,42 +97,42 @@ export async function launchMuteActionModal(
   interaction: ButtonInteraction | ContextMenuCommandInteraction,
   target: string,
 ) {
-  const modalId = `${ModMenuActionType.MUTE}:${interaction.id}`;
-  const modal = new ModalBuilder().setCustomId(modalId).setTitle("Mute");
+  const modalId = `${ModMenuActionType.MUTE}:${interaction.id}`
+  const modal = new ModalBuilder().setCustomId(modalId).setTitle('Mute')
   const durationIn = new TextInputBuilder()
-    .setCustomId("duration")
-    .setLabel("Duration (Optional)")
+    .setCustomId('duration')
+    .setLabel('Duration (Optional)')
     .setRequired(false)
-    .setStyle(TextInputStyle.Short);
+    .setStyle(TextInputStyle.Short)
   const reasonIn = new TextInputBuilder()
-    .setCustomId("reason")
-    .setLabel("Reason (Optional)")
+    .setCustomId('reason')
+    .setLabel('Reason (Optional)')
     .setRequired(false)
-    .setStyle(TextInputStyle.Paragraph);
+    .setStyle(TextInputStyle.Paragraph)
   const evidenceIn = new TextInputBuilder()
-    .setCustomId("evidence")
-    .setLabel("Evidence (Optional)")
+    .setCustomId('evidence')
+    .setLabel('Evidence (Optional)')
     .setRequired(false)
-    .setStyle(TextInputStyle.Paragraph);
-  const durationRow = new ActionRowBuilder<TextInputBuilder>().addComponents(durationIn);
-  const reasonRow = new ActionRowBuilder<TextInputBuilder>().addComponents(reasonIn);
-  const evidenceRow = new ActionRowBuilder<TextInputBuilder>().addComponents(evidenceIn);
-  modal.addComponents(durationRow, reasonRow, evidenceRow);
+    .setStyle(TextInputStyle.Paragraph)
+  const durationRow = new ActionRowBuilder<TextInputBuilder>().addComponents(durationIn)
+  const reasonRow = new ActionRowBuilder<TextInputBuilder>().addComponents(reasonIn)
+  const evidenceRow = new ActionRowBuilder<TextInputBuilder>().addComponents(evidenceIn)
+  modal.addComponents(durationRow, reasonRow, evidenceRow)
 
-  await interaction.showModal(modal);
+  await interaction.showModal(modal)
   await interaction
     .awaitModalSubmit({ time: MODAL_TIMEOUT, filter: (i) => i.customId == modalId })
     .then(async (submitted) => {
       if (interaction.isButton()) {
-        await submitted.deferUpdate().catch((err) => logger.error(`Mute interaction defer failed: ${err}`));
+        await submitted.deferUpdate().catch((err) => logger.error(`Mute interaction defer failed: ${err}`))
       } else if (interaction.isContextMenuCommand()) {
-        await submitted.deferReply({ ephemeral: true });
+        await submitted.deferReply({ ephemeral: true })
       }
 
-      const duration = submitted.fields.getTextInputValue("duration");
-      const reason = submitted.fields.getTextInputValue("reason");
-      const evidence = submitted.fields.getTextInputValue("evidence");
+      const duration = submitted.fields.getTextInputValue('duration')
+      const reason = submitted.fields.getTextInputValue('reason')
+      const evidence = submitted.fields.getTextInputValue('evidence')
 
-      await muteAction(pluginData, duration, reason, evidence, target, interaction, submitted);
-    });
+      await muteAction(pluginData, duration, reason, evidence, target, interaction, submitted)
+    })
 }

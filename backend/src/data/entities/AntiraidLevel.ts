@@ -1,11 +1,11 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("antiraid_levels")
+@Entity('antiraid_levels')
 export class AntiraidLevel {
   @Column()
   @PrimaryColumn()
-  guild_id: string;
+  guild_id: string
 
   @Column()
-  level: string;
+  level: string
 }

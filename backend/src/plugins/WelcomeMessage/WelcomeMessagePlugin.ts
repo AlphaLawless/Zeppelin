@@ -1,8 +1,8 @@
-import { PluginOptions, guildPlugin } from "knub";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { LogsPlugin } from "../Logs/LogsPlugin.js";
-import { SendWelcomeMessageEvt } from "./events/SendWelcomeMessageEvt.js";
-import { WelcomeMessagePluginType, zWelcomeMessageConfig } from "./types.js";
+import { PluginOptions, guildPlugin } from 'knub'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { LogsPlugin } from '../Logs/LogsPlugin.js'
+import { SendWelcomeMessageEvt } from './events/SendWelcomeMessageEvt.js'
+import { WelcomeMessagePluginType, zWelcomeMessageConfig } from './types.js'
 
 const defaultOptions: PluginOptions<WelcomeMessagePluginType> = {
   config: {
@@ -10,24 +10,22 @@ const defaultOptions: PluginOptions<WelcomeMessagePluginType> = {
     send_to_channel: null,
     message: null,
   },
-};
+}
 
 export const WelcomeMessagePlugin = guildPlugin<WelcomeMessagePluginType>()({
-  name: "welcome_message",
+  name: 'welcome_message',
 
   dependencies: () => [LogsPlugin],
   configParser: (input) => zWelcomeMessageConfig.parse(input),
   defaultOptions,
 
   // prettier-ignore
-  events: [
-    SendWelcomeMessageEvt,
-  ],
+  events: [SendWelcomeMessageEvt],
 
   beforeLoad(pluginData) {
-    const { state, guild } = pluginData;
+    const { state, guild } = pluginData
 
-    state.logs = new GuildLogs(guild.id);
-    state.sentWelcomeMessages = new Set();
+    state.logs = new GuildLogs(guild.id)
+    state.sentWelcomeMessages = new Set()
   },
-});
+})

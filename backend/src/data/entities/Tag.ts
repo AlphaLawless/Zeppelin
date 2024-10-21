@@ -1,18 +1,18 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("tags")
+@Entity('tags')
 export class Tag {
   @Column()
   @PrimaryColumn()
-  guild_id: string;
+  guild_id: string
 
   @Column()
   @PrimaryColumn()
-  tag: string;
+  tag: string
 
-  @Column() user_id: string;
+  @Column() user_id: string
 
-  @Column() body: string;
+  @Column() body: string
 
-  @Column() created_at: string;
+  @Column() created_at: string
 }

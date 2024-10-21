@@ -1,14 +1,14 @@
-import { GuildMember } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { memberToTemplateSafeMember } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildMember } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { memberToTemplateSafeMember } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberRestoreData {
-  member: GuildMember;
-  restoredData: string;
+  member: GuildMember
+  restoredData: string
 }
 
 export function logMemberRestore(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberRestoreData) {
@@ -24,5 +24,5 @@ export function logMemberRestore(pluginData: GuildPluginData<LogsPluginType>, da
       roles: Array.from(data.member.roles.cache.keys()),
       bot: data.member.user.bot,
     },
-  );
+  )
 }

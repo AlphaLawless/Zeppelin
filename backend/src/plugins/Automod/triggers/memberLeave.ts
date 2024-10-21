@@ -1,20 +1,20 @@
-import z from "zod";
-import { automodTrigger } from "../helpers.js";
+import z from 'zod'
+import { automodTrigger } from '../helpers.js'
 
-const configSchema = z.strictObject({});
+const configSchema = z.strictObject({})
 
 export const MemberLeaveTrigger = automodTrigger<unknown>()({
   configSchema,
 
   async match({ context }) {
     if (!context.joined || !context.member) {
-      return;
+      return
     }
 
-    return {};
+    return {}
   },
 
   renderMatchInformation() {
-    return "";
+    return ''
   },
-});
+})

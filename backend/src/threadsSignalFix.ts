@@ -5,9 +5,9 @@
  * - This is imported before any real imports from "threads"
  * - This is imported as early as possible to avoid removing our own signal handlers
  */
-import "threads";
-import { env } from "./env.js";
+import 'threads'
+import { env } from './env.js'
 if (!env.DEBUG) {
-  process.removeAllListeners("SIGINT");
-  process.removeAllListeners("SIGTERM");
+  process.removeAllListeners('SIGINT')
+  process.removeAllListeners('SIGTERM')
 }

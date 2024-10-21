@@ -1,15 +1,15 @@
-import { commandTypeHelpers as ct } from "../../../../commandTypes.js";
-import { canActOn, hasPermission } from "../../../../pluginUtils.js";
-import { errorMessage, resolveMember, resolveUser } from "../../../../utils.js";
-import { isBanned } from "../../functions/isBanned.js";
-import { readContactMethodsFromArgs } from "../../functions/readContactMethodsFromArgs.js";
-import { modActionsMsgCmd } from "../../types.js";
-import { actualWarnCmd } from "./actualWarnCmd.js";
+import { commandTypeHelpers as ct } from '../../../../commandTypes.js'
+import { canActOn, hasPermission } from '../../../../pluginUtils.js'
+import { errorMessage, resolveMember, resolveUser } from '../../../../utils.js'
+import { isBanned } from '../../functions/isBanned.js'
+import { readContactMethodsFromArgs } from '../../functions/readContactMethodsFromArgs.js'
+import { modActionsMsgCmd } from '../../types.js'
+import { actualWarnCmd } from './actualWarnCmd.js'
 
 export const WarnMsgCmd = modActionsMsgCmd({
-  trigger: "warn",
-  permission: "can_warn",
-  description: "Send a warning to the specified user",
+  trigger: 'warn',
+  permission: 'can_warn',
+  description: 'Send a warning to the specified user',
 
   signature: {
     user: ct.string(),
@@ -17,52 +17,52 @@ export const WarnMsgCmd = modActionsMsgCmd({
 
     mod: ct.member({ option: true }),
     notify: ct.string({ option: true }),
-    "notify-channel": ct.textChannel({ option: true }),
+    'notify-channel': ct.textChannel({ option: true }),
   },
 
   async run({ pluginData, message: msg, args }) {
-    const user = await resolveUser(pluginData.client, args.user);
+    const user = await resolveUser(pluginData.client, args.user)
     if (!user.id) {
-      await pluginData.state.common.sendErrorMessage(msg, `User not found`);
-      return;
+      await pluginData.state.common.sendErrorMessage(msg, `User not found`)
+      return
     }
 
-    const memberToWarn = await resolveMember(pluginData.client, pluginData.guild, user.id);
+    const memberToWarn = await resolveMember(pluginData.client, pluginData.guild, user.id)
 
     if (!memberToWarn) {
-      const _isBanned = await isBanned(pluginData, user.id);
+      const _isBanned = await isBanned(pluginData, user.id)
       if (_isBanned) {
-        await pluginData.state.common.sendErrorMessage(msg, `User is banned`);
+        await pluginData.state.common.sendErrorMessage(msg, `User is banned`)
       } else {
-        await pluginData.state.common.sendErrorMessage(msg, `User not found on the server`);
+        await pluginData.state.common.sendErrorMessage(msg, `User not found on the server`)
       }
 
-      return;
+      return
     }
 
     // Make sure we're allowed to warn this member
     if (!canActOn(pluginData, msg.member, memberToWarn)) {
-      await pluginData.state.common.sendErrorMessage(msg, "Cannot warn: insufficient permissions");
-      return;
+      await pluginData.state.common.sendErrorMessage(msg, 'Cannot warn: insufficient permissions')
+      return
     }
 
     // The moderator who did the action is the message author or, if used, the specified -mod
-    let mod = msg.member;
+    let mod = msg.member
     if (args.mod) {
-      if (!(await hasPermission(pluginData, "can_act_as_other", { message: msg }))) {
-        msg.channel.send(errorMessage("You don't have permission to use -mod"));
-        return;
+      if (!(await hasPermission(pluginData, 'can_act_as_other', { message: msg }))) {
+        msg.channel.send(errorMessage("You don't have permission to use -mod"))
+        return
       }
 
-      mod = args.mod;
+      mod = args.mod
     }
 
-    let contactMethods;
+    let contactMethods
     try {
-      contactMethods = readContactMethodsFromArgs(args);
+      contactMethods = readContactMethodsFromArgs(args)
     } catch (e) {
-      await pluginData.state.common.sendErrorMessage(msg, e.message);
-      return;
+      await pluginData.state.common.sendErrorMessage(msg, e.message)
+      return
     }
 
     actualWarnCmd(
@@ -74,6 +74,6 @@ export const WarnMsgCmd = modActionsMsgCmd({
       args.reason,
       [...msg.attachments.values()],
       contactMethods,
-    );
+    )
   },
-});
+})

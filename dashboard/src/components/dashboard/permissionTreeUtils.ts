@@ -1,12 +1,12 @@
-import { ApiPermissions, hasPermission, TPermissionHierarchy } from "@zeppelinbot/shared/apiPermissions.js";
+import { ApiPermissions, TPermissionHierarchy, hasPermission } from '@zeppelinbot/shared/apiPermissions.js'
 
 export type TPermissionHierarchyState = {
-  locked: boolean;
-  redundant: boolean;
-};
+  locked: boolean
+  redundant: boolean
+}
 
-export type TApiPermissionWithState = [ApiPermissions, TPermissionHierarchyState, TPermissionHierarchyWithState?];
-export type TPermissionHierarchyWithState = TApiPermissionWithState[];
+export type TApiPermissionWithState = [ApiPermissions, TPermissionHierarchyState, TPermissionHierarchyWithState?]
+export type TPermissionHierarchyWithState = TApiPermissionWithState[]
 
 /**
  * @param tree
@@ -20,24 +20,24 @@ export function applyStateToPermissionHierarchy(
   managerPermissions: Set<ApiPermissions> = new Set(),
   entireTreeIsGranted = false,
 ): TPermissionHierarchyWithState {
-  const result: TPermissionHierarchyWithState = [];
+  const result: TPermissionHierarchyWithState = []
 
   for (const item of tree) {
-    const [perm, nested] = Array.isArray(item) ? item : [item];
+    const [perm, nested] = Array.isArray(item) ? item : [item]
 
     // Can't edit permissions you don't have yourself
-    const locked = !hasPermission(managerPermissions, perm);
-    const permissionWithState: TApiPermissionWithState = [perm, { locked, redundant: entireTreeIsGranted }];
+    const locked = !hasPermission(managerPermissions, perm)
+    const permissionWithState: TApiPermissionWithState = [perm, { locked, redundant: entireTreeIsGranted }]
 
     if (nested) {
-      const subTreeGranted = entireTreeIsGranted || grantedPermissions.has(perm);
+      const subTreeGranted = entireTreeIsGranted || grantedPermissions.has(perm)
       permissionWithState.push(
         applyStateToPermissionHierarchy(nested, grantedPermissions, managerPermissions, subTreeGranted),
-      );
+      )
     }
 
-    result.push(permissionWithState);
+    result.push(permissionWithState)
   }
 
-  return result;
+  return result
 }

@@ -1,14 +1,14 @@
-import { GuildMember } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { memberToTemplateSafeMember } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildMember } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { memberToTemplateSafeMember } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberJoinWithPriorRecordsData {
-  member: GuildMember;
-  recentCaseSummary: string;
+  member: GuildMember
+  recentCaseSummary: string
 }
 
 export function logMemberJoinWithPriorRecords(
@@ -26,5 +26,5 @@ export function logMemberJoinWithPriorRecords(
       userId: data.member.id,
       bot: data.member.user.bot,
     },
-  );
+  )
 }

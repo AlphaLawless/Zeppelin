@@ -104,13 +104,13 @@
 </template>
 
 <script>
-  import CodeBlock from "./CodeBlock";
-  import Expandable from "../Expandable";
+import Expandable from '../Expandable'
+import CodeBlock from './CodeBlock'
 
-  export default {
-    components: {
-      CodeBlock,
-      Expandable,
-    },
-  };
+export default {
+  components: {
+    CodeBlock,
+    Expandable,
+  },
+}
 </script>

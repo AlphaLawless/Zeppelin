@@ -1,4 +1,4 @@
-const scalarTypes = ["string", "number", "boolean", "bigint"];
+const scalarTypes = ['string', 'number', 'boolean', 'bigint']
 
 export class ObjectAliasError extends Error {}
 
@@ -7,19 +7,19 @@ export class ObjectAliasError extends Error {}
  */
 export function validateNoObjectAliases<T extends object>(obj: T, seen?: WeakSet<any>): void {
   if (!seen) {
-    seen = new WeakSet();
+    seen = new WeakSet()
   }
 
   for (const [, value] of Object.entries(obj)) {
     if (value == null || scalarTypes.includes(typeof value)) {
-      continue;
+      continue
     }
 
     if (seen.has(value)) {
-      throw new ObjectAliasError("Object aliases are not allowed");
+      throw new ObjectAliasError('Object aliases are not allowed')
     }
 
-    validateNoObjectAliases(value, seen);
-    seen.add(value);
+    validateNoObjectAliases(value, seen)
+    seen.add(value)
   }
 }

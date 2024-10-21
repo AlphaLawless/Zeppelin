@@ -1,13 +1,13 @@
-let activeReload: [string, string] | null = null;
+let activeReload: [string, string] | null = null
 
 export function getActiveReload() {
-  return activeReload;
+  return activeReload
 }
 
 export function setActiveReload(guildId: string, channelId: string) {
-  activeReload = [guildId, channelId];
+  activeReload = [guildId, channelId]
 }
 
 export function resetActiveReload() {
-  activeReload = null;
+  activeReload = null
 }

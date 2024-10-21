@@ -1,16 +1,16 @@
-import { GuildMember, Role, User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { UnknownRole } from "../../../utils.js";
-import { memberToTemplateSafeMember, userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { GuildMember, Role, User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { UnknownRole } from '../../../utils.js'
+import { memberToTemplateSafeMember, userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberRoleAddData {
-  mod: User | null;
-  member: GuildMember;
-  roles: Array<Role | UnknownRole>;
+  mod: User | null
+  member: GuildMember
+  roles: Array<Role | UnknownRole>
 }
 
 export function logMemberRoleAdd(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberRoleAddData) {
@@ -20,12 +20,12 @@ export function logMemberRoleAdd(pluginData: GuildPluginData<LogsPluginType>, da
     createTypedTemplateSafeValueContainer({
       mod: data.mod ? userToTemplateSafeUser(data.mod) : null,
       member: memberToTemplateSafeMember(data.member),
-      roles: data.roles.map((r) => r.name).join(", "),
+      roles: data.roles.map((r) => r.name).join(', '),
     }),
     {
       userId: data.member.id,
       roles: Array.from(data.member.roles.cache.keys()),
       bot: data.member.user.bot,
     },
-  );
+  )
 }

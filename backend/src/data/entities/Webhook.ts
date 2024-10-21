@@ -1,14 +1,14 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("webhooks")
+@Entity('webhooks')
 export class Webhook {
   @Column()
   @PrimaryColumn()
-  id: string;
+  id: string
 
-  @Column() guild_id: string;
+  @Column() guild_id: string
 
-  @Column() channel_id: string;
+  @Column() channel_id: string
 
-  @Column() token: string;
+  @Column() token: string
 }

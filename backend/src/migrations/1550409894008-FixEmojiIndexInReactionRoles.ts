@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class FixEmojiIndexInReactionRoles1550409894008 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
@@ -7,13 +7,13 @@ export class FixEmojiIndexInReactionRoles1550409894008 implements MigrationInter
     await queryRunner.query(`
         ALTER TABLE \`reaction_roles\`
 	        CHANGE COLUMN \`emoji\` \`emoji\` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_bin' AFTER \`message_id\`
-      `);
+      `)
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(`
         ALTER TABLE \`reaction_roles\`
 	        CHANGE COLUMN \`emoji\` \`emoji\` VARCHAR(64) NOT NULL AFTER \`message_id\`
-      `);
+      `)
   }
 }

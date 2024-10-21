@@ -1,18 +1,18 @@
-import { User } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { UnknownUser } from "../../../utils.js";
-import { userToTemplateSafeUser } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { User } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { UnknownUser } from '../../../utils.js'
+import { userToTemplateSafeUser } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogMemberTimedMuteData {
-  mod: User | UnknownUser;
-  user: User | UnknownUser;
-  time: string;
-  caseNumber: number;
-  reason: string;
+  mod: User | UnknownUser
+  user: User | UnknownUser
+  time: string
+  caseNumber: number
+  reason: string
 }
 
 export function logMemberTimedMute(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberTimedMuteData) {
@@ -27,5 +27,5 @@ export function logMemberTimedMute(pluginData: GuildPluginData<LogsPluginType>, 
       reason: data.reason,
     }),
     {},
-  );
+  )
 }

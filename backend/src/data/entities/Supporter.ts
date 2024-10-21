@@ -1,14 +1,14 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("supporters")
+@Entity('supporters')
 export class Supporter {
   @Column()
   @PrimaryColumn()
-  user_id: string;
+  user_id: string
 
   @Column()
-  name: string;
+  name: string
 
   @Column({ type: String, nullable: true })
-  amount: string | null;
+  amount: string | null
 }

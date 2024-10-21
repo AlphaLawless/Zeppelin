@@ -1,11 +1,11 @@
-import { ButtonStyle } from "discord.js";
-import { BasePluginType, pluginUtils } from "knub";
-import z from "zod";
-import { GuildRoleButtons } from "../../data/GuildRoleButtons.js";
-import { zBoundedCharacters, zBoundedRecord, zMessageContent, zSnowflake } from "../../utils.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
-import { TooManyComponentsError } from "./functions/TooManyComponentsError.js";
-import { createButtonComponents } from "./functions/createButtonComponents.js";
+import { ButtonStyle } from 'discord.js'
+import { BasePluginType, pluginUtils } from 'knub'
+import z from 'zod'
+import { GuildRoleButtons } from '../../data/GuildRoleButtons.js'
+import { zBoundedCharacters, zBoundedRecord, zMessageContent, zSnowflake } from '../../utils.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
+import { TooManyComponentsError } from './functions/TooManyComponentsError.js'
+import { createButtonComponents } from './functions/createButtonComponents.js'
 
 const zRoleButtonOption = z.strictObject({
   role_id: zSnowflake,
@@ -20,17 +20,17 @@ const zRoleButtonOption = z.strictObject({
       z.literal(ButtonStyle.Danger),
 
       // The following are deprecated
-      z.literal("PRIMARY"),
-      z.literal("SECONDARY"),
-      z.literal("SUCCESS"),
-      z.literal("DANGER"),
+      z.literal('PRIMARY'),
+      z.literal('SECONDARY'),
+      z.literal('SUCCESS'),
+      z.literal('DANGER'),
       // z.literal("LINK"), // Role buttons don't use link buttons, but adding this here so it's documented why it's not available
     ])
     .nullable()
     .default(null),
   start_new_row: z.boolean().default(false),
-});
-export type TRoleButtonOption = z.infer<typeof zRoleButtonOption>;
+})
+export type TRoleButtonOption = z.infer<typeof zRoleButtonOption>
 
 const zRoleButtonsConfigItem = z
   .strictObject({
@@ -40,15 +40,15 @@ const zRoleButtonsConfigItem = z
       .never()
       .optional()
       .transform((_, ctx) => {
-        const ruleName = String(ctx.path[ctx.path.length - 2]).trim();
+        const ruleName = String(ctx.path[ctx.path.length - 2]).trim()
         if (!ruleName) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: "Role buttons must have names",
-          });
-          return z.NEVER;
+            message: 'Role buttons must have names',
+          })
+          return z.NEVER
         }
-        return ruleName;
+        return ruleName
       }),
     message: z.union([
       z.strictObject({
@@ -66,20 +66,20 @@ const zRoleButtonsConfigItem = z
   .refine(
     (parsed) => {
       try {
-        createButtonComponents(parsed);
+        createButtonComponents(parsed)
       } catch (err) {
         if (err instanceof TooManyComponentsError) {
-          return false;
+          return false
         }
-        throw err;
+        throw err
       }
-      return true;
+      return true
     },
     {
-      message: "Too many options; can only have max 5 buttons per row on max 5 rows.",
+      message: 'Too many options; can only have max 5 buttons per row on max 5 rows.',
     },
-  );
-export type TRoleButtonsConfigItem = z.infer<typeof zRoleButtonsConfigItem>;
+  )
+export type TRoleButtonsConfigItem = z.infer<typeof zRoleButtonsConfigItem>
 
 export const zRoleButtonsConfig = z
   .strictObject({
@@ -88,28 +88,28 @@ export const zRoleButtonsConfig = z
   })
   .refine(
     (parsed) => {
-      const seenMessages = new Set();
+      const seenMessages = new Set()
       for (const button of Object.values(parsed.buttons)) {
         if (button.message) {
-          if ("message_id" in button.message) {
+          if ('message_id' in button.message) {
             if (seenMessages.has(button.message.message_id)) {
-              return false;
+              return false
             }
-            seenMessages.add(button.message.message_id);
+            seenMessages.add(button.message.message_id)
           }
         }
       }
-      return true;
+      return true
     },
     {
       message: "Can't target the same message with two sets of role buttons",
     },
-  );
+  )
 
 export interface RoleButtonsPluginType extends BasePluginType {
-  config: z.infer<typeof zRoleButtonsConfig>;
+  config: z.infer<typeof zRoleButtonsConfig>
   state: {
-    roleButtons: GuildRoleButtons;
-    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
-  };
+    roleButtons: GuildRoleButtons
+    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>
+  }
 }

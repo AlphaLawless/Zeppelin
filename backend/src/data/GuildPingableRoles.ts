@@ -1,14 +1,14 @@
-import { Repository } from "typeorm";
-import { BaseGuildRepository } from "./BaseGuildRepository.js";
-import { dataSource } from "./dataSource.js";
-import { PingableRole } from "./entities/PingableRole.js";
+import { Repository } from 'typeorm'
+import { BaseGuildRepository } from './BaseGuildRepository.js'
+import { dataSource } from './dataSource.js'
+import { PingableRole } from './entities/PingableRole.js'
 
 export class GuildPingableRoles extends BaseGuildRepository {
-  private pingableRoles: Repository<PingableRole>;
+  private pingableRoles: Repository<PingableRole>
 
   constructor(guildId) {
-    super(guildId);
-    this.pingableRoles = dataSource.getRepository(PingableRole);
+    super(guildId)
+    this.pingableRoles = dataSource.getRepository(PingableRole)
   }
 
   async all(): Promise<PingableRole[]> {
@@ -16,7 +16,7 @@ export class GuildPingableRoles extends BaseGuildRepository {
       where: {
         guild_id: this.guildId,
       },
-    });
+    })
   }
 
   async getForChannel(channelId: string): Promise<PingableRole[]> {
@@ -25,7 +25,7 @@ export class GuildPingableRoles extends BaseGuildRepository {
         guild_id: this.guildId,
         channel_id: channelId,
       },
-    });
+    })
   }
 
   async getByChannelAndRoleId(channelId: string, roleId: string): Promise<PingableRole | null> {
@@ -35,7 +35,7 @@ export class GuildPingableRoles extends BaseGuildRepository {
         channel_id: channelId,
         role_id: roleId,
       },
-    });
+    })
   }
 
   async delete(channelId: string, roleId: string) {
@@ -43,7 +43,7 @@ export class GuildPingableRoles extends BaseGuildRepository {
       guild_id: this.guildId,
       channel_id: channelId,
       role_id: roleId,
-    });
+    })
   }
 
   async add(channelId: string, roleId: string) {
@@ -51,6 +51,6 @@ export class GuildPingableRoles extends BaseGuildRepository {
       guild_id: this.guildId,
       channel_id: channelId,
       role_id: roleId,
-    });
+    })
   }
 }

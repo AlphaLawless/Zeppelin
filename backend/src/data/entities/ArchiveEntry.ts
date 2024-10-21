@@ -1,19 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity("archives")
+@Entity('archives')
 export class ArchiveEntry {
   @Column()
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
-  @Column() guild_id: string;
+  @Column() guild_id: string
 
   @Column({
-    type: "mediumtext",
+    type: 'mediumtext',
   })
-  body: string;
+  body: string
 
-  @Column() created_at: string;
+  @Column() created_at: string
 
-  @Column({ type: String, nullable: true }) expires_at: string | null;
+  @Column({ type: String, nullable: true }) expires_at: string | null
 }

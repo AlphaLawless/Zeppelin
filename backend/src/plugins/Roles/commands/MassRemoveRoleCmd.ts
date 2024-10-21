@@ -1,14 +1,14 @@
-import { GuildMember } from "discord.js";
-import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { canActOn } from "../../../pluginUtils.js";
-import { resolveMember, resolveRoleId, successMessage } from "../../../utils.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
-import { rolesCmd } from "../types.js";
+import { GuildMember } from 'discord.js'
+import { commandTypeHelpers as ct } from '../../../commandTypes.js'
+import { canActOn } from '../../../pluginUtils.js'
+import { resolveMember, resolveRoleId, successMessage } from '../../../utils.js'
+import { LogsPlugin } from '../../Logs/LogsPlugin.js'
+import { RoleManagerPlugin } from '../../RoleManager/RoleManagerPlugin.js'
+import { rolesCmd } from '../types.js'
 
 export const MassRemoveRoleCmd = rolesCmd({
-  trigger: "massremoverole",
-  permission: "can_mass_assign",
+  trigger: 'massremoverole',
+  permission: 'can_mass_assign',
 
   signature: {
     role: ct.string(),
@@ -16,81 +16,81 @@ export const MassRemoveRoleCmd = rolesCmd({
   },
 
   async run({ message: msg, args, pluginData }) {
-    msg.channel.send(`Resolving members...`);
+    msg.channel.send(`Resolving members...`)
 
-    const members: GuildMember[] = [];
-    const unknownMembers: string[] = [];
+    const members: GuildMember[] = []
+    const unknownMembers: string[] = []
     for (const memberId of args.members) {
-      const member = await resolveMember(pluginData.client, pluginData.guild, memberId);
-      if (member) members.push(member);
-      else unknownMembers.push(memberId);
+      const member = await resolveMember(pluginData.client, pluginData.guild, memberId)
+      if (member) members.push(member)
+      else unknownMembers.push(memberId)
     }
 
     for (const member of members) {
       if (!canActOn(pluginData, msg.member, member, true)) {
         void pluginData.state.common.sendErrorMessage(
           msg,
-          "Cannot add roles to 1 or more specified members: insufficient permissions",
-        );
-        return;
+          'Cannot add roles to 1 or more specified members: insufficient permissions',
+        )
+        return
       }
     }
 
-    const roleId = await resolveRoleId(pluginData.client, pluginData.guild.id, args.role);
+    const roleId = await resolveRoleId(pluginData.client, pluginData.guild.id, args.role)
     if (!roleId) {
-      void pluginData.state.common.sendErrorMessage(msg, "Invalid role id");
-      return;
+      void pluginData.state.common.sendErrorMessage(msg, 'Invalid role id')
+      return
     }
 
-    const config = await pluginData.config.getForMessage(msg);
+    const config = await pluginData.config.getForMessage(msg)
     if (!config.assignable_roles.includes(roleId)) {
-      void pluginData.state.common.sendErrorMessage(msg, "You cannot remove that role");
-      return;
+      void pluginData.state.common.sendErrorMessage(msg, 'You cannot remove that role')
+      return
     }
 
-    const role = pluginData.guild.roles.cache.get(roleId);
+    const role = pluginData.guild.roles.cache.get(roleId)
     if (!role) {
       pluginData.getPlugin(LogsPlugin).logBotAlert({
         body: `Unknown role configured for 'roles' plugin: ${roleId}`,
-      });
-      void pluginData.state.common.sendErrorMessage(msg, "You cannot remove that role");
-      return;
+      })
+      void pluginData.state.common.sendErrorMessage(msg, 'You cannot remove that role')
+      return
     }
 
-    const membersWithTheRole = members.filter((m) => m.roles.cache.has(roleId));
-    let assigned = 0;
-    const failed: string[] = [];
-    const didNotHaveRole = members.length - membersWithTheRole.length;
+    const membersWithTheRole = members.filter((m) => m.roles.cache.has(roleId))
+    let assigned = 0
+    const failed: string[] = []
+    const didNotHaveRole = members.length - membersWithTheRole.length
 
     msg.channel.send(
       `Removing role **${role.name}** from ${membersWithTheRole.length} ${
-        membersWithTheRole.length === 1 ? "member" : "members"
+        membersWithTheRole.length === 1 ? 'member' : 'members'
       }...`,
-    );
+    )
 
     for (const member of membersWithTheRole) {
-      pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, roleId);
+      pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, roleId)
       pluginData.getPlugin(LogsPlugin).logMemberRoleRemove({
         member,
         roles: [role],
         mod: msg.author,
-      });
-      assigned++;
+      })
+      assigned++
     }
 
-    let resultMessage = `Removed role **${role.name}** from  ${assigned} ${assigned === 1 ? "member" : "members"}!`;
+    let resultMessage = `Removed role **${role.name}** from  ${assigned} ${assigned === 1 ? 'member' : 'members'}!`
     if (didNotHaveRole) {
-      resultMessage += ` ${didNotHaveRole} ${didNotHaveRole === 1 ? "member" : "members"} didn't have the role.`;
+      resultMessage += ` ${didNotHaveRole} ${didNotHaveRole === 1 ? 'member' : 'members'} didn't have the role.`
     }
 
     if (failed.length) {
-      resultMessage += `\nFailed to remove the role from the following members: ${failed.join(", ")}`;
+      resultMessage += `\nFailed to remove the role from the following members: ${failed.join(', ')}`
     }
 
     if (unknownMembers.length) {
-      resultMessage += `\nUnknown members: ${unknownMembers.join(", ")}`;
+      resultMessage += `\nUnknown members: ${unknownMembers.join(', ')}`
     }
 
-    msg.channel.send(successMessage(resultMessage));
+    msg.channel.send(successMessage(resultMessage))
   },
-});
+})

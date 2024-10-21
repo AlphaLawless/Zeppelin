@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreatePreTypeORMTables1540519249973 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
@@ -12,7 +12,7 @@ export class CreatePreTypeORMTables1540519249973 implements MigrationInterface {
           PRIMARY KEY (\`id\`)
         )
           COLLATE='utf8mb4_general_ci'
-      `);
+      `)
 
     await queryRunner.query(`
         CREATE TABLE IF NOT EXISTS \`cases\` (
@@ -34,7 +34,7 @@ export class CreatePreTypeORMTables1540519249973 implements MigrationInterface {
           INDEX \`mod_actions_created_at_index\` (\`created_at\`)
         )
           COLLATE = 'utf8mb4_general_ci'
-      `);
+      `)
 
     await queryRunner.query(`
         CREATE TABLE IF NOT EXISTS \`case_notes\` (
@@ -50,7 +50,7 @@ export class CreatePreTypeORMTables1540519249973 implements MigrationInterface {
           INDEX \`mod_action_notes_created_at_index\` (\`created_at\`)
         )
           COLLATE = 'utf8mb4_general_ci'
-      `);
+      `)
 
     await queryRunner.query(`
         CREATE TABLE IF NOT EXISTS \`mutes\` (
@@ -66,7 +66,7 @@ export class CreatePreTypeORMTables1540519249973 implements MigrationInterface {
             ON DELETE SET NULL
         )
           COLLATE = 'utf8mb4_general_ci'
-      `);
+      `)
 
     await queryRunner.query(`
         CREATE TABLE IF NOT EXISTS \`persisted_data\` (
@@ -78,7 +78,7 @@ export class CreatePreTypeORMTables1540519249973 implements MigrationInterface {
           PRIMARY KEY (\`guild_id\`, \`user_id\`)
         )
           COLLATE = 'utf8mb4_general_ci'
-      `);
+      `)
 
     await queryRunner.query(`
         CREATE TABLE IF NOT EXISTS \`reaction_roles\` (
@@ -91,7 +91,7 @@ export class CreatePreTypeORMTables1540519249973 implements MigrationInterface {
           INDEX \`reaction_roles_message_id_emoji_index\` (\`message_id\`, \`emoji\`)
         )
           COLLATE = 'utf8mb4_general_ci'
-      `);
+      `)
 
     await queryRunner.query(`
         CREATE TABLE IF NOT EXISTS \`tags\` (
@@ -103,7 +103,7 @@ export class CreatePreTypeORMTables1540519249973 implements MigrationInterface {
           PRIMARY KEY (\`guild_id\`, \`tag\`)
         )
           COLLATE = 'utf8mb4_general_ci'
-      `);
+      `)
   }
 
   public async down(): Promise<any> {

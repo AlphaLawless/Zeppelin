@@ -1,19 +1,19 @@
-import { commandTypeHelpers as ct } from "../../../../commandTypes.js";
-import { canActOn, hasPermission } from "../../../../pluginUtils.js";
-import { resolveMember, resolveUser } from "../../../../utils.js";
-import { readContactMethodsFromArgs } from "../../functions/readContactMethodsFromArgs.js";
-import { modActionsMsgCmd } from "../../types.js";
-import { actualMuteCmd } from "../mute/actualMuteCmd.js";
+import { commandTypeHelpers as ct } from '../../../../commandTypes.js'
+import { canActOn, hasPermission } from '../../../../pluginUtils.js'
+import { resolveMember, resolveUser } from '../../../../utils.js'
+import { readContactMethodsFromArgs } from '../../functions/readContactMethodsFromArgs.js'
+import { modActionsMsgCmd } from '../../types.js'
+import { actualMuteCmd } from '../mute/actualMuteCmd.js'
 
 const opts = {
   mod: ct.member({ option: true }),
   notify: ct.string({ option: true }),
-  "notify-channel": ct.textChannel({ option: true }),
-};
+  'notify-channel': ct.textChannel({ option: true }),
+}
 
 export const ForceMuteMsgCmd = modActionsMsgCmd({
-  trigger: "forcemute",
-  permission: "can_mute",
+  trigger: 'forcemute',
+  permission: 'can_mute',
   description: "Force-mute the specified user, even if they're not on the server",
 
   signature: [
@@ -33,40 +33,40 @@ export const ForceMuteMsgCmd = modActionsMsgCmd({
   ],
 
   async run({ pluginData, message: msg, args }) {
-    const user = await resolveUser(pluginData.client, args.user);
+    const user = await resolveUser(pluginData.client, args.user)
     if (!user.id) {
-      pluginData.state.common.sendErrorMessage(msg, `User not found`);
-      return;
+      pluginData.state.common.sendErrorMessage(msg, `User not found`)
+      return
     }
 
-    const memberToMute = await resolveMember(pluginData.client, pluginData.guild, user.id);
+    const memberToMute = await resolveMember(pluginData.client, pluginData.guild, user.id)
 
     // Make sure we're allowed to mute this user
     if (memberToMute && !canActOn(pluginData, msg.member, memberToMute)) {
-      pluginData.state.common.sendErrorMessage(msg, "Cannot mute: insufficient permissions");
-      return;
+      pluginData.state.common.sendErrorMessage(msg, 'Cannot mute: insufficient permissions')
+      return
     }
 
     // The moderator who did the action is the message author or, if used, the specified -mod
-    let mod = msg.member;
-    let ppId: string | undefined;
+    let mod = msg.member
+    let ppId: string | undefined
 
     if (args.mod) {
-      if (!(await hasPermission(pluginData, "can_act_as_other", { message: msg }))) {
-        pluginData.state.common.sendErrorMessage(msg, "You don't have permission to use -mod");
-        return;
+      if (!(await hasPermission(pluginData, 'can_act_as_other', { message: msg }))) {
+        pluginData.state.common.sendErrorMessage(msg, "You don't have permission to use -mod")
+        return
       }
 
-      mod = args.mod;
-      ppId = msg.author.id;
+      mod = args.mod
+      ppId = msg.author.id
     }
 
-    let contactMethods;
+    let contactMethods
     try {
-      contactMethods = readContactMethodsFromArgs(args);
+      contactMethods = readContactMethodsFromArgs(args)
     } catch (e) {
-      pluginData.state.common.sendErrorMessage(msg, e.message);
-      return;
+      pluginData.state.common.sendErrorMessage(msg, e.message)
+      return
     }
 
     actualMuteCmd(
@@ -76,9 +76,9 @@ export const ForceMuteMsgCmd = modActionsMsgCmd({
       [...msg.attachments.values()],
       mod,
       ppId,
-      "time" in args ? args.time ?? undefined : undefined,
+      'time' in args ? (args.time ?? undefined) : undefined,
       args.reason,
       contactMethods,
-    );
+    )
   },
-});
+})

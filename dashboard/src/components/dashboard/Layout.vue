@@ -47,21 +47,21 @@
 </style>
 
 <script>
-  import Title from "../Title.vue";
-  import logoUrl from "../../img/logo.png";
+import logoUrl from '../../img/logo.png'
+import Title from '../Title.vue'
 
-  export default {
-    components: {
-      Title,
+export default {
+  components: {
+    Title,
+  },
+  methods: {
+    async logout() {
+      await this.$store.dispatch('auth/logout')
+      window.location.pathname = '/'
     },
-    methods: {
-      async logout() {
-        await this.$store.dispatch("auth/logout");
-        window.location.pathname = '/';
-      }
-    },
-    data() {
-      return { logoUrl };
-    },
-  };
+  },
+  data() {
+    return { logoUrl }
+  },
+}
 </script>

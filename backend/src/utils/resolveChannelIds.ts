@@ -1,13 +1,13 @@
-import { CategoryChannel, Channel } from "discord.js";
-import { isDmChannel } from "./isDmChannel.js";
-import { isGuildChannel } from "./isGuildChannel.js";
-import { isThreadChannel } from "./isThreadChannel.js";
+import { CategoryChannel, Channel } from 'discord.js'
+import { isDmChannel } from './isDmChannel.js'
+import { isGuildChannel } from './isGuildChannel.js'
+import { isThreadChannel } from './isThreadChannel.js'
 
 type ResolvedChannelIds = {
-  category: string | null;
-  channel: string | null;
-  thread: string | null;
-};
+  category: string | null
+  channel: string | null
+  thread: string | null
+}
 
 export function resolveChannelIds(channel: Channel): ResolvedChannelIds {
   if (isDmChannel(channel)) {
@@ -15,7 +15,7 @@ export function resolveChannelIds(channel: Channel): ResolvedChannelIds {
       category: null,
       channel: channel.id,
       thread: null,
-    };
+    }
   }
 
   if (isThreadChannel(channel)) {
@@ -23,7 +23,7 @@ export function resolveChannelIds(channel: Channel): ResolvedChannelIds {
       category: channel.parent?.parentId || null,
       channel: channel.parentId,
       thread: channel.id,
-    };
+    }
   }
 
   if (channel instanceof CategoryChannel) {
@@ -31,7 +31,7 @@ export function resolveChannelIds(channel: Channel): ResolvedChannelIds {
       category: channel.id,
       channel: null,
       thread: null,
-    };
+    }
   }
 
   if (isGuildChannel(channel)) {
@@ -39,12 +39,12 @@ export function resolveChannelIds(channel: Channel): ResolvedChannelIds {
       category: channel.parentId,
       channel: channel.id,
       thread: null,
-    };
+    }
   }
 
   return {
     category: null,
     channel: channel.id,
     thread: null,
-  };
+  }
 }

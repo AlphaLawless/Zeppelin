@@ -1,4 +1,4 @@
-import { CaseTypes } from "../../data/CaseTypes.js";
+import { CaseTypes } from '../../data/CaseTypes.js'
 
 export const caseColors: Record<CaseTypes, number> = {
   [CaseTypes.Ban]: 0xcb4314,
@@ -10,4 +10,4 @@ export const caseColors: Record<CaseTypes, number> = {
   [CaseTypes.Kick]: 0xe67e22,
   [CaseTypes.Deleted]: 0x000000,
   [CaseTypes.Softban]: 0xe67e22,
-};
+}

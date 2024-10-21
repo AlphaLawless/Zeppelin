@@ -1,5 +1,5 @@
-import { GuildPluginData } from "knub";
-import { IgnoredEventType, ModActionsPluginType } from "../types.js";
+import { GuildPluginData } from 'knub'
+import { IgnoredEventType, ModActionsPluginType } from '../types.js'
 
 export function clearIgnoredEvents(
   pluginData: GuildPluginData<ModActionsPluginType>,
@@ -9,5 +9,5 @@ export function clearIgnoredEvents(
   pluginData.state.ignoredEvents.splice(
     pluginData.state.ignoredEvents.findIndex((info) => type === info.type && userId === info.userId),
     1,
-  );
+  )
 }

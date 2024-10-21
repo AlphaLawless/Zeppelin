@@ -1,7 +1,7 @@
-import { GuildPluginData } from "knub";
-import { CounterTrigger } from "../../../data/entities/CounterTrigger.js";
-import { CountersPluginType } from "../types.js";
-import { emitCounterEvent } from "./emitCounterEvent.js";
+import { GuildPluginData } from 'knub'
+import { CounterTrigger } from '../../../data/entities/CounterTrigger.js'
+import { CountersPluginType } from '../types.js'
+import { emitCounterEvent } from './emitCounterEvent.js'
 
 export async function checkReverseCounterTrigger(
   pluginData: GuildPluginData<CountersPluginType>,
@@ -10,8 +10,8 @@ export async function checkReverseCounterTrigger(
   channelId: string | null,
   userId: string | null,
 ) {
-  const triggered = await pluginData.state.counters.checkForReverseTrigger(counterTrigger, channelId, userId);
+  const triggered = await pluginData.state.counters.checkForReverseTrigger(counterTrigger, channelId, userId)
   if (triggered) {
-    await emitCounterEvent(pluginData, "reverseTrigger", counterName, counterTrigger.name, channelId, userId);
+    await emitCounterEvent(pluginData, 'reverseTrigger', counterName, counterTrigger.name, channelId, userId)
   }
 }

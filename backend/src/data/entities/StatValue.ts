@@ -1,20 +1,20 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("stats")
+@Entity('stats')
 export class StatValue {
   @Column()
   @PrimaryColumn()
-  id: string;
+  id: string
 
   @Column()
-  guild_id: string;
+  guild_id: string
 
   @Column()
-  source: string;
+  source: string
 
-  @Column() key: string;
+  @Column() key: string
 
-  @Column() value: number;
+  @Column() value: number
 
-  @Column() created_at: string;
+  @Column() created_at: string
 }

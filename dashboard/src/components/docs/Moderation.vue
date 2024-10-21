@@ -148,9 +148,9 @@
 </template>
 
 <script lang="ts">
-  import CodeBlock from "./CodeBlock.vue";
+import CodeBlock from './CodeBlock.vue'
 
-  export default {
-    components: { CodeBlock },
-  };
+export default {
+  components: { CodeBlock },
+}
 </script>

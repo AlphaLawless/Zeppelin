@@ -1,26 +1,26 @@
-import { GuildMember, Message, User } from "discord.js";
-import { SavedMessage } from "../data/entities/SavedMessage.js";
+import { GuildMember, Message, User } from 'discord.js'
+import { SavedMessage } from '../data/entities/SavedMessage.js'
 
 export function allStarboardsLock() {
-  return `starboards`;
+  return `starboards`
 }
 
 export function banLock(user: GuildMember | User | { id: string }) {
-  return `ban-${user.id}`;
+  return `ban-${user.id}`
 }
 
 export function counterIdLock(counterId: number | string) {
-  return `counter-${counterId}`;
+  return `counter-${counterId}`
 }
 
 export function memberRolesLock(member: GuildMember | User | { id: string }) {
-  return `member-roles-${member.id}`;
+  return `member-roles-${member.id}`
 }
 
 export function messageLock(message: Message | SavedMessage | { id: string }) {
-  return `message-${message.id}`;
+  return `message-${message.id}`
 }
 
 export function muteLock(user: GuildMember | User | { id: string }) {
-  return `mute-${user.id}`;
+  return `mute-${user.id}`
 }

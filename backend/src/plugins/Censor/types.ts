@@ -1,9 +1,9 @@
-import { BasePluginType } from "knub";
-import z from "zod";
-import { RegExpRunner } from "../../RegExpRunner.js";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
-import { zBoundedCharacters, zRegex, zSnowflake } from "../../utils.js";
+import { BasePluginType } from 'knub'
+import z from 'zod'
+import { RegExpRunner } from '../../RegExpRunner.js'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { GuildSavedMessages } from '../../data/GuildSavedMessages.js'
+import { zBoundedCharacters, zRegex, zSnowflake } from '../../utils.js'
 
 export const zCensorConfig = z.strictObject({
   filter_zalgo: z.boolean(),
@@ -19,17 +19,17 @@ export const zCensorConfig = z.strictObject({
   blocked_tokens: z.array(zBoundedCharacters(0, 2000)).nullable(),
   blocked_words: z.array(zBoundedCharacters(0, 2000)).nullable(),
   blocked_regex: z.array(zRegex(z.string().max(1000))).nullable(),
-});
+})
 
 export interface CensorPluginType extends BasePluginType {
-  config: z.infer<typeof zCensorConfig>;
+  config: z.infer<typeof zCensorConfig>
   state: {
-    serverLogs: GuildLogs;
-    savedMessages: GuildSavedMessages;
+    serverLogs: GuildLogs
+    savedMessages: GuildSavedMessages
 
-    regexRunner: RegExpRunner;
+    regexRunner: RegExpRunner
 
-    onMessageCreateFn;
-    onMessageUpdateFn;
-  };
+    onMessageCreateFn
+    onMessageUpdateFn
+  }
 }

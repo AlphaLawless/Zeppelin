@@ -1,15 +1,15 @@
-import { Emoji } from "discord.js";
-import { GuildPluginData } from "knub";
-import { LogType } from "../../../data/LogType.js";
-import { createTypedTemplateSafeValueContainer } from "../../../templateFormatter.js";
-import { emojiToTemplateSafeEmoji } from "../../../utils/templateSafeObjects.js";
-import { LogsPluginType } from "../types.js";
-import { log } from "../util/log.js";
+import { Emoji } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { LogType } from '../../../data/LogType.js'
+import { createTypedTemplateSafeValueContainer } from '../../../templateFormatter.js'
+import { emojiToTemplateSafeEmoji } from '../../../utils/templateSafeObjects.js'
+import { LogsPluginType } from '../types.js'
+import { log } from '../util/log.js'
 
 export interface LogEmojiUpdateData {
-  oldEmoji: Emoji;
-  newEmoji: Emoji;
-  differenceString: string;
+  oldEmoji: Emoji
+  newEmoji: Emoji
+  differenceString: string
 }
 
 export function logEmojiUpdate(pluginData: GuildPluginData<LogsPluginType>, data: LogEmojiUpdateData) {
@@ -22,5 +22,5 @@ export function logEmojiUpdate(pluginData: GuildPluginData<LogsPluginType>, data
       differenceString: data.differenceString,
     }),
     {},
-  );
+  )
 }

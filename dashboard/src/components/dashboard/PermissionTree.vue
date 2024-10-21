@@ -31,32 +31,32 @@
 </style>
 
 <script lang="ts">
-  import { ApiPermissions, permissionNames } from "@zeppelinbot/shared/apiPermissions.js";
-  import { PropType } from "vue";
-  import { TPermissionHierarchyWithState } from "./permissionTreeUtils";
+import { ApiPermissions, permissionNames } from '@zeppelinbot/shared/apiPermissions.js'
+import { PropType } from 'vue'
+import { TPermissionHierarchyWithState } from './permissionTreeUtils'
 
-  export default {
-    name: 'permission-tree',
-    props: {
-      tree: Array as PropType<TPermissionHierarchyWithState>,
-      grantedPermissions: Set as PropType<Set<ApiPermissions>>,
-      onChange: Function
-    },
-    data() {
-      return { permissionNames };
-    },
-    methods: {
-      togglePermission(permission) {
-        if (this.grantedPermissions.has(permission)) {
-          this.grantedPermissions.delete(permission);
-        } else {
-          this.grantedPermissions.add(permission);
-        }
+export default {
+  name: 'permission-tree',
+  props: {
+    tree: Array as PropType<TPermissionHierarchyWithState>,
+    grantedPermissions: Set as PropType<Set<ApiPermissions>>,
+    onChange: Function,
+  },
+  data() {
+    return { permissionNames }
+  },
+  methods: {
+    togglePermission(permission) {
+      if (this.grantedPermissions.has(permission)) {
+        this.grantedPermissions.delete(permission)
+      } else {
+        this.grantedPermissions.add(permission)
+      }
 
-        if (this.onChange) {
-          this.onChange();
-        }
-      },
+      if (this.onChange) {
+        this.onChange()
+      }
     },
-  }
+  },
+}
 </script>

@@ -1,16 +1,16 @@
-import { GuildMember } from "discord.js";
-import { EventEmitter } from "events";
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "knub";
-import z from "zod";
-import { GuildArchives } from "../../data/GuildArchives.js";
-import { GuildCases } from "../../data/GuildCases.js";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { GuildMutes } from "../../data/GuildMutes.js";
-import { Case } from "../../data/entities/Case.js";
-import { Mute } from "../../data/entities/Mute.js";
-import { UserNotificationMethod, UserNotificationResult, zSnowflake } from "../../utils.js";
-import { CaseArgs } from "../Cases/types.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
+import { EventEmitter } from 'events'
+import { GuildMember } from 'discord.js'
+import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from 'knub'
+import z from 'zod'
+import { GuildArchives } from '../../data/GuildArchives.js'
+import { GuildCases } from '../../data/GuildCases.js'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { GuildMutes } from '../../data/GuildMutes.js'
+import { Case } from '../../data/entities/Case.js'
+import { Mute } from '../../data/entities/Mute.js'
+import { UserNotificationMethod, UserNotificationResult, zSnowflake } from '../../utils.js'
+import { CaseArgs } from '../Cases/types.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
 
 export const zMutesConfig = z.strictObject({
   mute_role: zSnowflake.nullable(),
@@ -30,55 +30,55 @@ export const zMutesConfig = z.strictObject({
 
   can_view_list: z.boolean(),
   can_cleanup: z.boolean(),
-});
+})
 
 export interface MutesEvents {
-  mute: (userId: string, reason?: string, isAutomodAction?: boolean) => void;
-  unmute: (userId: string, reason?: string) => void;
+  mute: (userId: string, reason?: string, isAutomodAction?: boolean) => void
+  unmute: (userId: string, reason?: string) => void
 }
 
 export interface MutesEventEmitter extends EventEmitter {
-  on<U extends keyof MutesEvents>(event: U, listener: MutesEvents[U]): this;
-  emit<U extends keyof MutesEvents>(event: U, ...args: Parameters<MutesEvents[U]>): boolean;
+  on<U extends keyof MutesEvents>(event: U, listener: MutesEvents[U]): this
+  emit<U extends keyof MutesEvents>(event: U, ...args: Parameters<MutesEvents[U]>): boolean
 }
 
 export interface MutesPluginType extends BasePluginType {
-  config: z.infer<typeof zMutesConfig>;
+  config: z.infer<typeof zMutesConfig>
   state: {
-    mutes: GuildMutes;
-    cases: GuildCases;
-    serverLogs: GuildLogs;
-    archives: GuildArchives;
+    mutes: GuildMutes
+    cases: GuildCases
+    serverLogs: GuildLogs
+    archives: GuildArchives
 
-    unregisterExpiredRoleMuteListener: () => void;
-    unregisterTimeoutMuteToRenewListener: () => void;
+    unregisterExpiredRoleMuteListener: () => void
+    unregisterTimeoutMuteToRenewListener: () => void
 
-    events: MutesEventEmitter;
+    events: MutesEventEmitter
 
-    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
-  };
+    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>
+  }
 }
 
 export interface IMuteWithDetails extends Mute {
-  member?: GuildMember;
-  banned?: boolean;
+  member?: GuildMember
+  banned?: boolean
 }
 
 export type MuteResult = {
-  case: Case;
-  notifyResult: UserNotificationResult;
-  updatedExistingMute: boolean;
-};
-
-export type UnmuteResult = {
-  case: Case;
-};
-
-export interface MuteOptions {
-  caseArgs?: Partial<CaseArgs>;
-  contactMethods?: UserNotificationMethod[];
-  isAutomodAction?: boolean;
+  case: Case
+  notifyResult: UserNotificationResult
+  updatedExistingMute: boolean
 }
 
-export const mutesCmd = guildPluginMessageCommand<MutesPluginType>();
-export const mutesEvt = guildPluginEventListener<MutesPluginType>();
+export type UnmuteResult = {
+  case: Case
+}
+
+export interface MuteOptions {
+  caseArgs?: Partial<CaseArgs>
+  contactMethods?: UserNotificationMethod[]
+  isAutomodAction?: boolean
+}
+
+export const mutesCmd = guildPluginMessageCommand<MutesPluginType>()
+export const mutesEvt = guildPluginEventListener<MutesPluginType>()

@@ -1,10 +1,10 @@
-import { asyncMap } from "../utils/async.js";
+import { asyncMap } from '../utils/async.js'
 
 export class BaseRepository<TEntity = unknown> {
-  private nextRelations: string[];
+  private nextRelations: string[]
 
   constructor() {
-    this.nextRelations = [];
+    this.nextRelations = []
   }
 
   /**
@@ -13,42 +13,42 @@ export class BaseRepository<TEntity = unknown> {
    */
   public with(relations: string | string[]): this {
     if (Array.isArray(relations)) {
-      this.nextRelations.push(...relations);
+      this.nextRelations.push(...relations)
     } else {
-      this.nextRelations.push(relations);
+      this.nextRelations.push(relations)
     }
 
-    return this;
+    return this
   }
 
   /**
    * Gets and resets the relations primed using with()
    */
   protected getRelations(): string[] {
-    const relations = this.nextRelations || [];
-    this.nextRelations = [];
-    return relations;
+    const relations = this.nextRelations || []
+    this.nextRelations = []
+    return relations
   }
 
   protected async _processEntityFromDB(entity) {
     // No-op, override in repository
-    return entity;
+    return entity
   }
 
   protected async _processEntityToDB(entity) {
     // No-op, override in repository
-    return entity;
+    return entity
   }
 
   protected async processEntityFromDB<T extends TEntity | null>(entity: T): Promise<T> {
-    return this._processEntityFromDB(entity);
+    return this._processEntityFromDB(entity)
   }
 
   protected async processMultipleEntitiesFromDB<TArr extends TEntity[]>(entities: TArr): Promise<TArr> {
-    return asyncMap(entities, (entity) => this.processEntityFromDB(entity)) as Promise<TArr>;
+    return asyncMap(entities, (entity) => this.processEntityFromDB(entity)) as Promise<TArr>
   }
 
   protected async processEntityToDB<T extends Partial<TEntity>>(entity: T): Promise<T> {
-    return this._processEntityToDB(entity);
+    return this._processEntityToDB(entity)
   }
 }

@@ -1,52 +1,52 @@
-import { AuditLogChange, AuditLogEvent } from "discord.js";
-import moment from "moment-timezone";
-import { MuteTypes } from "../../../data/MuteTypes.js";
-import { resolveUser } from "../../../utils.js";
-import { mutesEvt } from "../types.js";
+import { AuditLogChange, AuditLogEvent } from 'discord.js'
+import moment from 'moment-timezone'
+import { MuteTypes } from '../../../data/MuteTypes.js'
+import { resolveUser } from '../../../utils.js'
+import { mutesEvt } from '../types.js'
 
 export const RegisterManualTimeoutsEvt = mutesEvt({
-  event: "guildAuditLogEntryCreate",
+  event: 'guildAuditLogEntryCreate',
   async listener({ pluginData, args: { auditLogEntry } }) {
     // Ignore the bot's own audit log events
     if (auditLogEntry.executorId === pluginData.client.user?.id) {
-      return;
+      return
     }
     if (auditLogEntry.action !== AuditLogEvent.MemberUpdate) {
-      return;
+      return
     }
 
-    const target = await resolveUser(pluginData.client, auditLogEntry.targetId!);
+    const target = await resolveUser(pluginData.client, auditLogEntry.targetId!)
 
     // Only act based on the last changes in this log
-    let lastTimeoutChange: AuditLogChange | null = null;
+    let lastTimeoutChange: AuditLogChange | null = null
     for (const change of auditLogEntry.changes) {
-      if (change.key === "communication_disabled_until") {
-        lastTimeoutChange = change;
+      if (change.key === 'communication_disabled_until') {
+        lastTimeoutChange = change
       }
     }
     if (!lastTimeoutChange) {
-      return;
+      return
     }
 
-    const existingMute = await pluginData.state.mutes.findExistingMuteForUserId(target.id);
+    const existingMute = await pluginData.state.mutes.findExistingMuteForUserId(target.id)
 
     if (lastTimeoutChange.new == null && existingMute) {
-      await pluginData.state.mutes.clear(target.id);
-      return;
+      await pluginData.state.mutes.clear(target.id)
+      return
     }
 
     if (lastTimeoutChange.new != null) {
-      const expiresAtTimestamp = moment.utc(lastTimeoutChange.new as string).valueOf();
+      const expiresAtTimestamp = moment.utc(lastTimeoutChange.new as string).valueOf()
       if (existingMute) {
-        await pluginData.state.mutes.updateExpiresAt(target.id, expiresAtTimestamp);
+        await pluginData.state.mutes.updateExpiresAt(target.id, expiresAtTimestamp)
       } else {
         await pluginData.state.mutes.addMute({
           userId: target.id,
           type: MuteTypes.Timeout,
           expiresAt: expiresAtTimestamp,
           timeoutExpiresAt: expiresAtTimestamp,
-        });
+        })
       }
     }
   },
-});
+})

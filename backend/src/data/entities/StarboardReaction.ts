@@ -1,22 +1,22 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
-import { SavedMessage } from "./SavedMessage.js";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
+import { SavedMessage } from './SavedMessage.js'
 
-@Entity("starboard_reactions")
+@Entity('starboard_reactions')
 export class StarboardReaction {
   @Column()
   @PrimaryColumn()
-  id: string;
+  id: string
 
   @Column()
-  guild_id: string;
+  guild_id: string
 
   @Column()
-  message_id: string;
+  message_id: string
 
   @Column()
-  reactor_id: string;
+  reactor_id: string
 
   @OneToOne(() => SavedMessage)
-  @JoinColumn({ name: "message_id" })
-  message: SavedMessage;
+  @JoinColumn({ name: 'message_id' })
+  message: SavedMessage
 }

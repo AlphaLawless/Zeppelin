@@ -1,11 +1,11 @@
-import { Snowflake } from "discord.js";
-import { GuildPluginData } from "knub";
-import { logger } from "../../../logger.js";
-import { renderUsername, resolveMember } from "../../../utils.js";
-import { memberRolesLock } from "../../../utils/lockNameHelpers.js";
-import { PendingMemberRoleChanges, ReactionRolesPluginType, RoleChangeMode } from "../types.js";
+import { Snowflake } from 'discord.js'
+import { GuildPluginData } from 'knub'
+import { logger } from '../../../logger.js'
+import { renderUsername, resolveMember } from '../../../utils.js'
+import { memberRolesLock } from '../../../utils/lockNameHelpers.js'
+import { PendingMemberRoleChanges, ReactionRolesPluginType, RoleChangeMode } from '../types.js'
 
-const ROLE_CHANGE_BATCH_DEBOUNCE_TIME = 1500;
+const ROLE_CHANGE_BATCH_DEBOUNCE_TIME = 1500
 
 export async function addMemberPendingRoleChange(
   pluginData: GuildPluginData<ReactionRolesPluginType>,
@@ -18,37 +18,37 @@ export async function addMemberPendingRoleChange(
       timeout: null,
       changes: [],
       applyFn: async () => {
-        pluginData.state.pendingRoleChanges.delete(memberId);
+        pluginData.state.pendingRoleChanges.delete(memberId)
 
-        const lock = await pluginData.locks.acquire(memberRolesLock({ id: memberId }));
+        const lock = await pluginData.locks.acquire(memberRolesLock({ id: memberId }))
 
-        const member = await resolveMember(pluginData.client, pluginData.guild, memberId);
+        const member = await resolveMember(pluginData.client, pluginData.guild, memberId)
         if (member) {
-          const newRoleIds = new Set(member.roles.cache.keys());
+          const newRoleIds = new Set(member.roles.cache.keys())
           for (const change of newPendingRoleChangeObj.changes) {
-            if (change.mode === "+") newRoleIds.add(change.roleId as Snowflake);
-            else newRoleIds.delete(change.roleId as Snowflake);
+            if (change.mode === '+') newRoleIds.add(change.roleId as Snowflake)
+            else newRoleIds.delete(change.roleId as Snowflake)
           }
 
           try {
-            await member.roles.set(Array.from(newRoleIds.values()), "Reaction roles");
+            await member.roles.set(Array.from(newRoleIds.values()), 'Reaction roles')
           } catch (e) {
-            logger.warn(`Failed to apply role changes to ${renderUsername(member)} (${member.id}): ${e.message}`);
+            logger.warn(`Failed to apply role changes to ${renderUsername(member)} (${member.id}): ${e.message}`)
           }
         }
-        lock.unlock();
+        lock.unlock()
       },
-    };
+    }
 
-    pluginData.state.pendingRoleChanges.set(memberId, newPendingRoleChangeObj);
+    pluginData.state.pendingRoleChanges.set(memberId, newPendingRoleChangeObj)
   }
 
-  const pendingRoleChangeObj = pluginData.state.pendingRoleChanges.get(memberId)!;
-  pendingRoleChangeObj.changes.push({ mode, roleId });
+  const pendingRoleChangeObj = pluginData.state.pendingRoleChanges.get(memberId)!
+  pendingRoleChangeObj.changes.push({ mode, roleId })
 
-  if (pendingRoleChangeObj.timeout) clearTimeout(pendingRoleChangeObj.timeout);
+  if (pendingRoleChangeObj.timeout) clearTimeout(pendingRoleChangeObj.timeout)
   pendingRoleChangeObj.timeout = setTimeout(
     () => pluginData.state.roleChangeQueue.add(pendingRoleChangeObj.applyFn),
     ROLE_CHANGE_BATCH_DEBOUNCE_TIME,
-  );
+  )
 }

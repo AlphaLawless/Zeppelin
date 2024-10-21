@@ -1,26 +1,26 @@
-import { GuildMember } from "discord.js";
-import escapeStringRegexp from "escape-string-regexp";
-import { ExtendedMatchParams, GuildPluginData } from "knub";
-import { StrictMessageContent } from "../../../utils.js";
-import { TTagCategory, TagsPluginType } from "../types.js";
-import { renderTagFromString } from "./renderTagFromString.js";
+import { GuildMember } from 'discord.js'
+import escapeStringRegexp from 'escape-string-regexp'
+import { ExtendedMatchParams, GuildPluginData } from 'knub'
+import { StrictMessageContent } from '../../../utils.js'
+import { TTagCategory, TagsPluginType } from '../types.js'
+import { renderTagFromString } from './renderTagFromString.js'
 
 interface BaseResult {
-  renderedContent: StrictMessageContent;
-  tagName: string;
+  renderedContent: StrictMessageContent
+  tagName: string
 }
 
 type ResultWithCategory = BaseResult & {
-  categoryName: string;
-  category: TTagCategory;
-};
+  categoryName: string
+  category: TTagCategory
+}
 
 type ResultWithoutCategory = BaseResult & {
-  categoryName: null;
-  category: null;
-};
+  categoryName: null
+  category: null
+}
 
-type Result = ResultWithCategory | ResultWithoutCategory;
+type Result = ResultWithCategory | ResultWithoutCategory
 
 export async function matchAndRenderTagFromString(
   pluginData: GuildPluginData<TagsPluginType>,
@@ -31,25 +31,25 @@ export async function matchAndRenderTagFromString(
   const config = await pluginData.config.getMatchingConfig({
     ...extraMatchParams,
     member,
-  });
+  })
 
   // Hard-coded tags in categories
   for (const [name, category] of Object.entries(config.categories)) {
-    const canUse = category.can_use != null ? category.can_use : config.can_use;
-    if (canUse !== true) continue;
+    const canUse = category.can_use != null ? category.can_use : config.can_use
+    if (canUse !== true) continue
 
-    const prefix = category.prefix != null ? category.prefix : config.prefix;
-    if (prefix !== "" && !str.startsWith(prefix)) continue;
+    const prefix = category.prefix != null ? category.prefix : config.prefix
+    if (prefix !== '' && !str.startsWith(prefix)) continue
 
-    const withoutPrefix = str.slice(prefix.length);
+    const withoutPrefix = str.slice(prefix.length)
 
     for (const [tagName, tagBody] of Object.entries(category.tags)) {
-      const regex = new RegExp(`^${escapeStringRegexp(tagName)}(?:\\s|$)`);
+      const regex = new RegExp(`^${escapeStringRegexp(tagName)}(?:\\s|$)`)
       if (regex.test(withoutPrefix)) {
-        const renderedContent = await renderTagFromString(pluginData, str, prefix, tagName, tagBody, member);
+        const renderedContent = await renderTagFromString(pluginData, str, prefix, tagName, tagBody, member)
 
         if (renderedContent == null) {
-          return null;
+          return null
         }
 
         return {
@@ -57,30 +57,30 @@ export async function matchAndRenderTagFromString(
           tagName,
           categoryName: name,
           category,
-        };
+        }
       }
     }
   }
 
   // Dynamic tags
   if (config.can_use !== true) {
-    return null;
+    return null
   }
 
-  const dynamicTagPrefix = config.prefix;
+  const dynamicTagPrefix = config.prefix
   if (!str.startsWith(dynamicTagPrefix)) {
-    return null;
+    return null
   }
 
-  const dynamicTagNameMatch = str.slice(dynamicTagPrefix.length).match(/^\S+/);
+  const dynamicTagNameMatch = str.slice(dynamicTagPrefix.length).match(/^\S+/)
   if (dynamicTagNameMatch === null) {
-    return null;
+    return null
   }
 
-  const dynamicTagName = dynamicTagNameMatch[0];
-  const dynamicTag = await pluginData.state.tags.find(dynamicTagName);
+  const dynamicTagName = dynamicTagNameMatch[0]
+  const dynamicTag = await pluginData.state.tags.find(dynamicTagName)
   if (!dynamicTag) {
-    return null;
+    return null
   }
 
   const renderedDynamicTagContent = await renderTagFromString(
@@ -90,10 +90,10 @@ export async function matchAndRenderTagFromString(
     dynamicTagName,
     dynamicTag.body,
     member,
-  );
+  )
 
   if (renderedDynamicTagContent == null) {
-    return null;
+    return null
   }
 
   return {
@@ -101,5 +101,5 @@ export async function matchAndRenderTagFromString(
     tagName: dynamicTagName,
     categoryName: null,
     category: null,
-  };
+  }
 }

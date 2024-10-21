@@ -1,14 +1,14 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity("pingable_roles")
+@Entity('pingable_roles')
 export class PingableRole {
   @Column()
   @PrimaryColumn()
-  id: number;
+  id: number
 
-  @Column() guild_id: string;
+  @Column() guild_id: string
 
-  @Column() channel_id: string;
+  @Column() channel_id: string
 
-  @Column() role_id: string;
+  @Column() role_id: string
 }

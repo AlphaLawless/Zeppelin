@@ -1,11 +1,11 @@
-import { PermissionFlagsBits } from "discord.js";
-import { guildPluginUserContextMenuCommand } from "knub";
-import { launchBanActionModal } from "../actions/ban.js";
+import { PermissionFlagsBits } from 'discord.js'
+import { guildPluginUserContextMenuCommand } from 'knub'
+import { launchBanActionModal } from '../actions/ban.js'
 
 export const BanCmd = guildPluginUserContextMenuCommand({
-  name: "Ban",
+  name: 'Ban',
   defaultMemberPermissions: PermissionFlagsBits.BanMembers.toString(),
   async run({ pluginData, interaction }) {
-    await launchBanActionModal(pluginData, interaction, interaction.targetId);
+    await launchBanActionModal(pluginData, interaction, interaction.targetId)
   },
-});
+})

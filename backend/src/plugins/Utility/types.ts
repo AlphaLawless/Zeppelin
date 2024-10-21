@@ -1,12 +1,12 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "knub";
-import z from "zod";
-import { RegExpRunner } from "../../RegExpRunner.js";
-import { GuildArchives } from "../../data/GuildArchives.js";
-import { GuildCases } from "../../data/GuildCases.js";
-import { GuildLogs } from "../../data/GuildLogs.js";
-import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
-import { Supporters } from "../../data/Supporters.js";
-import { CommonPlugin } from "../Common/CommonPlugin.js";
+import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from 'knub'
+import z from 'zod'
+import { RegExpRunner } from '../../RegExpRunner.js'
+import { GuildArchives } from '../../data/GuildArchives.js'
+import { GuildCases } from '../../data/GuildCases.js'
+import { GuildLogs } from '../../data/GuildLogs.js'
+import { GuildSavedMessages } from '../../data/GuildSavedMessages.js'
+import { Supporters } from '../../data/Supporters.js'
+import { CommonPlugin } from '../Common/CommonPlugin.js'
 
 export const zUtilityConfig = z.strictObject({
   can_roles: z.boolean(),
@@ -36,23 +36,23 @@ export const zUtilityConfig = z.strictObject({
   can_avatar: z.boolean(),
   info_on_single_result: z.boolean(),
   autojoin_threads: z.boolean(),
-});
+})
 
 export interface UtilityPluginType extends BasePluginType {
-  config: z.infer<typeof zUtilityConfig>;
+  config: z.infer<typeof zUtilityConfig>
   state: {
-    logs: GuildLogs;
-    cases: GuildCases;
-    savedMessages: GuildSavedMessages;
-    archives: GuildArchives;
-    supporters: Supporters;
-    regexRunner: RegExpRunner;
+    logs: GuildLogs
+    cases: GuildCases
+    savedMessages: GuildSavedMessages
+    archives: GuildArchives
+    supporters: Supporters
+    regexRunner: RegExpRunner
 
-    lastReload: number;
+    lastReload: number
 
-    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
-  };
+    common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>
+  }
 }
 
-export const utilityCmd = guildPluginMessageCommand<UtilityPluginType>();
-export const utilityEvt = guildPluginEventListener<UtilityPluginType>();
+export const utilityCmd = guildPluginMessageCommand<UtilityPluginType>()
+export const utilityEvt = guildPluginEventListener<UtilityPluginType>()
