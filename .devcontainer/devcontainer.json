@@ -12,7 +12,8 @@
         "Vue.volar",
         "biomejs.biome",
         "oven.bun-vscode",
-        "fill-labs.dependi"
+        "fill-labs.dependi",
+        "csstools.postcss"
       ]
     }
   }

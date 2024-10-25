@@ -19,14 +19,12 @@ export const RootStore = new Vuex.Store<RootState>({
 // Set up typings so Vue/our components know about the state's types
 declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {
-    // @ts-ignore
     store?: Store<RootState>
   }
 }
 
 declare module 'vue/types/vue' {
   interface Vue {
-    // @ts-ignore
     $store: Store<RootState>
   }
 }

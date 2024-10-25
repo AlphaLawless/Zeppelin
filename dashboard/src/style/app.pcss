@@ -1,24 +1,20 @@
-@import "~tailwindcss/base.css";
-@import "~tailwindcss/components.css";
-@import "~tailwindcss/utilities.css";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "vue-material-design-icons/styles.css";
 
-@import "~vue-material-design-icons/styles.css";
+@import "./components.pcss";
+@import "./content.pcss";
+@import "./docs.pcss";
 
-@import "components.pcss";
-@import "content.pcss";
+@layer base {
+  .material-design-icon > .material-design-icon__svg {
+    position: static;
+    bottom: 0;
+  }
 
-@import "docs.pcss";
-
-/* Reset some icon default styles for more predictable alignment */
-.material-design-icon > .material-design-icon__svg {
-  position: static;
-  bottom: 0;
-}
-
-body {
-  overflow-y: scroll;
-
-  @apply bg-gray-900;
-  @apply text-gray-300;
-  @apply text-base;
+  body {
+    overflow-y: scroll;
+    @apply bg-gray-900 text-gray-300 text-base;
+  }
 }

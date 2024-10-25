@@ -1,8 +1,10 @@
-version: '3'
+version: "3"
 name: zeppelin-dev
+
 volumes:
   home: {}
   mysql-data: {}
+
 services:
   nginx:
     build:

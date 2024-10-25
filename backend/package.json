@@ -69,7 +69,6 @@
     "twemoji": "^12.1.4",
     "typeorm": "^0.3.17",
     "utf-8-validate": "^5.0.5",
-    "yawn-yaml": "github:dragory/yawn-yaml#string-number-fix-build",
     "zod": "^3.7.2"
   },
   "devDependencies": {

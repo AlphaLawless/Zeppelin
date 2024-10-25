@@ -414,7 +414,6 @@ export function convertDelayStringToMS(str, defaultUnit = 'm'): number | null {
 
   str = str.trim()
 
-  // tslint:disable-next-line
   while (str !== '' && (match = str.match(regex)) !== null) {
     ms += match[1] * ((match[2] && delayStringMultipliers[match[2]]) || delayStringMultipliers[defaultUnit])
     str = str.slice(match[0].length)

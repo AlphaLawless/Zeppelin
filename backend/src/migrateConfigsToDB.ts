@@ -1,4 +1,3 @@
-// tslint:disable:no-console
 import * as _fs from 'fs'
 import path from 'path'
 import { Configs } from './data/Configs.js'
