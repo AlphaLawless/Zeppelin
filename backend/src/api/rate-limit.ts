@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { error } from './responses.js'
+import { error } from './presentation/helpers/http-responses.js'
 
 const lastRequestsByKey: Map<string, number> = new Map()
 

@@ -9,7 +9,7 @@ import { ApiPermissionAssignments } from '../data/ApiPermissionAssignments.js'
 import { ApiUserInfo } from '../data/ApiUserInfo.js'
 import { ApiUserInfoData } from '../data/entities/ApiUserInfo.js'
 import { env } from '../env.js'
-import { ok } from './responses.js'
+import { ok } from './presentation/helpers/http-responses.js'
 
 interface IPassportApiUser {
   apiKey: string
@@ -150,7 +150,6 @@ export function initAuth(router: express.Router) {
 export function apiTokenAuthHandlers() {
   return [
     passport.authenticate('api-token', { failWithError: true, session: false }),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (err, req: Request, res: Response, next) => {
       return res.status(401).json({ error: err.message })
     },

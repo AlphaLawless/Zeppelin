@@ -13,7 +13,7 @@ import { isSnowflake } from '../../utils.js'
 import { loadYamlSafely } from '../../utils/loadYamlSafely.js'
 import { ObjectAliasError } from '../../utils/validateNoObjectAliases.js'
 import { hasGuildPermission, requireGuildPermission } from '../permissions.js'
-import { clientError, ok, serverError, unauthorized } from '../responses.js'
+import { clientError, ok, serverError, unauthorized } from '../presentation/helpers/http-responses.js'
 
 const apiPermissionAssignments = new ApiPermissionAssignments()
 const auditLog = new ApiAuditLog()

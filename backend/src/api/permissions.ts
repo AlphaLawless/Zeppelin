@@ -2,7 +2,7 @@ import { ApiPermissions, hasPermission, permissionArrToSet } from '@zeppelinbot/
 import { Request, Response } from 'express'
 import { ApiPermissionAssignments } from '../data/ApiPermissionAssignments.js'
 import { isStaff } from '../staff.js'
-import { unauthorized } from './responses.js'
+import { unauthorized } from './presentation/helpers/http-responses.js'
 
 const apiPermissionAssignments = new ApiPermissionAssignments()
 

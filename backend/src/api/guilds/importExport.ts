@@ -6,8 +6,8 @@ import { GuildCases } from '../../data/GuildCases.js'
 import { Case } from '../../data/entities/Case.js'
 import { MINUTES } from '../../utils.js'
 import { requireGuildPermission } from '../permissions.js'
-import { rateLimit } from '../rateLimits.js'
-import { clientError, ok } from '../responses.js'
+import { rateLimit } from '../rate-limit.js'
+import { clientError, ok } from '../presentation/helpers/http-responses.js'
 
 const caseHandlingModeSchema = z.union([
   z.literal('replace'),
@@ -79,7 +79,6 @@ export function initGuildsImportExportAPI(guildRouter: express.Router) {
           err.issues[0].expected
         }, received ${err.issues[0].received} at /${err.issues[0].path.join('/')}`
         return clientError(res, `Invalid import data format: ${prettyMessage}`)
-        return
       }
 
       let caseHandlingMode: CaseHandlingMode

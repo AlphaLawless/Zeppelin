@@ -3,7 +3,7 @@ import z from 'zod'
 import { availableGuildPlugins } from '../plugins/availablePlugins.js'
 import { ZeppelinGuildPluginInfo } from '../types.js'
 import { indentLines } from '../utils.js'
-import { notFound } from './responses.js'
+import { notFound } from './presentation/helpers/http-responses.js'
 
 function isZodObject(schema: z.ZodTypeAny): schema is z.ZodObject<any> {
   return schema._def.typeName === 'ZodObject'

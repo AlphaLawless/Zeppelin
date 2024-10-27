@@ -68,7 +68,7 @@
       },
       "style": {
         "noInferrableTypes": "error",
-        "noNamespace": "error",
+        "noNamespace": "off",
         "noNegationElse": "error",
         "noNonNullAssertion": {
           "level": "off",
